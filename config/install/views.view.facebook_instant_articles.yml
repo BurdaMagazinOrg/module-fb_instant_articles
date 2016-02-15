@@ -2,10 +2,14 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.node.rss
     - core.entity_view_mode.node.teaser
   module:
+    - facebook_instant_articles
     - node
     - user
+_core:
+  default_config_hash: 3R93S28dH6_BFeCFbMHefgyaTQYuRFJg4c-sRbxJQlc
 id: facebook_instant_articles
 label: 'FaceBook Instant Articles'
 module: views
@@ -133,6 +137,32 @@ display:
           expose:
             operator: ''
           group: 1
+        facebook_instant_articles:
+          id: facebook_instant_articles
+          table: node_field_data
+          field: facebook_instant_articles
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: ''
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          entity_type: node
+          plugin_id: validfacebookinstantarticles
       sorts:
         created:
           id: created
@@ -165,27 +195,10 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
-  page_fia_admin:
-    display_plugin: page
-    id: page_fia_admin
-    display_title: FIA admin page
-    position: 1
-    display_options:
-      display_extenders: {  }
-      path: admin/config/content/facebook-instant-articles
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - url.query_args
-        - 'user.node_grants:view'
-        - user.permissions
-      tags: {  }
   feed_fia_rss:
     display_plugin: feed
     id: feed_fia_rss
-    display_title: FIA node feed
+    display_title: 'FIA node feed'
     position: 2
     display_options:
       sitename_title: true
@@ -212,8 +225,26 @@ display:
       display_extenders: {  }
     cache_metadata:
       contexts:
+        - 'languages:language_content'
         - 'languages:language_interface'
         - 'user.node_grants:view'
         - user.permissions
       max-age: -1
+      tags: {  }
+  page_fia_admin:
+    display_plugin: page
+    id: page_fia_admin
+    display_title: 'FIA admin page'
+    position: 1
+    display_options:
+      display_extenders: {  }
+      path: admin/config/content/facebook-instant-articles
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url.query_args
+        - 'user.node_grants:view'
+        - user.permissions
       tags: {  }
