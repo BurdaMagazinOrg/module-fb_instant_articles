@@ -11,6 +11,7 @@ use Drupal\views\Plugin\views\filter\FilterPluginBase;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Simple filter that checks if a node implements the FIA custom view mode
@@ -67,13 +68,9 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
    *
    */
   public function query() {
-    parent::query();
 
     $this->enabledNodeBundlesSetValues();
-
-    if (count($this->value)>0) {
-      $this->query->addWhere($this->options['group'], $this->tableAlias.'.type', array_values($this->value), 'in');
-    }
+    parent::query();
   }
 
   /**
@@ -115,7 +112,7 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
        */
       $viewMode = $entityStorage->load($viewModeId);
 
-      if (is_a($viewMode, '\Drupal\Core\Entity\EntityInterface')) {
+      if ($viewMode instanceof EntityInterface) {
         $this->value[] = $id;
       }
     }

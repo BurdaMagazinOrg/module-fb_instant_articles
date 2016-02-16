@@ -10,7 +10,7 @@ function facebook_instant_articles_views_data_alter(array &$data) {
     'filter' => array(
       'title' => t('Valid Facebook instant articles filter'),
       'help' => t('Filter for items that should be listed in the facebook instant articles pages.'),
-      'field' => 'type', // we are actually filtering by type really.s
+      'field' => 'type', // we are actually filtering by type really, so we declare this as the field (is it skipped?)
       'id' => 'validfacebookinstantarticles'
     ),
   );
