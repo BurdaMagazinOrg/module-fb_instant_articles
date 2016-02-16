@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains facebook_instant_articles.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function facebook_instant_articles_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the facebook_instant_articles module.
+    case 'help.page.facebook_instant_articles':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('FB Instant articles RSS feed generator for integration into the FB IA program') . '</p>';
+      return $output;
+
+    default:
+  }
+}
