@@ -98,7 +98,7 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
      * @var string[] nodeTypes
      *   an array of node types that implement our custom view mode
      */
-    $this->value = [];
+    $nodeTypes = [];
     foreach($entityBundleInfo->getBundleInfo('node') as $id=>$bundle) {
       /**
        * @var string $viewModeId
@@ -113,10 +113,19 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
       $viewMode = $entityStorage->load($viewModeId);
 
       if ($viewMode instanceof EntityInterface) {
-        $this->value[] = $id;
+        $nodeTypes[$id] = $id;
       }
     }
 
+    if (count($nodeTypes)>0) {
+      /**
+       * Only set the value and operator if we have some valid node types, so
+       * that we don't break the query.  Leaving them as they are will result
+       * in an empty query, which is good
+       */
+      $this->value = $nodeTypes;
+      $this->operator = "in";
+    }
   }
 
 }
