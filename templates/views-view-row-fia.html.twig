@@ -1,0 +1,81 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display an item in a views FIA (facebook instant articles) feed.
+ *
+ * Available variables:
+ * - options.header.title: RSS item title.
+ * - header.subtitle: RSS item subtitle.
+ * - header.kicker : teaser short text for the article
+ * - header.created : created datetime
+ * - header.modified : modified datetime
+ * - header.link: RSS item link.
+ * - header.figure: a full html markup for a header image (syntax below)
+ * - header.authors : htmls <address> tags for article authors (syntax below)
+ *
+ * - content : HTML content for the article
+ *
+ * - footer : HTML content for the article footer
+ *
+ * The syntax for the figure allows:
+ *   <figure>
+ *       <img src="http://mydomain.com/path/to/img.jpg" />
+ *       <figcaption>This image is amazing</figcaption>
+ *   </figure>
+ *
+ * The Syntac for the author <address>:
+ *      <address>
+ *       <a rel="facebook" href="http://facebook.com/brandon.diamond">Brandon Diamond</a>
+ *       Brandon is a avid zombie hunter.
+ *     </address>
+ *     <address>
+ *       <a>TR Vishwanath</a>
+ *       Vish is a scholar and a gentleman.
+ *     </address>
+ *
+ * datetime="2014-11-11T04:44:16Z">November 11th, 4:44 PM
+ *
+ * @see template_preprocess_views_view_row_rss()
+ *
+ * @ingroup themeable
+ */
+#}
+<article>
+  <header>
+    <!-- The title and subtitle shown in your Instant Article -->
+    <h1>{{ options.header.title }}</h1>
+    {% if options.header.subtitle -%}
+      <h2>{{ options.header.subtitle }}</h2>
+    {% endif %}
+
+    <!-- The date and time when your article was originally published {{ options.header.created }} -->
+    <time class="op-published" datetime="{{ options.header.created|date("Y-d-m\TH:i:s\Z") }}">{{ options.header.created|date("F jS, g:i A") }}</time>
+    <!-- The date and time when your article was last updated {{  header.modified }} -->
+    <time class="op-modified" datetime="{{ options.header.modified|date("Y-d-m\TH:i:s\Z") }}">{{ options.header.modified|date("F jS, g:i A") }}</time>
+
+    <!-- A kicker for your article -->
+    {% if kicker -%}
+      <h3 class="op-kicker">{{ kicker }}</h3>
+    {% endif %}
+
+    {% if options.header.figure -%}
+      <!-- The cover image shown inside your article -->
+      {{ header.figure }}
+    {% endif %}
+
+    {% if options.header.authors -%}
+      <!-- The authors of your article -->
+      {{ options.header.authors }}
+    {% endif %}
+
+  </header>
+
+  {{ row }}
+
+  {% if footer -%}
+    <footer>
+      {{ footer }}
+    </footer>
+  {% endif %}
+
+</article>

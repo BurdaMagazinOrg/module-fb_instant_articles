@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Template\Attribute;
 
 /**
  * Implements hook_help().
@@ -21,4 +22,56 @@ function facebook_instant_articles_help($route_name, RouteMatchInterface $route_
 
     default:
   }
+}
+
+/**
+ * Prepares variables for FIA feed templates.
+ *
+ * Default template: views-view-fia.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - view: A ViewExecutable object.
+ *   - rows: The raw row data.
+ */
+function facebook_instant_articles_preprocess_views_view_fia(&$variables) {
+  GLOBAL $base_url;
+
+  $view  = $variables['view'];
+  $items = $variables['rows'];
+
+  $config = \Drupal::config('system.site');
+
+  if ($view->display_handler->getOption('sitename_title')) {
+    $title = $config->get('name');
+    if ($slogan = $config->get('slogan')) {
+      $title .= ' - ' . $slogan;
+    }
+  }
+  else {
+    $title = $view->getTitle();
+  }
+
+  $variables['items'] = $items;
+
+  $variables['options']['title'] = $title;
+  $variables['options']['link'] = $base_url;
+  $variables['options']['updated'] = gmdate(DATE_RFC2822, REQUEST_TIME);
+  $variables['options']['markup_version'] = 'v1.0';
+
+}
+
+/**
+ * Prepares variables for views FIA item templates.
+ *
+ * Default template: views-view-row-fia.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - row: The raw results rows.
+ */
+function facebook_instant_articles_preprocess_views_view_row_fia(&$variables) {
+  $item = $variables['row'];
+
+  $variables['attributes'] = new Attribute($item);
 }
