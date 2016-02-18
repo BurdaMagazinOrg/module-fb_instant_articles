@@ -64,6 +64,8 @@ class Fia extends StylePluginBase {
    * {@inheritdoc}
    */
   public function render() {
+    GLOBAL $base_url;
+
     if (empty($this->view->rowPlugin)) {
       debug('Drupal\views\Plugin\views\style\Fia: Missing row plugin');
       return;
@@ -82,6 +84,7 @@ class Fia extends StylePluginBase {
       '#rows' => $rows,
     );
     unset($this->view->row_index);
+
     return $build;
   }
 

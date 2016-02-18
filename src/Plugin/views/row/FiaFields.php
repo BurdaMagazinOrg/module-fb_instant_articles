@@ -20,22 +20,55 @@ use Drupal\views\Plugin\views\row\RowPluginBase;
  *   display_types = {"feed"}
  * )
  */
+
 class FiaFields extends RowPluginBase {
 
   /**
    * {@inheritdoc}
    */
   public function render($row) {
-    // Create the OPML item array.
-    $item = array();
+    GLOBAL $base_url;
 
-    $build = array(
+    /**
+     * @var \Drupal\Core\Entity\ContentEntityInterface $entity
+     */
+    $entity = $row->_entity;
+    /**
+     * @var []string $options
+     */
+    $options = $this->options;
+
+    // Create the OPML item array.
+    $item = [];
+    $header = [];
+
+
+    switch (true) {
+      default:
+      case ($entity instanceof Drupal\node\Entity\Node):
+        /**
+         * @var \Drupal\node\Entity\Node $entity
+         */
+        $header['title'] = $entity->getTitle();
+        $header['author'] = $entity->getOwner()->getAccountName();
+        $header['created'] = '@'.$entity->getCreatedTime();
+        $header['modified'] = '@'.$entity->getChangedTime();
+        $header['link'] = $entity->getOriginalId();
+
+        $options['header'] = $header;
+
+        $item = $entity->getTitle();
+    }
+
+    $build = [
       '#theme' => $this->themeFunctions(),
       '#view' => $this->view,
-      '#options' => $this->options,
+      '#options' => $options,
       '#row' => $item,
+      '#header' => $header,
       '#field_alias' => isset($this->field_alias) ? $this->field_alias : '',
-    );
+    ];
+
     return $build;
   }
 

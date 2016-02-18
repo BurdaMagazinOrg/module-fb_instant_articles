@@ -4,14 +4,14 @@
  * Default theme implementation to display an item in a views FIA (facebook instant articles) feed.
  *
  * Available variables:
- * - header_title: RSS item title.
- * - header_subtitle: RSS item subtitle.
- * - header_kicker : teaser short text for the article
- * - header_created : created datetime
- * - header_modified : modified datetime
- * - header_link: RSS item link.
- * - header_figure: a full html markup for a header image (syntax below)
- * - header_authors : htmls <address> tags for article authors (syntax below)
+ * - options.header.title: RSS item title.
+ * - header.subtitle: RSS item subtitle.
+ * - header.kicker : teaser short text for the article
+ * - header.created : created datetime
+ * - header.modified : modified datetime
+ * - header.link: RSS item link.
+ * - header.figure: a full html markup for a header image (syntax below)
+ * - header.authors : htmls <address> tags for article authors (syntax below)
  *
  * - content : HTML content for the article
  *
@@ -33,6 +33,8 @@
  *       Vish is a scholar and a gentleman.
  *     </address>
  *
+ * datetime="2014-11-11T04:44:16Z">November 11th, 4:44 PM
+ *
  * @see template_preprocess_views_view_row_rss()
  *
  * @ingroup themeable
@@ -41,34 +43,34 @@
 <article>
   <header>
     <!-- The title and subtitle shown in your Instant Article -->
-    <h1>{{ header_article }}</h1>
-    {% if header_subtitle -%}
-      <h2>{{ header_subtitle }}</h2>
+    <h1>{{ options.header.title }}</h1>
+    {% if options.header.subtitle -%}
+      <h2>{{ options.header.subtitle }}</h2>
     {% endif %}
 
-    <!-- The date and time when your article was originally published datetime="2014-11-11T04:44:16Z">November 11th, 4:44 PM -->
-    <time class="op-published" datetime="{{ header_created|date("Y-d-m\TH:i:s\Z") }}">{{ header_created|date("F jS, g:i A") }}</time>
-    <!-- The date and time when your article was last updated -->
-    <time class="op-modified" datetime="{{ header_modified|date("Y-d-m\TH:i:s\Z") }}">{{ header_modified|date("F jS, g:i A") }}</time>
+    <!-- The date and time when your article was originally published {{ options.header.created }} -->
+    <time class="op-published" datetime="{{ options.header.created|date("Y-d-m\TH:i:s\Z") }}">{{ options.header.created|date("F jS, g:i A") }}</time>
+    <!-- The date and time when your article was last updated {{  header.modified }} -->
+    <time class="op-modified" datetime="{{ options.header.modified|date("Y-d-m\TH:i:s\Z") }}">{{ options.header.modified|date("F jS, g:i A") }}</time>
 
     <!-- A kicker for your article -->
     {% if kicker -%}
       <h3 class="op-kicker">{{ kicker }}</h3>
     {% endif %}
 
-    <!-- The cover image shown inside your article -->
-    {% if header_figure -%}
-     {{ header_figure }}
+    {% if options.header.figure -%}
+      <!-- The cover image shown inside your article -->
+      {{ header.figure }}
     {% endif %}
 
-    <!-- The authors of your article -->
-    {% if header_authors -%}
-      {{ header_authors }}
+    {% if options.header.authors -%}
+      <!-- The authors of your article -->
+      {{ options.header.authors }}
     {% endif %}
 
   </header>
 
-  {{ content }}
+  {{ row }}
 
   {% if footer -%}
     <footer>

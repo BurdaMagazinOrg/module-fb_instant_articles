@@ -4,10 +4,11 @@
  * Default template for feed displays that use the FIA (facebook instant articles) style.
  *
  * Available variables:
- * - link: The link to the feed (the view path).
- * - markup_version : A facebook meta property value
- * - style : a key matching a style that you have created in the facebook FIA system
- * - items: The feed items themselves.
+ * - options.link: The link to the feed (the view path).
+ * - options.markup_version : A facebook meta property value
+ * - options.style : a key matching a style that you have created in the facebook FIA system
+ *
+ * - rows: The feed items themselves.
  *
  * @see template_preprocess_views_view_rss()
  *
@@ -18,16 +19,16 @@
 <html lang="en" prefix="op: http://media.facebook.com/op#">
 <head>
   <meta charset="utf-8">
-  <meta property="op:markup_version" content="{{markup_version}}">
+  <meta property="op:markup_version" content="{{ options.markup_version }}">
 
   <!-- URL of the web version of this article -->
-  <link rel="canonical" href="{{link}}">
+  <link rel="canonical" href="{{ options.link }}">
 
   <!-- The style to be used for this article -->
   {% if style -%}
-    <meta property="fb:article_style" content="{{ style }}">
+    <meta property="fb:article_style" content="{{ options.style }}">
   {% endif %}
 </head>
 <body>
-{{ items }}
+{{ rows }}
 </body>
