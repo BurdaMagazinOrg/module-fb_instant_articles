@@ -1,8 +1,8 @@
 langcode: en
 status: false
 dependencies:
-  module:
-    - node
+    module:
+        - node
 id: node.facebook_instant_articles_rss
 label: 'Facebook Instant Articles: RSS'
 targetEntityType: node
