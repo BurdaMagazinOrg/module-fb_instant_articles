@@ -7,7 +7,9 @@
 
 namespace Drupal\facebook_instant_articles\Plugin\views\row;
 
-use Drupal\views\Plugin\views\row\RowPluginBase;
+use \Drupal\views\Plugin\views\row\EntityRow;
+use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
 
 /**
  * Renders an RSS item based on fields.
@@ -21,12 +23,31 @@ use Drupal\views\Plugin\views\row\RowPluginBase;
  * )
  */
 
-class FiaFields extends RowPluginBase {
+class FiaFields extends EntityRow {
+
+  /**
+   * {@inheritdoc}
+   *
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   *   The entity manager.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManagerInterface $entity_manager, LanguageManagerInterface $language_manager) {
+    $configuration['entity_type'] = 'node';
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_manager, $language_manager);
+    $this->options['view_mode'] = 'facebook_instant_articles_rss';
+  }
+
 
   /**
    * {@inheritdoc}
    */
   public function render($row) {
+    /**
+     * @var \Drupal\views\ResultRow $row
+     */
+
     GLOBAL $base_url;
 
     /**
@@ -39,25 +60,31 @@ class FiaFields extends RowPluginBase {
     $options = $this->options;
 
     // Create the OPML item array.
-    $item = [];
+    $item = parent::render($row);
     $header = [];
-
 
     switch (true) {
       default:
-      case ($entity instanceof Drupal\node\Entity\Node):
+      case ($entity instanceof \Drupal\node\Entity\Node):
+        $options['row'] = $row;
+
         /**
          * @var \Drupal\node\Entity\Node $entity
          */
-        $header['title'] = $entity->getTitle();
-        $header['author'] = $entity->getOwner()->getAccountName();
-        $header['created'] = '@'.$entity->getCreatedTime();
-        $header['modified'] = '@'.$entity->getChangedTime();
-        $header['link'] = $entity->getOriginalId();
+        $options['title'] = $entity->getTitle();
+        $options['author'] = $entity->getOwner()->getAccountName();
+        $options['created'] = '@'.$entity->getCreatedTime();
+        $options['modified'] = '@'.$entity->getChangedTime();
+        $options['link'] = $entity->toLink();
 
-        $options['header'] = $header;
+        /**
+         * @var \Drupal\user\UserInterface $author
+         */
+        $author = $entity->getOwner();
+        $options['authors'] = [
+          $author->toLink('','canonical',['absolute'=>true])
+        ];
 
-        $item = $entity->getTitle();
     }
 
     $build = [
