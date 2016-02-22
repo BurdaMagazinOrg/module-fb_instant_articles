@@ -92,7 +92,6 @@ class FiaFields extends EntityRow {
       '#view' => $this->view,
       '#options' => $options,
       '#row' => $item,
-      '#header' => $header,
       '#field_alias' => isset($this->field_alias) ? $this->field_alias : '',
     ];
 
