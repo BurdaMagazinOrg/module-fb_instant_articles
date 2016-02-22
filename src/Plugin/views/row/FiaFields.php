@@ -76,14 +76,13 @@ class FiaFields extends EntityRow {
         $options['created'] = '@'.$entity->getCreatedTime();
         $options['modified'] = '@'.$entity->getChangedTime();
         $options['link'] = $entity->toLink();
+        $options['guid'] = $entity->uuid();
 
         /**
          * @var \Drupal\user\UserInterface $author
          */
         $author = $entity->getOwner();
-        $options['authors'] = [
-          $author->toLink('','canonical',['absolute'=>true])
-        ];
+        $options['author'] = $author->toLink('','canonical',['absolute'=>true]);
 
     }
 
