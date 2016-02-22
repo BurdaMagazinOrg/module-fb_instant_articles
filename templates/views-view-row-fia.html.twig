@@ -50,7 +50,7 @@
   <content:encoded>
     <![CDATA[
     <!doctype html>
-    <html lang="en" prefix="op: http://media.facebook.com/op#">
+    <html lang="{{ options.langcode }}" prefix="op: http://media.facebook.com/op#">
     <head>
       <meta charset="utf-8">
       <link rel="canonical" href="http://example.com/article.html">
@@ -76,11 +76,11 @@
         {% endif %}
         {% if options.figure -%}
           <!-- The cover image shown inside your article -->
-          {{ header.figure }}
+          {{ options.figure }}
         {% endif %}
         {% if options.author -%}
           <!-- The author of your article -->
-          <address>{{  author }}</address>
+          <address>{{ options.author }}</address>
         {% endif %}
 
       </header>

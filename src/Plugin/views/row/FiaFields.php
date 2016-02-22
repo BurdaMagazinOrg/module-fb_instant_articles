@@ -61,7 +61,8 @@ class FiaFields extends EntityRow {
 
     // Create the OPML item array.
     $item = parent::render($row);
-    $header = [];
+
+    $options['langcode'] = \Drupal::languageManager()->getCurrentLanguage()->getId();
 
     switch (true) {
       default:
