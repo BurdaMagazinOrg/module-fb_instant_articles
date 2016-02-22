@@ -5,13 +5,13 @@
  *
  * Available variables:
  * - options.title: RSS item title.
- * - header.subtitle: RSS item subtitle.
- * - header.kicker : teaser short text for the article
- * - header.created : created datetime
- * - header.modified : modified datetime
- * - header.link: RSS item link.
- * - header.figure: a full html markup for a header image (syntax below)
- * - header.authors : htmls <address> tags for article authors (syntax below)
+ * - options.subtitle: RSS item subtitle.
+ * - options.kicker : teaser short text for the article
+ * - options.created : created datetime
+ * - options.modified : modified datetime
+ * - options.link: RSS item link.
+ * - options.figure: a full html markup for a header image (syntax below)
+ * - options.authors : htmls <address> tags for article authors (syntax below)
  *
  * - content : HTML content for the article
  *
@@ -42,7 +42,7 @@
 #}
 <item>
   <title>{{ options.title }}</title>
-  <link>{{  options.link }}</link>
+  <link>{{  options.link.url }}</link>
   <guid>{{ options.guid }}</guid>
   <pubDate>{{ options.created|date("Y-d-m\TH:i:s\Z") }}</pubDate>
   <author>{{  options.author }}</author>
@@ -50,10 +50,10 @@
   <content:encoded>
     <![CDATA[
     <!doctype html>
-    <html lang="en" prefix="op: http://media.facebook.com/op#">
+    <html lang="{{ options.langcode }}" prefix="op: http://media.facebook.com/op#">
     <head>
       <meta charset="utf-8">
-      <link rel="canonical" href="http://example.com/article.html">
+      <link rel="canonical" href="{{ options.link.url }}">
       <meta property="op:markup_version" content="v1.0">
     </head>
     <body>
@@ -76,11 +76,11 @@
         {% endif %}
         {% if options.figure -%}
           <!-- The cover image shown inside your article -->
-          {{ header.figure }}
+          {{ options.figure }}
         {% endif %}
         {% if options.author -%}
           <!-- The author of your article -->
-          <address>{{  author }}</address>
+          <address>{{ options.author }}</address>
         {% endif %}
 
       </header>

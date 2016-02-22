@@ -61,7 +61,8 @@ class FiaFields extends EntityRow {
 
     // Create the OPML item array.
     $item = parent::render($row);
-    $header = [];
+
+    $options['langcode'] = \Drupal::languageManager()->getCurrentLanguage()->getId();
 
     switch (true) {
       default:
@@ -75,14 +76,14 @@ class FiaFields extends EntityRow {
         $options['author'] = $entity->getOwner()->getAccountName();
         $options['created'] = '@'.$entity->getCreatedTime();
         $options['modified'] = '@'.$entity->getChangedTime();
-        $options['link'] = $entity->toLink();
+        $options['link'] = $entity->toLink(NULL, 'canonical', ['absolute'=>true]);
         $options['guid'] = $entity->uuid();
 
         /**
          * @var \Drupal\user\UserInterface $author
          */
         $author = $entity->getOwner();
-        $options['author'] = $author->toLink('','canonical',['absolute'=>true]);
+        $options['author'] = $author->toLink(NULL,'canonical',['absolute'=>true]);
 
     }
 
@@ -91,7 +92,6 @@ class FiaFields extends EntityRow {
       '#view' => $this->view,
       '#options' => $options,
       '#row' => $item,
-      '#header' => $header,
       '#field_alias' => isset($this->field_alias) ? $this->field_alias : '',
     ];
 
