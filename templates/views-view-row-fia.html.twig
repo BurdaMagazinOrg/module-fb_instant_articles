@@ -42,7 +42,7 @@
 #}
 <item>
   <title>{{ options.title }}</title>
-  <link>{{  options.link }}</link>
+  <link>{{  options.link.url }}</link>
   <guid>{{ options.guid }}</guid>
   <pubDate>{{ options.created|date("Y-d-m\TH:i:s\Z") }}</pubDate>
   <author>{{  options.author }}</author>
@@ -53,7 +53,7 @@
     <html lang="{{ options.langcode }}" prefix="op: http://media.facebook.com/op#">
     <head>
       <meta charset="utf-8">
-      <link rel="canonical" href="http://example.com/article.html">
+      <link rel="canonical" href="{{ options.link.url }}">
       <meta property="op:markup_version" content="v1.0">
     </head>
     <body>
