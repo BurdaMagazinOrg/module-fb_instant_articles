@@ -16,4 +16,4 @@ There is an administration page located at /admin/config/facebook_instant_articl
 In this page you can set
 
 - pages id: A facebook provide id, that is used to insert a <meta> tag
-into all Drupal pages that will look like <meta property="fb:pages" content=""
+into all Drupal pages that will look like <meta property="fb:pages" content="{id goes here}" />

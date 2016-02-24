@@ -24,6 +24,12 @@ function facebook_instant_articles_help($route_name, RouteMatchInterface $route_
   }
 }
 
+/**
+ * Implements hook_page_attachments_alter
+ *
+ * @param array $page
+ *   page render array
+ */
 function facebook_instant_articles_page_attachments_alter(array &$page) {
 
   /**
@@ -37,6 +43,8 @@ function facebook_instant_articles_page_attachments_alter(array &$page) {
     /**
      * If there is a stored configuration for the FIA Application ID
      * then add a page <meta> tag to all pages showing the id
+     *
+     * <meta property="fb:pages" content="{id goes here}" />
      */
 
     $fia_pagesid = $config->get('pagesid');
