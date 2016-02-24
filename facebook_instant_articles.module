@@ -39,7 +39,7 @@ function facebook_instant_articles_page_attachments_alter(array &$page) {
      * then add a page <meta> tag to all pages showing the id
      */
 
-    $fia_pagesid = git$config->get('pagesid');
+    $fia_pagesid = $config->get('pagesid');
     if ($fia_pagesid != '') {
       $meta_fia_pagesid = [
         '#tag' => 'meta',
