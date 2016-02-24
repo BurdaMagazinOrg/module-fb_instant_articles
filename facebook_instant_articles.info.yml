@@ -7,5 +7,4 @@ features: true
 dependencies:
     0: node
     1: views
-    2: facebook_instant_articles
-    4: user
+    2: user
