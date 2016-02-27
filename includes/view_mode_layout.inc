@@ -110,8 +110,8 @@ function facebook_instant_articles_add_regions(&$form, &$form_state) {
     '#prefix' => '<div class="limit-float">',
     '#suffix' => '</div><div class="clearfix"></div>',
     '#attributes' => array(
-      'alt' => t('Enter a number to limit the number of items or \'delta\' to print a specific delta (usually configured in views or found in entity->ds_delta). Leave empty to display them all. Note that depending on the formatter settings, this option might not always work.'),
-      'title' => t('Enter a number to limit the number of items or \'delta\' to print a specific delta (usually configured in views or found in entity->ds_delta). Leave empty to display them all. Note that depending on the formatter settings, this option might not always work.'),
+      'alt' => t('Enter a number to limit the number of items or \'delta\' to print a specific delta (usually configured in views or found in entity->delta). Leave empty to display them all. Note that depending on the formatter settings, this option might not always work.'),
+      'title' => t('Enter a number to limit the number of items or \'delta\' to print a specific delta (usually configured in views or found in entity->delta). Leave empty to display them all. Note that depending on the formatter settings, this option might not always work.'),
     ),
   );
 
@@ -442,8 +442,7 @@ function facebook_instant_articles_field_ui_fields($entity_type, $bundle, $view_
 function facebook_instant_articles_get_fields($entity_type, $cache = TRUE) {
   $fields = array('node' => array('title' => array(
     'title' => t('Title'),
-    'field_type' => DS_FIELD_TYPE_FUNCTION,
-    'function' => 'ds_render_field',
+    'field_type' => 2,
     'properties' => array(
       'entity_render_key' => 'title',
       'settings' => array(
@@ -476,8 +475,8 @@ function facebook_instant_articles_get_field_settings($entity_type, $bundle, $vi
     }
     else {
       ctools_include('export');
-      $ds_field_settings = ctools_export_crud_load_all('facebook_instant_articles_field_settings');
-      foreach ($ds_field_settings as $layout => $layout_settings) {
+      $fbia_field_settings = ctools_export_crud_load_all('facebook_instant_articles_field_settings');
+      foreach ($fbia_field_settings as $layout => $layout_settings) {
         // Do not store configuration when the field settings is disabled.
         if (!empty($layout_settings->disabled)) {
           continue;
@@ -576,7 +575,7 @@ function facebook_instant_articles_field_ui_fields_save($form, &$form_state) {
     drupal_write_record('facebook_instant_articles_field_settings', $record);
   }
 
-  // Clear the ds_fields cache.
+  // Clear the field cache.
   cache_clear_all('facebook_instant_articles_fields:', 'cache', TRUE);
   cache_clear_all('facebook_instant_articles_field_settings', 'cache');
 }

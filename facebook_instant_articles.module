@@ -329,11 +329,11 @@ function facebook_instant_articles_get_node_layout_settings($bundle_name) {
   ctools_include('export');
   $export_id =  'node|' . $bundle_name . '|facebook_instant_article';
 
-  $ds_layout_settings = ctools_export_crud_load_all('facebook_instant_articles_layout_settings');
+  $layout_settings = ctools_export_crud_load_all('facebook_instant_articles_layout_settings');
 
   $layout = new stdClass();
-  if (isset($ds_layout_settings[$export_id])) {
-    $layout = $ds_layout_settings[$export_id];
+  if (isset($layout_settings[$export_id])) {
+    $layout = $layout_settings[$export_id];
   }
   return $layout;
 }
