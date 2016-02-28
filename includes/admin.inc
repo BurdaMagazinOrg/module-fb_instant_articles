@@ -31,6 +31,12 @@ function facebook_instant_articles_admin_settings_form() {
     '#default_value' => variable_get('facebook_instant_articles_channel_language', 'en-gb'),
     '#size' => 10,
   );
+  $form['general']['facebook_instant_articles_style'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Article Style'),
+    '#default_value' => variable_get('facebook_instant_articles_style', 'default'),
+    '#size' => 50,
+  );
   $form = system_settings_form($form);
 
   return $form;

@@ -86,6 +86,7 @@
     <meta charset="utf-8">
     <link rel="canonical" href="<?php print $node_url; ?>">
     <meta property="op:markup_version" content="v1.0">
+    <meta property="fb:article_style" content="<?php print $facebook_instant_article_style; ?>">
   </head>
   <body>
     <article>
