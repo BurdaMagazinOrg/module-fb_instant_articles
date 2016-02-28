@@ -5,6 +5,8 @@
  */
 
 /**
+ * Variables that can be used in this template.
+ *
  * @see theme_field()
  *
  * Available variables:
