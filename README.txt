@@ -1,11 +1,12 @@
 INTRODUCTION
 ------------
 
-The Facebook Instant Articles module allows administrators to create an RSS feed compatible
-with the Facebook Instant Articles specification. The module provides a new View Mode for
-content type where administrators can map Drupal fields with FB Instant Article formats.
+The Facebook Instant Articles module allows administrators to create an RSS feed
+compatible with the Facebook Instant Articles specification. The module provides
+a new View Mode for content type where administrators can map Drupal fields with
+ FB Instant Article formats.
 
- * FB Instant Articles specification: https://developers.facebook.com/docs/instant-articles
+ * FB Instant Article doc: https://developers.facebook.com/docs/instant-articles
 
  * For a full description of the module, visit the project page:
    https://www.drupal.org/node/2614462
@@ -31,13 +32,14 @@ CONFIGURATION
    enabling it on the Facebook Instant Articles vertical tab. Select the option:
    "Include Content Type in Facebook Instant Articles feed".
 
- * Once enabled go to Manage Display on your Content Type and on the view mode Facebook
-   Instant Articles. There you can map your fields to FB Instant Article compatible
-   formats and place them in the correct regions.
+ * Once enabled go to Manage Display on your Content Type and on the view mode
+ Facebook Instant Articles. There you can map your fields to FB Instant Article
+  compatible formats and place them in the correct regions.
 
  * Access /fbinstant.rss of your site to view the feed.
 
- * Configure the feed settings in Administration » Web Services » Facebook Instant Articles Settings:
+ * Configure the feed settings in Administration » Web Services »
+ Facebook Instant Articles Settings:
 
    - You can set the channel title, description and language.
 

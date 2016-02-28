@@ -6,8 +6,6 @@
 
 /**
  * Extension for SimpleXMLElement.
- *
- * @author Vin Gardner
  */
 class FacebookInstantArticlesSimpleXMLElement extends SimpleXMLElement {
   /**
@@ -62,4 +60,5 @@ class FacebookInstantArticlesSimpleXMLElement extends SimpleXMLElement {
       }
     }
   }
+
 }

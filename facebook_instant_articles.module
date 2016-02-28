@@ -12,7 +12,7 @@ function facebook_instant_articles_menu() {
   $items['fbinstant.rss'] = array(
     'page callback' => 'facebook_instant_articles_rss_page',
     'file' => 'includes/rss.inc',
-    'access arguments' => array('access content')
+    'access arguments' => array('access content'),
   );
 
   // Top level configuration page.
@@ -40,7 +40,7 @@ function facebook_instant_articles_menu() {
  */
 function facebook_instant_articles_help($path, $arg) {
   switch ($path) {
-    // Main module help for the block module
+    // Main module help for the block module.
     case 'admin/help#facebook_instant_articles':
       $filepath = dirname(__FILE__) . '/README.txt';
       if (file_exists($filepath)) {
@@ -49,6 +49,7 @@ function facebook_instant_articles_help($path, $arg) {
       $output = '<pre>' . $readme . '</pre>';
       return $output;
     break;
+
   }
 }
 
@@ -84,8 +85,7 @@ function facebook_instant_articles_form_node_type_form_alter(&$form, &$form_stat
 
     // Previously checked the product checkbox?
     $previously_checked = (isset($form_state['values']) && $form_state['values']['facebook_instant_articles']['fb_instant_enabled']);
-    // Have a stored product id?
-    //$product_id = bazaarvoice_products_get_entity_type_product_id('node', $form['#node_type']->type);
+
     // Build the product checkbox.
     $form['facebook_instant_articles']['fb_instant_enabled'] = array(
       '#type' => 'checkbox',
@@ -95,8 +95,6 @@ function facebook_instant_articles_form_node_type_form_alter(&$form, &$form_stat
       '#default_value' => ($previously_checked || $fb_instant_enabled) ? TRUE : FALSE,
     );
 
-    // Add custom validate.
-    //$form['#validate'][] = 'bazaarvoice_products_node_type_form_validate';
     // Add custom submit.
     $form['#submit'][] = 'facebook_instant_articles_node_type_form_submit';
   }
@@ -188,8 +186,6 @@ function facebook_instant_articles_get_article_entity_types() {
  *   The entity type.
  * @param string $bundle
  *   The entity bundle.
- * @param string $product_id_field
- *   The field name.
  */
 function facebook_instant_articles_set_entity_type($type, $bundle) {
   db_insert('facebook_instant_articles_entity_types')
@@ -327,7 +323,7 @@ function facebook_instant_articles_form_alter(&$form, &$form_state, $form_id) {
  */
 function facebook_instant_articles_get_node_layout_settings($bundle_name) {
   ctools_include('export');
-  $export_id =  'node|' . $bundle_name . '|facebook_instant_article';
+  $export_id = 'node|' . $bundle_name . '|facebook_instant_article';
 
   $layout_settings = ctools_export_crud_load_all('facebook_instant_articles_layout_settings');
 
@@ -345,11 +341,11 @@ function facebook_instant_articles_field_formatter_info() {
   $formats = array();
   $formats['fbia_subtitle_formatter'] = array(
     'label' => t('FBIA Subtitle'),
-    'field types' => array('text', 'text_with_summary')
+    'field types' => array('text', 'text_with_summary'),
   );
   $formats['fbia_kicker_formatter'] = array(
     'label' => t('FBIA Kicker'),
-    'field types' => array('text', 'text_with_summary')
+    'field types' => array('text', 'text_with_summary'),
   );
   $formats['fbia_blockquote_formatter'] = array(
     'label' => t('FBIA Blockquote'),
@@ -369,7 +365,7 @@ function facebook_instant_articles_field_formatter_info() {
   );
   $formats['fbia_author_formatter'] = array(
     'label' => t('FBIA Author'),
-    'field types' => array('text', 'text_long', 'text_with_summary', 'list_text')
+    'field types' => array('text', 'text_long', 'text_with_summary', 'list_text'),
   );
   $formats['fbia_ad_formatter'] = array(
     'label' => t('FBIA Ad'),
