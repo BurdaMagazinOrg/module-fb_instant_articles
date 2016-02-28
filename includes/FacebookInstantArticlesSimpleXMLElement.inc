@@ -14,7 +14,7 @@ class FacebookInstantArticlesSimpleXMLElement extends SimpleXMLElement {
    * @param string $cdata_text
    *    The CDATA value to add.
    */
-  private function addCData($cdata_text) {
+  private function addCdata($cdata_text) {
     $node = dom_import_simplexml($this);
     if (($no = $node->ownerDocument) && is_string($cdata_text)) {
       $node->appendChild($no->createCDATASection($cdata_text));
@@ -32,9 +32,9 @@ class FacebookInstantArticlesSimpleXMLElement extends SimpleXMLElement {
    * @return object
    *   The child element.
    */
-  public function addChildCData($name, $cdata_text) {
+  public function addChildCdata($name, $cdata_text) {
     $child = $this->addChild($name);
-    $child->addCData($cdata_text);
+    $child->addCdata($cdata_text);
     return $child;
   }
 
@@ -44,12 +44,12 @@ class FacebookInstantArticlesSimpleXMLElement extends SimpleXMLElement {
    * @param SimpleXMLElement $append
    *    XMLElement to append to.
    */
-  public function appendXML(SimpleXMLElement $append) {
+  public function appendXml(SimpleXMLElement $append) {
     if ($append) {
       if (strlen(trim((string) $append)) == 0) {
         $xml = $this->addChild($append->getName());
         foreach ($append->children() as $child) {
-          $xml->appendXML($child);
+          $xml->appendXml($child);
         }
       }
       else {
