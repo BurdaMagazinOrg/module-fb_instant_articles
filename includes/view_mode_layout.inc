@@ -250,7 +250,7 @@ function facebook_instant_articles_get_layout_info() {
  * @param string $subkey
  *   The subkey to sort by.
  */
-function facebook_instant_articles_sort_fields(array $a, string $subkey) {
+function facebook_instant_articles_sort_fields(array $a, $subkey) {
   foreach ($a as $k => $v) {
     if (isset($v[$subkey])) {
       $b[$k] = $v[$subkey];
@@ -298,15 +298,15 @@ function facebook_instant_articles_field_valid($key, $field, &$form_state, $view
  * @param string $entity_type
  *   The name of the entity type.
  * @param string $bundle
- *   The name of the bundle
+ *   The name of the bundle.
  * @param string $view_mode
- *   The name of the view_mode
+ *   The name of the view_mode.
  * @param array $form
  *   A collection of form properties.
  * @param array $form_state
  *   A collection of form_state properties.
  */
-function facebook_instant_articles_field_ui_fields($entity_type, $bundle, $view_mode, &$form, &$form_state) {
+function facebook_instant_articles_field_ui_fields($entity_type, $bundle, $view_mode, array &$form, array &$form_state) {
 
   // Do not add the fields if there is no layout.
   if (!isset($form['#fbia_layout'])) {
@@ -410,9 +410,10 @@ function facebook_instant_articles_field_ui_fields($entity_type, $bundle, $view_
  *
  * @param string $entity_type
  *   The name of the entity.
- * @param boolean $cache
+ * @param bool $cache
  *   Whether we need to get the fields from cache or not.
- * @return
+ *
+ * @return array
  *   Collection of fields.
  */
 function facebook_instant_articles_get_fields($entity_type, $cache = TRUE) {
@@ -422,25 +423,25 @@ function facebook_instant_articles_get_fields($entity_type, $cache = TRUE) {
         'title' => t('Title'),
         'field_type' => 2,
         'properties' => array(
-            'entity_render_key' => 'title',
-            'settings' => array(
-              'link' => array(
-                'type' => 'select',
-                'options' => array('no', 'yes'),
-              ),
-              'wrapper' => array(
-                'type' => 'textfield',
-                'description' => t('Eg: h1, h2, p'),
-              ),
-              'class' => array(
-                'type' => 'textfield',
-                'description' => t('Put a class on the wrapper. Eg: block-title'),
-              ),
+          'entity_render_key' => 'title',
+          'settings' => array(
+            'link' => array(
+              'type' => 'select',
+              'options' => array('no', 'yes'),
             ),
+            'wrapper' => array(
+              'type' => 'textfield',
+              'description' => t('Eg: h1, h2, p'),
+            ),
+            'class' => array(
+              'type' => 'textfield',
+              'description' => t('Put a class on the wrapper. Eg: block-title'),
+            ),
+          ),
           'default' => array('wrapper' => 'h2', 'link' => 0, 'class' => ''),
         ),
       ),
-    )
+    ),
   );
   return $fields[$entity_type];
 }
@@ -451,10 +452,11 @@ function facebook_instant_articles_get_fields($entity_type, $cache = TRUE) {
  * @param string $entity_type
  *   The name of the entity.
  * @param string $bundle
- *   The name of bundle (ie, page or story for node types, profile for users)
+ *   The name of bundle (ie, page or story for node types, profile for users).
  * @param string $view_mode
  *   The name of view mode.
- * @return
+ *
+ * @return array
  *   Stored field settings.
  */
 function facebook_instant_articles_get_field_settings($entity_type, $bundle, $view_mode, $default = TRUE) {

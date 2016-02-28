@@ -49,7 +49,7 @@ function facebook_instant_articles_help($path, $arg) {
         $readme = file_get_contents($filepath);
       }
       $output = '<pre>' . $readme . '</pre>';
-    break;
+      break;
 
   }
   return $output;

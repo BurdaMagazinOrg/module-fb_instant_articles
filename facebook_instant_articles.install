@@ -152,4 +152,3 @@ function facebook_instant_articles_schema() {
 
   return $schema;
 }
-
