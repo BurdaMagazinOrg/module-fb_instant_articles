@@ -96,7 +96,7 @@ function facebook_instant_articles_add_regions(&$form, &$form_state) {
     '#default_value' => 'hidden',
     '#attributes' => array(
       'class' => array('ds-field-region'),
-    )
+    ),
   );
 
   $limit_items = array(
@@ -113,7 +113,7 @@ function facebook_instant_articles_add_regions(&$form, &$form_state) {
     ),
   );
 
-   // Update existing rows by changing rowHandler and adding regions.
+  // Update existing rows by changing rowHandler and adding regions.
   foreach (element_children($table) as $name) {
     $row = &$table[$name];
     $row['#js_settings'] = array('rowHandler' => 'facebookInstantArticles');
@@ -134,34 +134,31 @@ function facebook_instant_articles_add_regions(&$form, &$form_state) {
     }
 
     // Limit items.
-      $field_info = field_info_field($name);
-      if (isset($field_info['cardinality']) && $field_info['cardinality'] != 1 && $view_mode != 'form') {
-        $row['format']['type']['#prefix'] = '<div class="limit-float">';
-        $row['format']['type']['#suffix'] = '</div>';
-        $row['format']['limit'] = $limit_items;
-        $row['format']['limit']['#default_value'] = (isset($layout->settings['limit']) && isset($layout->settings['limit'][$name])) ? $layout->settings['limit'][$name] : '#';
-      }
-
-      // Add region.
-      $split = ($view_mode != 'form') ? 7 : 6;
-      if ($row['#row_type'] == 'group' && $view_mode == 'form') {
-        $split = ($view_mode != 'form') ? 8 : 7;
-      }
-
-      $second = array_splice($row, $split);
-      $row['region'] = $region;
-      $row['region']['#default_value'] = (isset($layout->settings['fields'][$name]) && isset($region_options[$layout->settings['fields'][$name]])) ? $layout->settings['fields'][$name] : 'hidden';
-
-      $row = array_merge($row, $second);
+    $field_info = field_info_field($name);
+    if (isset($field_info['cardinality']) && $field_info['cardinality'] != 1 && $view_mode != 'form') {
+      $row['format']['type']['#prefix'] = '<div class="limit-float">';
+      $row['format']['type']['#suffix'] = '</div>';
+      $row['format']['limit'] = $limit_items;
+      $row['format']['limit']['#default_value'] = (isset($layout->settings['limit']) && isset($layout->settings['limit'][$name])) ? $layout->settings['limit'][$name] : '#';
     }
+
+    // Add region.
+    $split = ($view_mode != 'form') ? 7 : 6;
+    if ($row['#row_type'] == 'group' && $view_mode == 'form') {
+      $split = ($view_mode != 'form') ? 8 : 7;
+    }
+
+    $second = array_splice($row, $split);
+    $row['region'] = $region;
+    $row['region']['#default_value'] = (isset($layout->settings['fields'][$name]) && isset($region_options[$layout->settings['fields'][$name]])) ? $layout->settings['fields'][$name] : 'hidden';
+
+    $row = array_merge($row, $second);
+  }
   return $form;
 }
 
 /**
  * Returns the region to which a row in the Field UI screen belongs.
- *
- * @param array $row
- *   The current row that is being rendered in the Field UI screen.
  */
 function facebook_instant_articles_field_ui_row_region($row) {
   return isset($row['region']['#value']) ? $row['region']['#value'] : 'hidden';
@@ -231,28 +228,29 @@ function facebook_instant_articles_field_ui_layouts_save($form, &$form_state) {
  * Get Display Suite layouts.
  */
 function facebook_instant_articles_get_layout_info() {
-  return array('facebook_instant_article' => array(
-            'label' => t('Facebook Instant Article'),
-            'path' => "",
-            'regions' => array(
-              'header' => t('Header'),
-              'body' => t('Body'),
-              'footer' => t('Footer')
-            ),
-            'image' => 1
-          )
-        );
+  return array(
+    'facebook_instant_article' => array(
+      'label' => t('Facebook Instant Article'),
+      'path' => "",
+      'regions' => array(
+        'header' => t('Header'),
+        'body' => t('Body'),
+        'footer' => t('Footer'),
+      ),
+      'image' => 1,
+    ),
+  );
 }
 
 /**
  * Utility function to sort a multidimensional array by a value in a sub-array.
  *
- * @param $a
+ * @param array $a
  *   The array to sort.
- * @param $subkey
+ * @param string $subkey
  *   The subkey to sort by.
  */
-function facebook_instant_articles_sort_fields($a, $subkey) {
+function facebook_instant_articles_sort_fields(array $a, string $subkey) {
   foreach ($a as $k => $v) {
     if (isset($v[$subkey])) {
       $b[$k] = $v[$subkey];
@@ -297,15 +295,15 @@ function facebook_instant_articles_field_valid($key, $field, &$form_state, $view
 /**
  * Add the fields to the Field UI form.
  *
- * @param $entity_type
+ * @param string $entity_type
  *   The name of the entity type.
- * @param $bundle
+ * @param string $bundle
  *   The name of the bundle
- * @param $view_mode
+ * @param string $view_mode
  *   The name of the view_mode
- * @param $form
+ * @param array $form
  *   A collection of form properties.
- * @param $form_state
+ * @param array $form_state
  *   A collection of form_state properties.
  */
 function facebook_instant_articles_field_ui_fields($entity_type, $bundle, $view_mode, &$form, &$form_state) {
@@ -331,12 +329,6 @@ function facebook_instant_articles_field_ui_fields($entity_type, $bundle, $view_
     'hidden' => t('<Hidden>'),
   );
   drupal_alter('facebook_instant_articles_label_options', $field_label_options);
-
-  // Regions for fields.
-  $field_regions = array();
-  if (isset($form['#fbia_layout']->settings['fields'])) {
-    $field_regions = $form['#fbia_layout']->settings['fields'];
-  }
 
   foreach ($fields as $key => $field) {
 
@@ -413,42 +405,57 @@ function facebook_instant_articles_field_ui_fields($entity_type, $bundle, $view_
   $form['#submit'][] = 'facebook_instant_articles_field_ui_fields_save';
 }
 
- /**
+/**
  * Get all fields.
  *
- * @param $entity_type
+ * @param string $entity_type
  *   The name of the entity.
- * @param $cache
+ * @param boolean $cache
  *   Whether we need to get the fields from cache or not.
  * @return
  *   Collection of fields.
  */
 function facebook_instant_articles_get_fields($entity_type, $cache = TRUE) {
-  $fields = array('node' => array('title' => array(
-    'title' => t('Title'),
-    'field_type' => 2,
-    'properties' => array(
-      'entity_render_key' => 'title',
-      'settings' => array(
-        'link' => array('type' => 'select', 'options' => array('no', 'yes')),
-        'wrapper' => array('type' => 'textfield', 'description' => t('Eg: h1, h2, p')),
-        'class' => array('type' => 'textfield', 'description' => t('Put a class on the wrapper. Eg: block-title')),
+  $fields = array(
+    'node' => array(
+      'title' => array(
+        'title' => t('Title'),
+        'field_type' => 2,
+        'properties' => array(
+            'entity_render_key' => 'title',
+            'settings' => array(
+              'link' => array(
+                'type' => 'select',
+                'options' => array('no', 'yes'),
+              ),
+              'wrapper' => array(
+                'type' => 'textfield',
+                'description' => t('Eg: h1, h2, p'),
+              ),
+              'class' => array(
+                'type' => 'textfield',
+                'description' => t('Put a class on the wrapper. Eg: block-title'),
+              ),
+            ),
+          'default' => array('wrapper' => 'h2', 'link' => 0, 'class' => ''),
+        ),
       ),
-      'default' => array('wrapper' => 'h2', 'link' => 0, 'class' => ''),
     )
-  )));
+  );
   return $fields[$entity_type];
 }
 
 /**
  * Get the field settings.
  *
- * @param $entity_type
+ * @param string $entity_type
  *   The name of the entity.
- * @param $bundle
+ * @param string $bundle
  *   The name of bundle (ie, page or story for node types, profile for users)
- * @param $view_mode
+ * @param string $view_mode
  *   The name of view mode.
+ * @return
+ *   Stored field settings.
  */
 function facebook_instant_articles_get_field_settings($entity_type, $bundle, $view_mode, $default = TRUE) {
   static $field_settings = NULL;
@@ -504,7 +511,7 @@ function facebook_instant_articles_field_ui_fields_save($form, &$form_state) {
 
   // Save settings for each field.
   $fields = $form['#fbia_fields'];
-  foreach ($fields as $key => $field) {
+  foreach ($fields as $field) {
 
     // Field settings.
     $field_values = $form_state['values']['fields'][$field];
@@ -533,7 +540,7 @@ function facebook_instant_articles_field_ui_fields_save($form, &$form_state) {
 
   // Save the record.
   if (!empty($field_settings)) {
-    $record = new stdClass;
+    $record = new stdClass();
     $record->id = $form['#export_id'];
     $record->entity_type = $entity_type;
     $record->bundle = $bundle;
