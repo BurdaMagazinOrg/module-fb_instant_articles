@@ -13,6 +13,13 @@ function facebook_instant_articles_admin_settings_form() {
     '#title' => t('General Settings'),
     '#collapsible' => TRUE,
   );
+  $form['general']['facebook_instant_articles_page_id'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Article Page Id'),
+    '#default_value' => variable_get('facebook_instant_articles_page_id', ''),
+    '#description' => t('Includes the meta tag to claim your domain.'),
+    '#size' => 30,
+  );
   $form['general']['facebook_instant_articles_channel_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Channel Title'),
