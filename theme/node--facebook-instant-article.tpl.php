@@ -84,7 +84,7 @@
 <html lang="en" prefix="op: http://media.facebook.com/op#">
   <head>
     <meta charset="utf-8">
-    <link rel="canonical" href="<?php print $node_url; ?>">
+    <link rel="canonical" href="<?php print $canonical_url; ?>">
     <meta property="op:markup_version" content="v1.0">
     <meta property="fb:article_style" content="<?php print $facebook_instant_article_style; ?>">
   </head>
