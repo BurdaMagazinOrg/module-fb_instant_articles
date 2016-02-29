@@ -231,8 +231,10 @@ function facebook_instant_articles_delete_entity_type($type, $bundle) {
 function facebook_instant_articles_get_article_nodes() {
   $nodes = array();
   $entity_types = facebook_instant_articles_get_article_entity_types();
-  foreach ($entity_types['node'] as $content_type => $entity_information) {
-    $nodes += node_load_multiple(array(), array('type' => $content_type, 'status' => 1));
+  if (isset($entity_types['node'])) {
+    foreach ($entity_types['node'] as $content_type => $entity_information) {
+      $nodes += node_load_multiple(array(), array('type' => $content_type, 'status' => 1));
+    }
   }
   return $nodes;
 }

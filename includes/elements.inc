@@ -160,7 +160,7 @@ function facebook_instant_articles_field_format_list_element($items, $settings) 
  */
 function facebook_instant_articles_field_format_video_element($items, $settings) {
   $element = array();
-  //exit(print_r($items));
+
   foreach ($items as $delta => $item) {
     $element[$delta]['#markup'] = '<figure><video><source src="' . file_create_url($item['uri']) . '" type="' . $item['filemime'] . '" /></video></figure>';
   }
