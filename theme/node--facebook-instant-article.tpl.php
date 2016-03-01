@@ -92,6 +92,8 @@
     <article>
       <header>
         <?php print render($facebook_instant_article_header); ?>
+        <?php print $published; ?>
+        <?php print $modified; ?>
       </header>
 
       <?php if (!empty($facebook_instant_article_body)): ?>

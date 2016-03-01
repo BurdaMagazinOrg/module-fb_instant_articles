@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_help().
+ * Implements hook_menu().
  */
 function facebook_instant_articles_menu() {
   // RSS Endpoint.
@@ -283,6 +283,11 @@ function facebook_instant_articles_preprocess_node(&$vars) {
 
     foreach ($regions as $region => $fields) {
       foreach ($fields as $field) {
+
+        if (!isset($vars['content'][$field])) {
+          continue;
+        }
+
         $field_array = $vars['content'][$field];
 
         // TODO: Make title field format configurable.
@@ -300,6 +305,8 @@ function facebook_instant_articles_preprocess_node(&$vars) {
     $vars['facebook_instant_article_style'] = variable_get('facebook_instant_articles_style', 'default');
 
     $vars['canonical_url'] = url('node/' . $vars['nid'], array('absolute' => TRUE));
+    $vars['published'] = facebook_instant_articles_time_element($vars['created'], 'op-published');
+    $vars['modified'] = facebook_instant_articles_time_element($vars['changed'], 'op-modified');
 
     $vars['theme_hook_suggestions'][] = 'node__facebook_instant_article';
   }
@@ -705,4 +712,18 @@ function facebook_instant_articles_cleanup_view_mode_formatters(&$form) {
       }
     }
   }
+}
+
+/**
+ * Format time elements.
+ */
+function facebook_instant_articles_time_element($timestamp, $class) {
+  $class = ' class="' . $class . '"';
+
+  $date = new DateTime("@$timestamp");
+  $datetime = ' datetime="' . $date->format(DateTime::ATOM) . '"';
+  $text_time = $date->format('F jS, g:i A');
+  $element = '<time' . $class . $datetime . '>' . $text_time . '</time>';
+
+  return $element;
 }
