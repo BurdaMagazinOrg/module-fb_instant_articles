@@ -1,0 +1,8 @@
+name = 'Facebook instant articles'
+description = 'FB Instant articles RSS feed generator for integration into the FB IA program'
+package = Facebook
+core = 7.x
+
+dependencies[] = node
+dependencies[] = views
+dependencies[] = user
