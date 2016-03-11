@@ -44,7 +44,6 @@ function facebook_instant_articles_html_head_alter(&$head_elements) {
   }
 }
 
-
 /**
  * Implements hook_menu().
  */
@@ -72,4 +71,15 @@ function facebook_instant_articles_menu() {
     'file' => 'facebook_instant_articles.admin.inc',
   );
   return $items;
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function facebook_instant_articles_entity_info_alter(&$entity_info) {
+  // Custom view mode for Facebook instant articles.
+  $entity_info['node']['view modes']['facebook_instant_articles_rss'] = array(
+    'label' => t('Facebook Instant Articles: RSS'),
+    'custom settings' => FALSE,
+  );
 }
