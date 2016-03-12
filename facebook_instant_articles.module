@@ -93,20 +93,7 @@ function facebook_instant_articles_entity_info_alter(&$entity_info) {
 function facebook_instant_articles_views_api() {
   return array(
     'api' => 3,
+    'path' => drupal_get_path('module', 'facebook_instant_articles') . '/views',
   );
 }
 
-/**
- * Implements hook_views_data_alter().
- */
-function facebook_instant_articles_views_data_alter(&$data) {
-  $data['node']['facebook_instant_articles'] = array(
-    'title' => t('Valid Facebook instant articles filter'),
-    'filter' => array(
-      'title' => t('Valid Facebook instant articles filter'),
-      'help' => t('Filter for items that should be listed in the facebook instant articles pages.'),
-      'field' => 'type',
-      'handler' => 'views_handler_filter_valid_fia'
-    ),
-  );
-}

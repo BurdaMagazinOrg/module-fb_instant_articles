@@ -7,4 +7,6 @@ dependencies[] = node
 dependencies[] = views
 dependencies[] = user
 
-files[] = views/views_handler_filter_valid_fia.inc
+files[] = views/handler/views_handler_filter_valid_fia.inc
+files[] = views/plugins/views_plugin_row_fiafields.inc
+
