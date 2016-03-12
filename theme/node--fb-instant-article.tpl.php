@@ -86,27 +86,27 @@
     <meta charset="utf-8">
     <link rel="canonical" href="<?php print $canonical_url; ?>">
     <meta property="op:markup_version" content="v1.0">
-    <meta property="fb:article_style" content="<?php print $facebook_instant_article_style; ?>">
+    <meta property="fb:article_style" content="<?php print $fb_instant_article_style; ?>">
   </head>
   <body>
     <article>
       <header>
-        <?php print render($facebook_instant_article_header); ?>
+        <?php print render($fb_instant_article_header); ?>
         <?php print $published; ?>
         <?php print $modified; ?>
       </header>
 
-      <?php if (!empty($facebook_instant_article_body)): ?>
+      <?php if (!empty($fb_instant_article_body)): ?>
         <div class="content">
           <?php
-            print render($facebook_instant_article_body);
+            print render($fb_instant_article_body);
           ?>
         </div>
       <?php endif; ?>
 
-      <?php if (!empty($facebook_instant_article_footer)): ?>
+      <?php if (!empty($fb_instant_article_footer)): ?>
         <footer>
-          <?php print render($facebook_instant_article_footer); ?>
+          <?php print render($fb_instant_article_footer); ?>
         </footer>
         <?php endif; ?>
     </article>

@@ -7,7 +7,7 @@
 /**
  * Formatter for standard elements.
  */
-function facebook_instant_articles_field_format_standard_element($items, $wrapper_tag = 'p', $class = '') {
+function fb_instant_articles_field_format_standard_element($items, $wrapper_tag = 'p', $class = '') {
   $element = array();
 
   if (!empty($class)) {
@@ -23,7 +23,7 @@ function facebook_instant_articles_field_format_standard_element($items, $wrappe
 /**
  * Formatter for the Ad element.
  */
-function facebook_instant_articles_field_format_ad_element($items, $settings) {
+function fb_instant_articles_field_format_ad_element($items, $settings) {
   $element = array();
 
   foreach ($items as $delta => $item) {
@@ -51,7 +51,7 @@ function facebook_instant_articles_field_format_ad_element($items, $settings) {
 /**
  * Formatter for the Analytics element.
  */
-function facebook_instant_articles_field_format_analytics_element($items, $settings) {
+function fb_instant_articles_field_format_analytics_element($items, $settings) {
   $element = array();
   foreach ($items as $delta => $item) {
     switch ($settings['source']) {
@@ -71,7 +71,7 @@ function facebook_instant_articles_field_format_analytics_element($items, $setti
 /**
  * Formatter for the Image element.
  */
-function facebook_instant_articles_field_format_image_element($items, $settings) {
+function fb_instant_articles_field_format_image_element($items, $settings) {
   $element = array();
 
   foreach ($items as $delta => $item) {
@@ -113,7 +113,7 @@ function facebook_instant_articles_field_format_image_element($items, $settings)
 /**
  * Formatter for the Interactive element.
  */
-function facebook_instant_articles_field_format_interactive_element($items, $settings) {
+function fb_instant_articles_field_format_interactive_element($items, $settings) {
   $element = array();
 
   foreach ($items as $delta => $item) {
@@ -134,7 +134,7 @@ function facebook_instant_articles_field_format_interactive_element($items, $set
 /**
  * Formatter for the List element.
  */
-function facebook_instant_articles_field_format_list_element($items, $settings) {
+function fb_instant_articles_field_format_list_element($items, $settings) {
   $element = array();
 
   if (empty($items) || count($items) == 0) {
@@ -158,7 +158,7 @@ function facebook_instant_articles_field_format_list_element($items, $settings) 
 /**
  * Formatter for the Video element.
  */
-function facebook_instant_articles_field_format_video_element($items, $settings) {
+function fb_instant_articles_field_format_video_element($items, $settings) {
   $element = array();
 
   foreach ($items as $delta => $item) {
@@ -170,7 +170,7 @@ function facebook_instant_articles_field_format_video_element($items, $settings)
 /**
  * Formatter for the Social element.
  */
-function facebook_instant_articles_field_format_social_element($items, $settings) {
+function fb_instant_articles_field_format_social_element($items, $settings) {
   $element = array();
 
   foreach ($items as $delta => $item) {
