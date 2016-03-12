@@ -6,3 +6,5 @@ core = 7.x
 dependencies[] = node
 dependencies[] = views
 dependencies[] = user
+
+files[] = views/views_handler_filter_valid_fia.inc

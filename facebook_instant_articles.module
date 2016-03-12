@@ -39,7 +39,10 @@ function facebook_instant_articles_html_head_alter(&$head_elements) {
     $head_elements['fia_pagesid'] = array(
       '#type' => 'html_tag',
       '#tag' => 'meta',
-      '#attributes' => array('property' => 'fb:pages', 'content' => $fia_pagesid),
+      '#attributes' => array(
+        'property' => 'fb:pages',
+        'content' => $fia_pagesid
+      ),
     );
   }
 }
@@ -81,5 +84,29 @@ function facebook_instant_articles_entity_info_alter(&$entity_info) {
   $entity_info['node']['view modes']['facebook_instant_articles_rss'] = array(
     'label' => t('Facebook Instant Articles: RSS'),
     'custom settings' => FALSE,
+  );
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function facebook_instant_articles_views_api() {
+  return array(
+    'api' => 3,
+  );
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function facebook_instant_articles_views_data_alter(&$data) {
+  $data['node']['facebook_instant_articles'] = array(
+    'title' => t('Valid Facebook instant articles filter'),
+    'filter' => array(
+      'title' => t('Valid Facebook instant articles filter'),
+      'help' => t('Filter for items that should be listed in the facebook instant articles pages.'),
+      'field' => 'type',
+      'handler' => 'views_handler_filter_valid_fia'
+    ),
   );
 }
