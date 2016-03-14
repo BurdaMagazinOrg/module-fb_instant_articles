@@ -5,7 +5,7 @@ Facebook Instant Articles program.
 
 ## To use
 
-First install the module into your application using the standard approach: https://www.drupal.org/documentation/install/modules-themes/modules-8
+First install the module into your application using the standard approach: https://www.drupal.org/documentation/install/modules-themes/modules-7
 
 Then make sure to configure the module as described below.
 
