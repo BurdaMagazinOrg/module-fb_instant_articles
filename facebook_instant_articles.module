@@ -2,19 +2,19 @@
 
 /**
  * @file
- * Contains facebook_instant_articles.module..
+ * Facebook instant articles primary module file.
+ *
+ * This is the main module file for facebook_instant_articles.
  */
 
-use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Template\Attribute;
 
 /**
  * Implements hook_help().
  */
-function facebook_instant_articles_help($route_name, RouteMatchInterface $route_match) {
-  switch ($route_name) {
+function facebook_instant_articles_help($path, $arg) {
+  switch ($path) {
     // Main module help for the facebook_instant_articles module.
-    case 'help.page.facebook_instant_articles':
+    case 'admin/config/facebook_instant_articles/config':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('FB Instant articles RSS feed generator for integration into the FB IA program') . '</p>';
@@ -25,54 +25,75 @@ function facebook_instant_articles_help($route_name, RouteMatchInterface $route_
 }
 
 /**
- * Implements hook_page_attachments_alter
- *
- * @param array $page
- *   page render array
+ * Implements hook_html_head_alter().
  */
-function facebook_instant_articles_page_attachments_alter(array &$page) {
-
-  /**
-   * @var Drupal\Core\Config\ImmutableConfig $config
-   *   The config entity for facebook_instant_articles
-   */
-  $config = \Drupal::config('facebook_instant_articles.adminconfig');
-
-  if ($config instanceof Drupal\Core\Config\ImmutableConfig) {
-
+function facebook_instant_articles_html_head_alter(&$head_elements) {
+  $fia_pagesid = variable_get('fia_pagesid', '');
+  if (!empty($fia_pagesid)) {
     /**
      * If there is a stored configuration for the FIA Application ID
      * then add a page <meta> tag to all pages showing the id
      *
      * <meta property="fb:pages" content="{id goes here}" />
      */
-
-    $fia_pagesid = $config->get('pagesid');
-    if ($fia_pagesid != '') {
-      $meta_fia_pagesid = [
-        '#tag' => 'meta',
-        '#attributes' => [
-          'property' => 'fb:pages',
-          'content' => $fia_pagesid,
-        ],
-      ];
-      $page['#attached']['html_head'][] = [$meta_fia_pagesid, 'fia_pagesid'];
-    }
-
+    $head_elements['fia_pagesid'] = array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'property' => 'fb:pages',
+        'content' => $fia_pagesid
+      ),
+    );
   }
 }
 
 /**
- * Prepares variables for views FIA item templates.
- *
- * Default template: views-view-row-fia.html.twig.
- *
- * @param array $variables
- *   An associative array containing:
- *   - row: The raw results rows.
+ * Implements hook_menu().
  */
-function facebook_instant_articles_preprocess_views_view_row_fia(&$variables) {
-  $item = $variables['row'];
+function facebook_instant_articles_menu() {
 
-  $variables['attributes'] = new Attribute($item);
+  $items['admin/config/facebook_instant_articles'] = array(
+    'title' => t('Facebook instant articles'),
+    'description' => t('Facebook instant articles'),
+    'weight' => 0,
+    'position' => 'right',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/config/facebook_instant_articles/config'] = array(
+    'title' => t('Configuration'),
+    'description' => t('Configure page id for Facebook instant articles'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('facebook_instant_articles_config_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'facebook_instant_articles.admin.inc',
+  );
+  return $items;
 }
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function facebook_instant_articles_entity_info_alter(&$entity_info) {
+  // Custom view mode for Facebook instant articles.
+  $entity_info['node']['view modes']['facebook_instant_articles_rss'] = array(
+    'label' => t('Facebook Instant Articles: RSS'),
+    'custom settings' => FALSE,
+  );
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function facebook_instant_articles_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'facebook_instant_articles') . '/views',
+  );
+}
+
