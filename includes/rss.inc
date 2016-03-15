@@ -35,7 +35,8 @@ function fb_instant_articles_rss_page() {
     $item->addChild('title', $node->title);
     $item->addChild('link', url(drupal_get_path_alias("node/" . $node->nid), array('absolute' => TRUE)));
 
-    $item->addChildCdata('content', drupal_render(node_view($node, 'fb_instant_article')));
+    $node_view = node_view($node, 'fb_instant_article');
+    $item->addChildCdata('content', drupal_render($node_view));
 
     // Add published date.
     $ts = $node->created;
