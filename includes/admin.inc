@@ -44,6 +44,17 @@ function fb_instant_articles_admin_settings_form() {
     '#default_value' => variable_get('fb_instant_articles_style', 'default'),
     '#size' => 50,
   );
+  $form['general']['fb_instant_articles_number_results_in_feed'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Number of results to display in the feed.'),
+    '#default_value' => variable_get('fb_instant_articles_number_results_in_feed', 50),
+    '#size' => 10,
+  );
+  $form['general']['fb_instant_articles_all_enabled_default'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('All nodes enabled by default?'),
+    '#default_value' => variable_get('fb_instant_articles_all_enabled_default', TRUE),
+  );
   $form = system_settings_form($form);
 
   return $form;
