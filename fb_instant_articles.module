@@ -326,12 +326,13 @@ function fb_instant_articles_preprocess_node(&$vars) {
   if ($vars['view_mode'] == 'fb_instant_article') {
 
     $layout_settings = fb_instant_articles_get_node_layout_settings($vars['type']);
-    $regions = $layout_settings->settings['regions'];
 
     // If no regions are set, return early.
-    if (empty($regions)) {
+    if (empty($layout_settings->settings['regions'])) {
       return;
     }
+
+    $regions = $layout_settings->settings['regions'];
 
     foreach ($regions as $region => $fields) {
       foreach ($fields as $field) {
