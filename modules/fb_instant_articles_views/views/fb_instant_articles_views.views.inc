@@ -4,14 +4,14 @@
  * @file
  * Facebook instant articles views module file.
  *
- * This is the views related module file for facebook_instant_articles.
+ * This is the views related module file for fb_instant_articles_views.
  */
 
 /**
  * Implements hook_views_data_alter().
  */
-function facebook_instant_articles_views_data_alter(&$data) {
-  $data['node']['facebook_instant_articles'] = array(
+function fb_instant_articles_views_views_data_alter(&$data) {
+  $data['node']['fb_instant_articles_views'] = array(
     'title' => t('Valid Facebook instant articles filter'),
     'filter' => array(
       'title' => t('Valid Facebook instant articles filter'),
@@ -25,10 +25,10 @@ function facebook_instant_articles_views_data_alter(&$data) {
 /**
  * Implements hook_views_plugins().
  */
-function facebook_instant_articles_views_plugins() {
-  $path = drupal_get_path('module', 'facebook_instant_articles');
+function fb_instant_articles_views_views_plugins() {
+  $path = drupal_get_path('module', 'fb_instant_articles_views');
   return array(
-    'module' => 'facebook_instant_articles',
+    'module' => 'fb_instant_articles_views',
     'row' => array(
       'fiafields' => array(
         'title' => t('FIA Fields'),
@@ -39,7 +39,7 @@ function facebook_instant_articles_views_plugins() {
         'type' => 'feed',
         'path' => "$path/theme",
         'theme' => "views_view_row_fia",
-        'theme file' => 'facebook_instant_articles.theme.inc',
+        'theme file' => 'fb_instant_articles_views.theme.inc',
         'theme path' => "$path/theme",
       ),
     ),

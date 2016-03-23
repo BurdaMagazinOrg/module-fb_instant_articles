@@ -11,13 +11,13 @@
  */
 class views_handler_filter_valid_fia extends views_handler_filter {
 
-  var $fia_view_mode = 'facebook_instant_articles_rss';
+  var $fia_view_mode = 'fb_instant_article';
 
   /**
    * Display the filter on the administrative summary
    */
   function admin_summary() {
-    return t('Filtering for items that have custom facebook view mode settings');
+    return t('Filtering for items that have custom Facebook View Mode settings.');
   }
 
   /**
@@ -57,16 +57,10 @@ class views_handler_filter_valid_fia extends views_handler_filter {
   function query() {
     // Get entity_info for nodes.
     $field = 'node.' . $this->real_field;
-    $entity_info = entity_get_info('node');
 
-    // Array of node types that implement our custom view mode.
-    $node_types = array();
-    foreach ($entity_info['bundles'] as $id => $bundle) {
-      $view_mode_settings = field_view_mode_settings('node', $id);
-      if (isset($view_mode_settings[$this->fia_view_mode]) && $view_mode_settings[$this->fia_view_mode]['custom_settings'] !== FALSE) {
-        $node_types[] = $id;
-      }
-    }
+    $entity_types = fb_instant_articles_get_article_entity_types();
+    $node_types = array_keys($entity_types['node']);
+
     if (count($node_types) > 0) {
       /**
        * Only set the value and operator if we have some valid node types, so

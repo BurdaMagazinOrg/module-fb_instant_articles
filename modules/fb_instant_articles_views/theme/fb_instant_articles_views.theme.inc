@@ -7,7 +7,7 @@
 /**
  * Implements hook_theme().
  */
-function facebook_instant_articles_theme($existing, $type, $theme, $path) {
+function fb_instant_articles_views_theme($existing, $type, $theme, $path) {
   return array(
     'views_view_row_fia' => array(
       'variables' => array(
