@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Facebook instant articles views module file.
+ * Facebook Instant Articles views module file.
  */
 
 /**
@@ -20,7 +20,7 @@ class views_plugin_row_fiafields extends views_plugin_row {
 
   function option_definition() {
     $options = parent::option_definition();
-    $options['view_mode'] = array('facebook_instant_articles_rss' => 'facebook_instant_articles_rss');
+    $options['view_mode'] = array('fb_instant_article' => 'fb_instant_article');
     return $options;
   }
 
@@ -92,8 +92,7 @@ class views_plugin_row_fiafields extends views_plugin_row {
 
     // Build output for node.
     $display_mode = $this->options['view_mode'];
-    $build = node_view($node, $display_mode);
-    unset($build['#theme']);
+    $node_view = node_view($node, $display_mode);
 
     $options['title'] = $node->title;
     $options['author'] = format_username($node);
@@ -108,7 +107,7 @@ class views_plugin_row_fiafields extends views_plugin_row {
       array(
         'view' => $this->view,
         'options' => $options,
-        'row' => drupal_render($build),
+        'row' => drupal_render($node_view),
         'field_alias' => isset($this->field_alias) ? $this->field_alias : '',
       ));
   }

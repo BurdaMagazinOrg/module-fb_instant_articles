@@ -10,15 +10,15 @@
 /**
  * Implements hook_views_default_views().
  */
-function facebook_instant_articles_views_default_views() {
+function fb_instant_articles_views_views_default_views() {
   $export = array();
 
   $view = new view();
-  $view->name = 'facebook_instant_articles';
+  $view->name = 'fb_instant_articles_views';
   $view->description = '';
   $view->tag = 'default';
   $view->base_table = 'node';
-  $view->human_name = 'FaceBook Instant Articles';
+  $view->human_name = 'Facebook Instant Articles';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -54,9 +54,9 @@ function facebook_instant_articles_views_default_views() {
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
   /* Filter criterion: Content: Valid Facebook instant articles filter */
-  $handler->display->display_options['filters']['facebook_instant_articles']['id'] = 'facebook_instant_articles';
-  $handler->display->display_options['filters']['facebook_instant_articles']['table'] = 'node';
-  $handler->display->display_options['filters']['facebook_instant_articles']['field'] = 'facebook_instant_articles';
+  $handler->display->display_options['filters']['fb_instant_articles_views']['id'] = 'fb_instant_articles_views';
+  $handler->display->display_options['filters']['fb_instant_articles_views']['table'] = 'node';
+  $handler->display->display_options['filters']['fb_instant_articles_views']['field'] = 'fb_instant_articles_views';
 
   /* Display: Feed */
   $handler = $view->new_display('feed', 'Feed', 'feed_fia_rss');
@@ -64,10 +64,10 @@ function facebook_instant_articles_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'rss';
   $handler->display->display_options['style_options']['description'] = 'Facebook Instant Articles feed';
   $handler->display->display_options['row_plugin'] = 'fiafields';
-  $handler->display->display_options['row_options']['view_mode'] = 'facebook_instant_articles_rss';
-  $handler->display->display_options['path'] = 'fia/nodes.xml';
+  $handler->display->display_options['row_options']['view_mode'] = 'fb_instant_article';
+  $handler->display->display_options['path'] = 'fia/nodes.rss';
 
-  $export['facebook_instant_articles'] = $view;
+  $export['fb_instant_articles_views'] = $view;
 
   return $export;
 }
