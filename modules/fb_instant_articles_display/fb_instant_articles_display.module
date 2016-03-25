@@ -5,6 +5,16 @@
  * Hook implementations for Facebook Instant Articles Display module.
  */
 
+ require __DIR__ . '../../vendor/autoload.php';
+
+ use Facebook\InstantArticles\Elements\Author;
+ use Facebook\InstantArticles\Elements\Header;
+ use Facebook\InstantArticles\Elements\InstantArticle;
+ use Facebook\InstantArticles\Elements\Time;
+ use Facebook\InstantArticles\Transformer\Transformer;
+
+ const FB_INSTANT_ARTICLES_VERSION = '0.1.0';
+
 /**
  * Implements hook_permission().
  */
@@ -211,12 +221,39 @@ function fb_instant_articles_display_preprocess_node(&$vars) {
       }
     }
 
-    // Set the style of the article from configuration.
-    $vars['fb_instant_article_style'] = variable_get('fb_instant_articles_display_style', 'default');
+    $instant_article = InstantArticle::create()
+      ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
+      ->addMetaProperty('op:generator:application:version', FB_INSTANT_ARTICLES_VERSION)
+      ->withCanonicalUrl(url('node/' . $vars['nid'], array('absolute' => TRUE)))
+      ->withStyle(variable_get('fb_instant_articles_style', 'default'));
+    $header = Header::create()
+      ->withTitle($vars['title'])
+      ->withPublishTime(
+        Time::create(Time::PUBLISHED)
+          ->withDatetime(
+            DateTime::createFromFormat('U', $vars['created'])
+          )
+      )
+      ->withModifyTime(
+        Time::create(Time::MODIFIED)
+          ->withDatetime(
+            DateTime::createFromFormat('U', $vars['changed'])
+          )
+      );
 
-    $vars['canonical_url'] = url('node/' . $vars['nid'], array('absolute' => TRUE));
-    $vars['published'] = fb_instant_articles_display_time_element($vars['created'], 'op-published');
-    $vars['modified'] = fb_instant_articles_display_time_element($vars['changed'], 'op-modified');
+    $author = user_load($vars['uid']);
+    if ($author) {
+      $header->addAuthor(
+        Author::create()
+          ->withName($author->name) // TODO get real name (probably requires field mapping through a custom fb_instant_articles user view mode)
+      );
+    }
+
+    $instant_article->withHeader($header);
+
+    // TODO decide on approach (transformation or programmatically building) for adding header and footer regions to $instant_article
+
+    $vars['instant_article'] = $instant_article;
 
     $vars['theme_hook_suggestions'][] = 'node__fb_instant_article';
   }
@@ -239,8 +276,6 @@ function fb_instant_articles_display_theme() {
   $theme_path = drupal_get_path('module', 'fb_instant_articles_display') . '/theme';
   return array(
     'node__fb_instant_article' => array(
-      'template' => 'node--fb-instant-article',
-      'path' => $theme_path,
       'render element' => 'elements',
     ),
     'field__fb_instant_article' => array(
@@ -249,6 +284,24 @@ function fb_instant_articles_display_theme() {
       'render element' => 'element',
     ),
   );
+}
+
+function theme_node__fb_instant_article($vars) {
+  if (!isset($vars['instant_article'])) {
+    throw new InvalidArgumentException('instant_article not set');
+  }
+  extract($vars);
+
+  $transformer = new Transformer();
+  $transformer->loadRules(file_get_contents(__DIR__ . '/transformer_config.json')); // TODO consider best option for rules storage/caching
+  $document = new \DOMDocument();
+  @$document->loadHTML(render($fb_instant_article_body));
+  $transformer->transform($instant_article, $document);
+
+  // TODO store entity warnings so we can display them in admin
+  // $warnings = $transformer->getWarnings();
+
+  return $instant_article->render('<!doctype html>', true);
 }
 
 /**
