@@ -21,9 +21,14 @@ This module requires the following modules:
 INSTALLATION
 ------------
 
+This module uses Composer to install dependencies. You can either execute
+`composer install` directly or use the composer_manager module.
+
  * Install as you would normally install a contributed Drupal module. See:
    https://drupal.org/documentation/install/modules-themes/modules-7
    for further information.
+ * Install Composer dependencies. See https://www.drupal.org/node/2404989 for
+   more information on using Composer in a Drupal project.
 
 CONFIGURATION
 -------------
