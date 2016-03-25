@@ -16,6 +16,30 @@
  const FB_INSTANT_ARTICLES_VERSION = '0.1.0';
 
 /**
+* Implements hook_init().
+*/
+function fb_instant_articles_display_init() {
+ // Configure Instant Articles Transformer logger to append to Drupal log if enabled
+ module_load_include('inc', 'fb_instant_articles_display', 'includes/LoggerAppenderDrupal');
+ $enable_transformer_logging = variable_get('fb_instant_articles_display_enable_transformer_logging', FALSE);
+ \Logger::configure(
+   array(
+     'rootLogger' => array(
+       'appenders' => array('facebook-instantarticles-transformer')
+     ),
+     'appenders' => array(
+       'facebook-instantarticles-transformer' => array(
+         'class' => $enable_transformer_logging ? 'LoggerAppenderDrupal' : 'LoggerAppenderNull',
+         'layout' => array(
+           'class' => 'LoggerLayoutSimple'
+         )
+       )
+     )
+   )
+ );
+}
+
+/**
  * Implements hook_permission().
  */
 function fb_instant_articles_display_permission() {
