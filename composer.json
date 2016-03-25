@@ -23,6 +23,7 @@
   }],
   "require": {
     "drupal/drupal": "7.*",
-    "drupal/ctools": "^7.1"
+    "drupal/ctools": "^7.1",
+    "facebook/facebook-instant-articles-sdk-php": "^0.4.0"
   }
 }
