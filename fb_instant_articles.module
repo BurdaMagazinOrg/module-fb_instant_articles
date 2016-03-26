@@ -443,7 +443,11 @@ function fb_instant_articles_form_alter(&$form, &$form_state, $form_id) {
 
             // Is an Article?
             $type = $form['#node']->type;
-            $fb_instant_enabled = fb_instant_articles_is_article($form['#node']->nid);
+            if (!empty($form['#node']->nid)) {
+              $fb_instant_enabled = fb_instant_articles_is_article($form['#node']->nid);
+            } else {
+              $fb_instant_enabled = fb_instant_articles_is_article_type('node', $type);
+            }
 
             // Previously checked the product checkbox?
             $previously_checked = (isset($form_state['values']) && $form_state['values']['fb_instant_articles']['fb_instant_enabled']);
