@@ -9,5 +9,6 @@ dependencies[] = user
 dependencies[] = fb_instant_articles
 
 files[] = views/handler/views_handler_filter_valid_fia.inc
+files[] = views/handler/views_handler_filter_enabled_fia.inc
 files[] = views/plugins/views_plugin_row_fiafields.inc
 

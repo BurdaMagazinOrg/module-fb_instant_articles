@@ -11,13 +11,24 @@
  * Implements hook_views_data_alter().
  */
 function fb_instant_articles_views_views_data_alter(&$data) {
-  $data['node']['fb_instant_articles_views'] = array(
+  // Valid instant article content types.
+  $data['node']['fb_instant_articles_valid_views'] = array(
     'title' => t('Valid Facebook instant articles filter'),
     'filter' => array(
       'title' => t('Valid Facebook instant articles filter'),
       'help' => t('Filter for items that should be listed in the facebook instant articles pages.'),
       'field' => 'type',
       'handler' => 'views_handler_filter_valid_fia'
+    ),
+  );
+
+  $data['node']['fb_instant_articles_selected_views'] = array(
+    'title' => t('Selected Content for Facebook instant articles feed'),
+    'filter' => array(
+      'title' => t('Selected Content for Facebook instant articles filter'),
+      'help' => t('Filter for items that where selected for beeing shown in facebook instant articles feed.'),
+      'field' => 'type',
+      'handler' => 'views_handler_filter_enabled_fia'
     ),
   );
 }
