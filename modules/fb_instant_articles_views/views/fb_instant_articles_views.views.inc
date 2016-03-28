@@ -13,20 +13,20 @@
 function fb_instant_articles_views_views_data_alter(&$data) {
   // Valid instant article content types.
   $data['node']['fb_instant_articles_valid_views'] = array(
-    'title' => t('Valid Facebook instant articles filter'),
+    'title' => t('Valid Facebook Instant Articles filter'),
     'filter' => array(
-      'title' => t('Valid Facebook instant articles filter'),
-      'help' => t('Filter for items that should be listed in the facebook instant articles pages.'),
+      'title' => t('Valid Facebook Instant Articles filter'),
+      'help' => t('Filter for items that should be listed in the Facebook Instant Articles pages.'),
       'field' => 'type',
       'handler' => 'views_handler_filter_valid_fia'
     ),
   );
 
   $data['node']['fb_instant_articles_selected_views'] = array(
-    'title' => t('Selected Content for Facebook instant articles feed'),
+    'title' => t('Selected Content for Facebook Instant Articles feed'),
     'filter' => array(
-      'title' => t('Selected Content for Facebook instant articles filter'),
-      'help' => t('Filter for items that where selected for beeing shown in facebook instant articles feed.'),
+      'title' => t('Selected Content for Facebook Instant Articles feed'),
+      'help' => t('Filter for items that were selected for inclusion in a Facebook Instant Articles feed.'),
       'field' => 'type',
       'handler' => 'views_handler_filter_enabled_fia'
     ),
@@ -43,7 +43,7 @@ function fb_instant_articles_views_views_plugins() {
     'row' => array(
       'fiafields' => array(
         'title' => t('FIA Fields'),
-        'help' => t('Display fields as FIA (facebook instant articles) items.'),
+        'help' => t('Display fields as FIA (Facebook Instant Articles) items.'),
         'handler' => 'views_plugin_row_fiafields',
         'base' => array('node'), // only works with 'node' as base.
         'uses options' => TRUE,

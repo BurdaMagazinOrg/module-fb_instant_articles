@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Default theme implementation to display an item in a views FIA (facebook instant articles) feed.
+ * Default theme implementation to display an item in a views FIA (Facebook Instant Articles) feed.
  *
  * Available variables:
  * - options['title']: RSS item title.
