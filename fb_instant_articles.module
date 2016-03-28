@@ -889,3 +889,53 @@ function fb_instant_articles_time_element($timestamp, $class) {
 
   return $element;
 }
+
+/**
+ * Implements hook_node_operations().
+ */
+function fb_instant_articles_node_operations() {
+  // Check for setting "All nodes enabled by default?".
+  // Only show additional operations if setting is not set.
+  $fia_all_enabled = variable_get('fb_instant_articles_all_enabled_default', TRUE);
+  if (!$fia_all_enabled) {
+    $operations = array(
+      'add_fia' => array(
+        'label' => t('Publish selected content to Facebook Instant Articles feed'),
+        'callback' => 'fb_instant_articles_mass_update',
+        'callback arguments' => array('fia_enabled' => 1),
+      ),
+      'remove_fia' => array(
+        'label' => t('Unpublish selected content from Facebook Instant Articles feed'),
+        'callback' => 'fb_instant_articles_mass_update',
+        'callback arguments' => array('fia_enabled' => 0),
+      ),
+    );
+  }
+  return $operations;
+}
+
+/**
+ * Make mass update of fia_enabled status for selected nodes.
+ *
+ * @param array $nodes
+ *   Array of node nids to update.
+ * @param boolean $fia_enabled
+ *   Boolean indicating publishing status of node.
+ */
+function fb_instant_articles_mass_update($nodes, $fia_enabled) {
+  // We need node objects here to retrieve content type and it's fia settings.
+  $load_nodes = entity_load('node', array_keys($nodes));
+  $fia_types = fb_instant_articles_get_article_entity_types();
+  foreach ($load_nodes as $node) {
+    if (in_array($node->type, array_keys($fia_types['node']))) {
+      if ($fia_enabled) {
+        fb_instant_articles_set_entity($node->nid, $fia_enabled);
+      } else {
+        fb_instant_articles_delete_entity($node->nid);
+      }
+    }
+  }
+  drupal_set_message(t('Selected nodes where %action Facebook Instant Articles feed.', array(
+    '%action' => ($fia_enabled) ? t('published on') : t('unpublished from'),
+  )));
+}
