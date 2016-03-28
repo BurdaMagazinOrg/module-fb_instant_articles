@@ -41,12 +41,12 @@ class views_handler_filter_valid_fia extends views_handler_filter {
    */
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
-    $form['info'] = [
+    $form['info'] = array(
       '#type' => 'markup',
       '#markup' => 'Filter for nodes marked as "Include Content Type in Facebook Instant Articles feed."',
       '#prefix' => '<div class="clearfix">',
       '#suffix' => '</div>',
-    ];
+    );
   }
 
   /**
