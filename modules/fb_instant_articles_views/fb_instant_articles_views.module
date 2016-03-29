@@ -2,11 +2,8 @@
 
 /**
  * @file
- * Facebook instant articles primary module file.
- *
- * This is the main module file for fb_instant_articles_views.
+ * Facebook Instant Articles Views module.
  */
-
 
 /**
  * Implements hook_help().
@@ -17,7 +14,7 @@ function fb_instant_articles_views_help($path, $arg) {
     case 'admin/help#fb_instant_articles_views':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('FB Instant articles RSS feed generator for integration into the FB IA program') . '</p>';
+      $output .= '<p>' . t('Views module for Facebook Instant Articles.') . '</p>';
       return $output;
 
     default:
@@ -33,4 +30,3 @@ function fb_instant_articles_views_views_api() {
     'path' => drupal_get_path('module', 'fb_instant_articles_views') . '/views',
   );
 }
-

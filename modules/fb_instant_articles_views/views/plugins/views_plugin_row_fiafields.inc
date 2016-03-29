@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Facebook Instant Articles views module file.
+ * Contains views_plugin_row_fiafields.
  */
 
 /**
