@@ -8,11 +8,11 @@
  * Callback for the RSS page menu item.
  */
 function fb_instant_articles_rss_page() {
-  module_load_include('inc', 'fb_instant_articles', 'includes/FacebookInstantArticlesSimpleXMLElement');
+  module_load_include('inc', 'fb_instant_articles_rss', 'includes/FacebookInstantArticlesRSSSimpleXMLElement');
 
   header('Content-Type: text/xml; charset=utf-8', TRUE);
 
-  $rss = new FacebookInstantArticlesSimpleXMLElement('<rss xmlns:content="http://purl.org/rss/1.0/modules/content/"></rss>');
+  $rss = new FacebookInstantArticlesRSSSimpleXMLElement('<rss xmlns:content="http://purl.org/rss/1.0/modules/content/"></rss>');
 
   $rss->addAttribute('version', '2.0');
   $channel = $rss->addChild('channel');
