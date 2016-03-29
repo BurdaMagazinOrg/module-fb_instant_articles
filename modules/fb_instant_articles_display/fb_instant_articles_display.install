@@ -11,6 +11,21 @@
 function fb_instant_articles_display_schema() {
   $schema['fb_instant_articles_display_entity_types'] = array(
     'description' => 'Mappings between Facebook Instant Articles and entities',
+
+    // CTools export definitions.
+    'export' => array(
+      'key' => 'id',
+      'identifier' => 'fb_instant_articles_display_entity_type',
+      'default hook' => 'fb_instant_articles_display_entity_types_info',
+      'can disable' => FALSE,
+      'api' => array(
+        'owner' => 'fb_instant_articles_display',
+        'api' => 'fb_instant_articles_display',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+
     'fields' => array(
       'id' => array(
         'description' => 'The unique id of this entity type mapping.',
