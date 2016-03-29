@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains Drupal\facebook_instant_articles\Form\AdminConfig.
+ * Contains Drupal\fb_instant_articles\Form\AdminConfig.
  */
 
-namespace Drupal\facebook_instant_articles\Form;
+namespace Drupal\fb_instant_articles\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -13,7 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Class AdminConfig.
  *
- * @package Drupal\facebook_instant_articles\Form
+ * @package Drupal\fb_instant_articles\Form
  */
 class AdminConfig extends ConfigFormBase {
 
@@ -22,7 +22,7 @@ class AdminConfig extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'facebook_instant_articles.adminconfig',
+      'fb_instant_articles.adminconfig',
     ];
   }
 
@@ -37,7 +37,7 @@ class AdminConfig extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('facebook_instant_articles.adminconfig');
+    $config = $this->config('fb_instant_articles.adminconfig');
     $form['pagesid'] = [
       '#type' => 'textfield',
       '#title' => $this->t('FaceBook application ID'),
@@ -62,7 +62,7 @@ class AdminConfig extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $this->config('facebook_instant_articles.adminconfig')
+    $this->config('fb_instant_articles.adminconfig')
       ->set('pagesid', $form_state->getValue('pagesid'))
       ->save();
   }

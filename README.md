@@ -11,7 +11,7 @@ Then make sure to configure the module as described below.
 
 ## to configure
 
-There is an administration page located at /admin/config/facebook_instant_articles/adminconfig
+There is an administration page located at /admin/config/fb_instant_articles/adminconfig
 
 In this page you can set
 

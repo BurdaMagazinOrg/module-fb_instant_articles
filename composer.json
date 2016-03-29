@@ -1,10 +1,10 @@
 {
-  "name": "drupal/facebook_instant_articles",
+  "name": "drupal/fb_instant_articles",
   "type": "drupal-module",
   "description": "FB Instant articles RSS feed generator for integration into the FB IA program",
   "keywords": ["Drupal"],
   "license": "GPL-2.0+",
-  "homepage": "https://www.drupal.org/project/facebook_instant_articles",
+  "homepage": "https://www.drupal.org/project/fb_instant_articles",
   "minimum-stability": "dev",
   "authors": [
     {
