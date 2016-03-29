@@ -29,7 +29,7 @@ function fb_instant_articles_rss_page() {
   $channel->addChild('lastBuildDate', $date_time->format(DateTime::ATOM));
 
   // Create RSS items.
-  $nodes = fb_instant_articles_get_article_nodes();
+  $nodes = fb_instant_articles_rss_get_article_nodes();
   foreach ($nodes as $node) {
     $item = $channel->addChild('item');
     $item->addChild('title', $node->title);
