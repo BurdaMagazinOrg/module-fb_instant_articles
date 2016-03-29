@@ -55,14 +55,14 @@ function fb_instant_articles_rss_page() {
  */
 function fb_instant_articles_rss_get_article_nodes() {
   $nodes = array();
-  $entity_types = fb_instant_articles_get_article_entity_types();
+  $entity_types = fb_instant_articles_display_get_article_entity_types();
   if (isset($entity_types['node'])) {
     foreach ($entity_types['node'] as $content_type => $entity_information) {
       $query = db_select('node', 'n');
       $query->fields('n', array('nid'))
         ->condition('type', $content_type, '=')
         ->condition('status', NODE_PUBLISHED);
-      $published = db_select('fb_instant_articles_entity_settings', 'fiafs');
+      $published = db_select('fb_instant_articles_display_entity_settings', 'fiafs');
       $published->fields('fiafs', array('entity_id'));
       if (!variable_get('fb_instant_articles_rss_all_enabled_default', TRUE)) {
         // If all nodes are disabled by default, select which nodes should be
