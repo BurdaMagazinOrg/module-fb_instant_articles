@@ -1,18 +1,20 @@
 <?php
+
 /**
  * @file
- * FacebookInstantArticlesSimpleXMLElement.inc.
+ * Contains FacebookInstantArticlesRSSSimpleXMLElement.
  */
 
 /**
  * Extension for SimpleXMLElement.
  */
-class FacebookInstantArticlesSimpleXMLElement extends SimpleXMLElement {
+class FacebookInstantArticlesRSSSimpleXMLElement extends SimpleXMLElement {
+
   /**
-   * Add CDATA text in a node.
+   * Adds CDATA text in a node.
    *
    * @param string $cdata_text
-   *    The CDATA value to add.
+   *   The CDATA value to add.
    */
   private function addCdata($cdata_text) {
     $node = dom_import_simplexml($this);
@@ -22,12 +24,12 @@ class FacebookInstantArticlesSimpleXMLElement extends SimpleXMLElement {
   }
 
   /**
-   * Create a child with CDATA value.
+   * Creates a child with CDATA value.
    *
    * @param string $name
-   *    The name of the child element to add.
+   *   The name of the child element to add.
    * @param string $cdata_text
-   *    The CDATA value of the child element.
+   *   The CDATA value of the child element.
    *
    * @return object
    *   The child element.
@@ -39,10 +41,10 @@ class FacebookInstantArticlesSimpleXMLElement extends SimpleXMLElement {
   }
 
   /**
-   * Add SimpleXMLElement code into a SimpleXMLElement.
+   * Adds SimpleXMLElement code into a SimpleXMLElement.
    *
    * @param SimpleXMLElement $append
-   *    XMLElement to append to.
+   *   XMLElement to append to.
    */
   public function appendXml(SimpleXMLElement $append) {
     if ($append) {

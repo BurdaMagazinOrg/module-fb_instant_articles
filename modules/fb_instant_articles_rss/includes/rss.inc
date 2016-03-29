@@ -46,3 +46,43 @@ function fb_instant_articles_rss_page() {
 
   echo $rss->asXML();
 }
+
+/**
+ * Return an array of nodes that are treated as articles.
+ *
+ * @return array
+ *   Array of nodes.
+ */
+function fb_instant_articles_rss_get_article_nodes() {
+  $nodes = array();
+  $entity_types = fb_instant_articles_get_article_entity_types();
+  if (isset($entity_types['node'])) {
+    foreach ($entity_types['node'] as $content_type => $entity_information) {
+      $query = db_select('node', 'n');
+      $query->fields('n', array('nid'))
+        ->condition('type', $content_type, '=')
+        ->condition('status', NODE_PUBLISHED);
+      $published = db_select('fb_instant_articles_entity_settings', 'fiafs');
+      $published->fields('fiafs', array('entity_id'));
+      if (!variable_get('fb_instant_articles_rss_all_enabled_default', TRUE)) {
+        // If all nodes are disabled by default, select which nodes should be
+        // enabled and intersect that set with the current set of results.
+        $published->condition('fia_enabled', '1', '=');
+        $query->condition('nid', $published, 'IN');
+      }
+      else {
+        // If all nodes are enabled by default, select which nodes should be
+        // disabled and intersect that set with the current set of results.
+        $published->condition('fia_enabled', '0', '=');
+        $query->condition('nid', $published, 'NOT IN');
+      }
+      $query->range(0, variable_get('fb_instant_articles_rss_number_results_in_feed', 50));
+      $result = $query->execute()->fetchAllAssoc('nid');
+      if (!empty($result)) {
+        $nids = array_keys($result);
+        $nodes += entity_load('node', $nids);
+      }
+    }
+  }
+  return $nodes;
+}

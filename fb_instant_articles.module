@@ -8,28 +8,14 @@
  * Implements hook_menu().
  */
 function fb_instant_articles_menu() {
-  // RSS Endpoint.
-  $items['fbinstant.rss'] = array(
-    'page callback' => 'fb_instant_articles_rss_page',
-    'file' => 'includes/rss.inc',
-    'access arguments' => array('access content'),
-  );
-
   // Top level configuration page.
   $items['admin/config/services/fb-instant-articles'] = array(
-    'title' => 'Facebook Instant Articles Settings',
-    'description' => 'Facebook Instant Articles',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('fb_instant_articles_admin_settings_form'),
-    'access arguments' => array('administer fb_instant_articles'),
-    'file' => 'includes/admin.inc',
-  );
-
-  // Configure Facebook Instant Article settings.
-  $items['admin/config/services/fb-instant-articles/settings'] = array(
-    'title' => 'Settings',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -1,
+    'title' => 'Facebook Instant Articles',
+    'description' => 'Settings related to Facebook Instant Articles.',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
   );
 
   return $items;
@@ -244,46 +230,6 @@ function fb_instant_articles_delete_entity_type($type, $bundle) {
     ->execute();
   // Allow other modules to perform actions.
   module_invoke_all('fb_instant_articles_delete_type', $type, $bundle);
-}
-
-/**
- * Return an array of nodes that are treated as articles.
- *
- * @return array
- *   Array of nodes.
- */
-function fb_instant_articles_get_article_nodes() {
-  $nodes = array();
-  $entity_types = fb_instant_articles_get_article_entity_types();
-  if (isset($entity_types['node'])) {
-    foreach ($entity_types['node'] as $content_type => $entity_information) {
-      $query = db_select('node', 'n');
-      $query->fields('n', array('nid'))
-        ->condition('type', $content_type, '=')
-        ->condition('status', NODE_PUBLISHED);
-      $published = db_select('fb_instant_articles_entity_settings', 'fiafs');
-      $published->fields('fiafs', array('entity_id'));
-      if (!variable_get('fb_instant_articles_all_enabled_default', TRUE)) {
-        // If all nodes are disabled by default, select which nodes should be
-        // enabled and intersect that set with the current set of results.
-        $published->condition('fia_enabled', '1', '=');
-        $query->condition('nid', $published, 'IN');
-      }
-      else {
-        // If all nodes are enabled by default, select which nodes should be
-        // disabled and intersect that set with the current set of results.
-        $published->condition('fia_enabled', '0', '=');
-        $query->condition('nid', $published, 'NOT IN');
-      }
-      $query->range(0, variable_get('fb_instant_articles_number_results_in_feed', 50));
-      $result = $query->execute()->fetchAllAssoc('nid');
-      if (!empty($result)) {
-        $nids = array_keys($result);
-        $nodes += entity_load('node', $nids);
-      }
-    }
-  }
-  return $nodes;
 }
 
 /**

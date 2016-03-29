@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @file
+ * Facebook Instant Articles RSS module.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function fb_instant_articles_rss_menu() {
+  $items['fbinstant.rss'] = array(
+    'description' => 'Facebook Instant Articles RSS endpoint',
+    'page callback' => 'fb_instant_articles_rss_page',
+    'file' => 'includes/rss.inc',
+    'access arguments' => array('access content'),
+  );
+
+  $items['admin/config/services/fb-instant-articles/rss'] = array(
+    'title' => 'Facebook Instant Articles RSS',
+    'description' => 'RSS settings for Facebook Instant Articles.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('fb_instant_articles_rss_settings'),
+    'access arguments' => array('administer fb_instant_articles_rss'),
+    'file' => 'includes/admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function fb_instant_articles_rss_permission() {
+  $permissions = array();
+
+  $permissions['administer fb_instant_articles_rss'] = array(
+    'title' => t('Administer Facebook Instant Articles RSS'),
+  );
+  return $permissions;
+}
