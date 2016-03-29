@@ -117,7 +117,7 @@ function fb_instant_articles_display_add_regions(&$form, &$form_state) {
   // Update existing rows by changing rowHandler and adding regions.
   foreach (element_children($table) as $name) {
     $row = &$table[$name];
-    $row['#js_settings'] = array('rowHandler' => 'facebookInstantArticles');
+    $row['#js_settings'] = array('rowHandler' => 'facebookInstantArticlesDisplay');
     $row['#region_callback'] = 'fb_instant_articles_display_field_ui_row_region';
 
     // Remove hidden format.
