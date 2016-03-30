@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Default theme implementation to display a node.
+ * Node template for Facebook Instant Articles Display.
  *
  * Available variables:
  * - $title: the (sanitized) title of the node.

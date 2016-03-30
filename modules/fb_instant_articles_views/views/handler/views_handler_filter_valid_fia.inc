@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Definition of views_handler_filter_valid_fia.
+ * Contains views_handler_filter_valid_fia.
  */
 
 

@@ -1,0 +1,220 @@
+<?php
+
+/**
+ * @file
+ * Facebook Instant Articles RSS module.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function fb_instant_articles_rss_menu() {
+  $items['fbinstant.rss'] = array(
+    'description' => 'Facebook Instant Articles RSS endpoint',
+    'page callback' => 'fb_instant_articles_rss_page',
+    'file' => 'includes/rss.inc',
+    'access arguments' => array('access content'),
+  );
+
+  $items['admin/config/services/fb-instant-articles/rss'] = array(
+    'title' => 'Facebook Instant Articles RSS',
+    'description' => 'RSS settings for Facebook Instant Articles.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('fb_instant_articles_rss_settings'),
+    'access arguments' => array('administer fb_instant_articles_rss'),
+    'file' => 'includes/admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function fb_instant_articles_rss_permission() {
+  $permissions = array();
+
+  $permissions['administer fb_instant_articles_rss'] = array(
+    'title' => t('Administer Facebook Instant Articles RSS'),
+  );
+  return $permissions;
+}
+
+/**
+ * Implements hook_node_operations().
+ */
+function fb_instant_articles_rss_node_operations() {
+  // Check for setting "All nodes enabled by default?".
+  // Only show additional operations if setting is not set.
+  $fia_all_enabled = variable_get('fb_instant_articles_rss_all_enabled_default', TRUE);
+  $operations = array();
+  if (!$fia_all_enabled) {
+    $operations = array(
+      'add_fia' => array(
+        'label' => t('Publish selected content to Facebook Instant Articles RSS feed'),
+        'callback' => 'fb_instant_articles_mass_update',
+        'callback arguments' => array('fia_enabled' => 1),
+      ),
+      'remove_fia' => array(
+        'label' => t('Unpublish selected content from Facebook Instant Articles RSS feed'),
+        'callback' => 'fb_instant_articles_rss_mass_update',
+        'callback arguments' => array('fia_enabled' => 0),
+      ),
+    );
+  }
+  return $operations;
+}
+
+/**
+ * Makes mass update of fia_enabled status for selected nodes.
+ *
+ * @param array $nodes
+ *   Array of node nids to update.
+ * @param boolean $fia_enabled
+ *   Boolean indicating publishing status of node.
+ */
+function fb_instant_articles_rss_mass_update($nodes, $fia_enabled) {
+  // We need node objects here to retrieve content type and it's fia settings.
+  $load_nodes = entity_load('node', array_keys($nodes));
+  $fia_types = fb_instant_articles_display_get_article_entity_types();
+  foreach ($load_nodes as $node) {
+    if (in_array($node->type, array_keys($fia_types['node']))) {
+      if ($fia_enabled) {
+        fb_instant_articles_rss_set_entity($node->nid, $fia_enabled);
+      }
+      else {
+        fb_instant_articles_rss_delete_entity($node->nid);
+      }
+    }
+  }
+  drupal_set_message(t('Selected nodes where %action Facebook Instant Articles RSS feed.', array(
+    '%action' => ($fia_enabled) ? t('published on') : t('unpublished from'),
+  )));
+}
+
+/**
+ * Checks to see if an entity is a Facebook Instant Article.
+ *
+ * @param string $entity_id
+ *   The entity id.
+ *
+ * @return bool
+ *   Boolean TRUE or FALSE.
+ */
+function fb_instant_articles_rss_is_article($entity_id) {
+  $is_type = FALSE;
+  $results = db_select('fb_instant_articles_rss_entity_settings', 'fiaes')
+    ->fields('fiaes', array('fia_enabled'))
+    ->condition('entity_id', $entity_id)
+    ->execute();
+  if (!$results->rowCount()) {
+    $is_type = variable_get('fb_instant_articles_rss_all_enabled_default', TRUE);
+  }
+  else {
+    $is_type = $results->fetch()->fia_enabled;
+  }
+  // Allow other modules to alter.
+  drupal_alter('fb_instant_articles_rss_is_article', $is_type, $entity_id);
+
+  return $is_type;
+}
+
+/**
+ * Sets the entity as a Facebook Instant Article.
+ *
+ * @param int $id
+ *   The entity id.
+ */
+function fb_instant_articles_rss_set_entity($id, $enabled) {
+  db_merge('fb_instant_articles_rss_entity_settings')
+    ->key(array('entity_id' => $id))
+    ->fields(array(
+      'entity_id' => $id,
+      'fia_enabled' => $enabled,
+    ))
+    ->execute();
+  // Allow other modules to perform actions.
+  module_invoke_all('fb_instant_articles_rss_set_entity', $id, $enabled);
+}
+
+/**
+ * Unsets the entity as a Facebook Instant Article.
+ *
+ * @param string $id
+ *   The entity id.
+ */
+function fb_instant_articles_rss_delete_entity($id) {
+  db_delete('fb_instant_articles_rss_entity_settings')
+    ->condition('entity_id', $id)
+    ->execute();
+  // Allow other modules to perform actions.
+  module_invoke_all('fb_instant_articles_rss_delete_entity', $id);
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function fb_instant_articles_rss_form_node_form_alter(&$form, &$form_state, $form_id) {
+  $is_article_type = fb_instant_articles_display_is_article_type('node', $form['#node']->type);
+  if (user_access('administer fb_instant_articles_rss') && $is_article_type) {
+    // Build fieldset for vertical tab section.
+    $fieldset = array(
+      '#type' => 'fieldset',
+      '#title' => t('Facebook Instant Articles'),
+      '#description' => t('Facebook Instant Articles RSS settings.'),
+      '#group' => 'additional_settings',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+
+    // Has the section already been created (perhaps by a sub module)?
+    if (isset($form['fb_instant_articles_rss'])) {
+      // Add additional fieldset data.
+      $form['fb_instant_articles_rss'] += $fieldset;
+    }
+    // Else, create the fieldset.
+    else {
+      $form['fb_instant_articles_rss'] = $fieldset;
+    }
+
+    // Is an Article?
+    $fb_instant_enabled = fb_instant_articles_rss_is_article($form['#node']->nid);
+
+    $previously_checked = (isset($form_state['values']) && $form_state['values']['fb_instant_articles_rss']['fb_instant_enabled']);
+
+    $form['fb_instant_articles_rss']['fb_instant_enabled'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Include in Facebook Instant Articles RSS feed.'),
+      '#description' => t('Enable this entity to be included in the Facebook Instant Articles RSS feed.'),
+      '#weight' => 0,
+      '#default_value' => ($previously_checked || $fb_instant_enabled) ? TRUE : FALSE,
+    );
+
+    // Add custom submit.
+    $form['#submit'][] = 'fb_instant_articles_rss_node_form_submit';
+  }
+}
+
+/**
+ * Submit callback for node form.
+ */
+function fb_instant_articles_rss_node_form_submit($form, &$form_state) {
+  $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $form['type']['#value']);
+  if ($fb_instant_enabled) {
+    if (!isset($form_state['values']['fb_instant_enabled'])) {
+      $form_state['values']['fb_instant_enabled'] = 0;
+    }
+    $value = $form_state['values']['fb_instant_enabled'];
+    $default_enabled = variable_get('fb_instant_articles_rss_all_enabled_default', TRUE);
+    if ($default_enabled xor $value) {
+      // Save the new article entity setting if the value is different from the
+      // default value.
+      fb_instant_articles_rss_set_entity($form['nid']['#value'], $value);
+    }
+    else {
+      // Otherwise if the value and default value are the same, delete the entry
+      // to keep the table clean.
+      fb_instant_articles_rss_delete_entity($form['nid']['#value']);
+    }
+  }
+}

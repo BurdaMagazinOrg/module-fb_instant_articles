@@ -1,14 +1,15 @@
 <?php
+
 /**
  * @file
- * Contains install and update functions for Facebook Instant Articles.
+ * Install and update functions for Facebook Instant Articles Display module.
  */
 
 /**
  * Implements hook_schema().
  */
-function fb_instant_articles_schema() {
-  $schema['fb_instant_articles_entity_types'] = array(
+function fb_instant_articles_display_schema() {
+  $schema['fb_instant_articles_display_entity_types'] = array(
     'description' => 'Mappings between Facebook Instant Articles and entities',
     'fields' => array(
       'entity_type' => array(
@@ -34,14 +35,14 @@ function fb_instant_articles_schema() {
     ),
   );
 
-  $schema['fb_instant_articles_layout_settings'] = array(
+  $schema['fb_instant_articles_display_layout_settings'] = array(
     'description' => 'The table that holds the Facebook Instant Articles layout configuration.',
 
     // CTools export definitions.
     'export' => array(
       'key' => 'id',
-      'identifier' => 'fb_instant_articles_layout',
-      'default hook' => 'fb_instant_articles_layout_settings_info',
+      'identifier' => 'fb_instant_articles_display_layout',
+      'default hook' => 'fb_instant_articles_display_layout_settings_info',
       'can disable' => FALSE,
       'api' => array(
         'owner' => 'fb_instant_articles',
@@ -88,14 +89,14 @@ function fb_instant_articles_schema() {
     ),
   );
 
-  $schema['fb_instant_articles_field_settings'] = array(
+  $schema['fb_instant_articles_display_field_settings'] = array(
     'description' => 'The table that holds Facebook Instant Articles field settings per display.',
 
     // CTools export definitions.
     'export' => array(
       'key' => 'id',
-      'identifier' => 'fb_instant_articles_fieldsetting',
-      'default hook' => 'fb_instant_articles_field_settings_info',
+      'identifier' => 'fb_instant_articles_display_fieldsetting',
+      'default hook' => 'fb_instant_articles_display_field_settings_info',
       'can disable' => FALSE,
       'api' => array(
         'owner' => 'fb_instant_articles',
@@ -150,35 +151,5 @@ function fb_instant_articles_schema() {
     ),
   );
 
-  $schema['fb_instant_articles_entity_settings'] = array(
-    'description' => 'The table that holds Facebook Instant Articles entity settings per entity.',
-    'fields' => array(
-      'entity_id' => array(
-        'description' => 'The entity id.',
-        'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-      ),
-      'fia_enabled' => array(
-        'description' => 'TRUE if the Facebook Instant Articles functionality is enabled for this node..',
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 1,
-      ),
-    ),
-    'primary key' => array('entity_id'),
-  );
-
   return $schema;
-}
-
-/**
- * Implements hook_uninstall().
- */
-function fb_instant_articles_uninstall() {
-  variable_del('fb_instant_articles_channel_title');
-  variable_del('fb_instant_articles_channel_description');
-  variable_del('fb_instant_articles_channel_language');
-  variable_del('fb_instant_articles_style');
-  variable_del('fb_instant_articles_page_id');
 }

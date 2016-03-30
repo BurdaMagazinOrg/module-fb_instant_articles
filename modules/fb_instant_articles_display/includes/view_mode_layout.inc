@@ -1,13 +1,14 @@
 <?php
+
 /**
  * @file
- * Functions to handle layout of the FBIA View Mode.
+ * View mode layout functions for Facebook Instant Articles Display.
  */
 
 /**
- * Includes FBIA View Mode elements.
+ * Includes Facebook Instant Articles Display View Mode elements.
  */
-function fb_instant_articles_layout_form(&$form, &$form_state) {
+function fb_instant_articles_display_layout_form(&$form, &$form_state) {
 
   // Get the entity_type, bundle and view mode.
   $entity_type = $form['#entity_type'];
@@ -15,28 +16,28 @@ function fb_instant_articles_layout_form(&$form, &$form_state) {
   $view_mode = $form['#view_mode'];
   $form['#export_id'] = $entity_type . '|' . $bundle_name . '|' . $view_mode;
 
-  $layout = fb_instant_articles_get_node_layout_settings($bundle_name);
+  $layout = fb_instant_articles_display_get_node_layout_settings($bundle_name);
   $form['#fbia_layout'] = $layout;
 
-  fb_instant_articles_field_ui_fields($entity_type, $bundle_name, $view_mode, $form, $form_state);
+  fb_instant_articles_display_field_ui_fields($entity_type, $bundle_name, $view_mode, $form, $form_state);
 
   // Attach js.
-  $form['#attached']['js'][] = drupal_get_path('module', 'fb_instant_articles') . '/js/admin.js';
+  $form['#attached']['js'][] = drupal_get_path('module', 'fb_instant_articles_display') . '/js/admin.js';
 
   // Add process function to add the regions.
-  $form['#process'][] = 'fb_instant_articles_add_regions';
+  $form['#process'][] = 'fb_instant_articles_display_add_regions';
 
   // Add submit handler. Layout needs be first so
   // we can reset the type key for Field API fields.
   $submit = $form['#submit'];
-  $form['#submit'] = array('fb_instant_articles_field_ui_layouts_save');
+  $form['#submit'] = array('fb_instant_articles_display_field_ui_layouts_save');
   $form['#submit'] = array_merge($form['#submit'], $submit);
 }
 
 /**
- * Includes regions FBIA View Mode.
+ * Includes regions Facebook Instant Articles Display View Mode.
  */
-function fb_instant_articles_add_regions(&$form, &$form_state) {
+function fb_instant_articles_display_add_regions(&$form, &$form_state) {
 
   // Get the entity_type, bundle and view mode.
   $entity_type = $form['#entity_type'];
@@ -82,7 +83,7 @@ function fb_instant_articles_add_regions(&$form, &$form_state) {
     'region_options' => &$region_options,
     'table_regions' => &$table['#regions'],
   );
-  drupal_alter('fb_instant_articles_layout_region', $context, $region_info);
+  drupal_alter('fb_instant_articles_display_layout_region', $context, $region_info);
 
   $region_options['hidden'] = $view_mode != 'form' ? t('Disabled') : t('Hidden');
   $table['#regions']['hidden'] = array(
@@ -116,8 +117,8 @@ function fb_instant_articles_add_regions(&$form, &$form_state) {
   // Update existing rows by changing rowHandler and adding regions.
   foreach (element_children($table) as $name) {
     $row = &$table[$name];
-    $row['#js_settings'] = array('rowHandler' => 'facebookInstantArticles');
-    $row['#region_callback'] = 'fb_instant_articles_field_ui_row_region';
+    $row['#js_settings'] = array('rowHandler' => 'facebookInstantArticlesDisplay');
+    $row['#region_callback'] = 'fb_instant_articles_display_field_ui_row_region';
 
     // Remove hidden format.
     if (isset($row['format']['type']['#options']['hidden'])) {
@@ -160,14 +161,14 @@ function fb_instant_articles_add_regions(&$form, &$form_state) {
 /**
  * Returns the region to which a row in the Field UI screen belongs.
  */
-function fb_instant_articles_field_ui_row_region($row) {
+function fb_instant_articles_display_field_ui_row_region($row) {
   return isset($row['region']['#value']) ? $row['region']['#value'] : 'hidden';
 }
 
 /**
- * Save layout configuration of FBIA View Mode.
+ * Saves layout configuration of Facebook Instant Articles Display View Mode.
  */
-function fb_instant_articles_field_ui_layouts_save($form, &$form_state) {
+function fb_instant_articles_display_field_ui_layouts_save($form, &$form_state) {
   $weight = 0;
 
   // Get default values.
@@ -176,7 +177,7 @@ function fb_instant_articles_field_ui_layouts_save($form, &$form_state) {
   $view_mode = $form['#view_mode'];
 
   // Determine layout variables.
-  $layout = 'fb_instant_article';
+  $layout = 'fb_instant_articles_display';
 
   // Save layout and add regions if necessary.
   $record = new stdClass();
@@ -187,12 +188,12 @@ function fb_instant_articles_field_ui_layouts_save($form, &$form_state) {
 
   $form_state['layout_saved'] = TRUE;
 
-  $fields = fb_instant_articles_sort_fields($form_state['values']['fields'], 'weight');
+  $fields = fb_instant_articles_display_sort_fields($form_state['values']['fields'], 'weight');
 
   foreach ($fields as $key => $field) {
 
     // Make sure we need to save anything for this field.
-    if (fb_instant_articles_field_valid($key, $field, $form_state, $view_mode)) {
+    if (fb_instant_articles_display_field_valid($key, $field, $form_state, $view_mode)) {
       continue;
     }
 
@@ -210,14 +211,14 @@ function fb_instant_articles_field_ui_layouts_save($form, &$form_state) {
   }
 
   // Let other modules alter the layout settings.
-  drupal_alter('fb_instant_articles_layout_settings', $record, $form_state);
+  drupal_alter('fb_instant_articles_display_layout_settings', $record, $form_state);
 
   $layout = $form['#fbia_layout'];
   if (!isset($layout->export_type)) {
-    drupal_write_record('fb_instant_articles_layout_settings', $record);
+    drupal_write_record('fb_instant_articles_display_layout_settings', $record);
   }
   else {
-    drupal_write_record('fb_instant_articles_layout_settings', $record, array('id'));
+    drupal_write_record('fb_instant_articles_display_layout_settings', $record, array('id'));
   }
 
   // Clear entity info cache.
@@ -225,12 +226,12 @@ function fb_instant_articles_field_ui_layouts_save($form, &$form_state) {
 }
 
 /**
- * Get Display Suite layouts.
+ * Gets Facebook Instant Articles Display layouts.
  */
-function fb_instant_articles_get_layout_info() {
+function fb_instant_articles_display_get_layout_info() {
   return array(
-    'fb_instant_article' => array(
-      'label' => t('Facebook Instant Article'),
+    'fb_instant_articles_display' => array(
+      'label' => t('Facebook Instant Articles Display'),
       'path' => "",
       'regions' => array(
         'header' => t('Header'),
@@ -243,14 +244,17 @@ function fb_instant_articles_get_layout_info() {
 }
 
 /**
- * Utility function to sort a multidimensional array by a value in a sub-array.
+ * Sorts a multidimensional array by a value in a sub-array.
  *
  * @param array $a
  *   The array to sort.
  * @param string $subkey
  *   The subkey to sort by.
+ *
+ * @return array
+ *   The sorted multidimensional array.
  */
-function fb_instant_articles_sort_fields(array $a, $subkey) {
+function fb_instant_articles_display_sort_fields(array $a, $subkey) {
   foreach ($a as $k => $v) {
     if (isset($v[$subkey])) {
       $b[$k] = $v[$subkey];
@@ -264,9 +268,9 @@ function fb_instant_articles_sort_fields(array $a, $subkey) {
 }
 
 /**
- * Utility function to check if we need to save anything for this field.
+ * Checks if we need to save anything for this field.
  */
-function fb_instant_articles_field_valid($key, $field, &$form_state, $view_mode = 'default') {
+function fb_instant_articles_display_field_valid($key, $field, &$form_state, $view_mode = 'default') {
   $continue = FALSE;
 
   // Ignore the Field group module and the region to block plugin.
@@ -293,7 +297,7 @@ function fb_instant_articles_field_valid($key, $field, &$form_state, $view_mode 
 }
 
 /**
- * Add the fields to the Field UI form.
+ * Adds the fields to the Field UI form.
  *
  * @param string $entity_type
  *   The name of the entity type.
@@ -306,7 +310,7 @@ function fb_instant_articles_field_valid($key, $field, &$form_state, $view_mode 
  * @param array $form_state
  *   A collection of form_state properties.
  */
-function fb_instant_articles_field_ui_fields($entity_type, $bundle, $view_mode, array &$form, array &$form_state) {
+function fb_instant_articles_display_field_ui_fields($entity_type, $bundle, $view_mode, array &$form, array &$form_state) {
 
   // Do not add the fields if there is no layout.
   if (!isset($form['#fbia_layout'])) {
@@ -314,10 +318,10 @@ function fb_instant_articles_field_ui_fields($entity_type, $bundle, $view_mode, 
   }
 
   // Get the fields and put them on the form.
-  $fields = fb_instant_articles_get_fields($entity_type, FALSE);
+  $fields = fb_instant_articles_display_get_fields($entity_type, FALSE);
 
   // Get field settings.
-  $field_settings = fb_instant_articles_get_field_settings($entity_type, $bundle, $view_mode, FALSE);
+  $field_settings = fb_instant_articles_display_get_field_settings($entity_type, $bundle, $view_mode, FALSE);
   $form['#field_settings'] = $field_settings;
 
   $table = &$form['fields'];
@@ -328,7 +332,7 @@ function fb_instant_articles_field_ui_fields($entity_type, $bundle, $view_mode, 
     'inline' => t('Inline'),
     'hidden' => t('<Hidden>'),
   );
-  drupal_alter('fb_instant_articles_label_options', $field_label_options);
+  drupal_alter('fb_instant_articles_display_label_options', $field_label_options);
 
   foreach ($fields as $key => $field) {
 
@@ -402,11 +406,11 @@ function fb_instant_articles_field_ui_fields($entity_type, $bundle, $view_mode, 
   }
 
   // Add fields submit handler.
-  $form['#submit'][] = 'fb_instant_articles_field_ui_fields_save';
+  $form['#submit'][] = 'fb_instant_articles_display_field_ui_fields_save';
 }
 
 /**
- * Get all fields.
+ * Gets all fields.
  *
  * @param string $entity_type
  *   The name of the entity.
@@ -416,7 +420,7 @@ function fb_instant_articles_field_ui_fields($entity_type, $bundle, $view_mode, 
  * @return array
  *   Collection of fields.
  */
-function fb_instant_articles_get_fields($entity_type, $cache = TRUE) {
+function fb_instant_articles_display_get_fields($entity_type, $cache = TRUE) {
   $fields = array(
     'node' => array(
       'title' => array(
@@ -447,7 +451,7 @@ function fb_instant_articles_get_fields($entity_type, $cache = TRUE) {
 }
 
 /**
- * Get the field settings.
+ * Gets the field settings.
  *
  * @param string $entity_type
  *   The name of the entity.
@@ -459,16 +463,16 @@ function fb_instant_articles_get_fields($entity_type, $cache = TRUE) {
  * @return array
  *   Stored field settings.
  */
-function fb_instant_articles_get_field_settings($entity_type, $bundle, $view_mode, $default = TRUE) {
+function fb_instant_articles_display_get_field_settings($entity_type, $bundle, $view_mode, $default = TRUE) {
   static $field_settings = NULL;
 
   if (!isset($field_settings)) {
-    if ($cache = cache_get('fb_instant_articles_field_settings')) {
+    if ($cache = cache_get('fb_instant_articles_display_field_settings')) {
       $field_settings = $cache->data;
     }
     else {
       ctools_include('export');
-      $fbia_field_settings = ctools_export_crud_load_all('fb_instant_articles_field_settings');
+      $fbia_field_settings = ctools_export_crud_load_all('fb_instant_articles_display_field_settings');
       foreach ($fbia_field_settings as $layout_settings) {
         // Do not store configuration when the field settings is disabled.
         if (!empty($layout_settings->disabled)) {
@@ -482,7 +486,7 @@ function fb_instant_articles_get_field_settings($entity_type, $bundle, $view_mod
           $field_settings[$layout_settings->entity_type][$layout_settings->bundle][$layout_settings->view_mode][$field] = $settings;
         }
       }
-      cache_set('fb_instant_articles_field_settings', $field_settings, 'cache');
+      cache_set('fb_instant_articles_display_field_settings', $field_settings, 'cache');
     }
   }
 
@@ -490,16 +494,16 @@ function fb_instant_articles_get_field_settings($entity_type, $bundle, $view_mod
 }
 
 /**
- * Save the field settings from the 'Manage display' screen.
+ * Saves the field settings from the 'Manage display' screen.
  */
-function fb_instant_articles_field_ui_fields_save($form, &$form_state) {
+function fb_instant_articles_display_field_ui_fields_save($form, &$form_state) {
   // Setup some variables.
   $entity_type = $form['#entity_type'];
   $bundle = $form['#bundle'];
   $view_mode = $form['#view_mode'];
 
   // Delete previous field configuration configuration.
-  db_delete('fb_instant_articles_field_settings')
+  db_delete('fb_instant_articles_display_field_settings')
     ->condition('entity_type', $entity_type)
     ->condition('bundle', $bundle)
     ->condition('view_mode', $view_mode)
@@ -538,7 +542,7 @@ function fb_instant_articles_field_ui_fields_save($form, &$form_state) {
   }
 
   // Allow other modules to modify the field settings before they get saved.
-  drupal_alter('fb_instant_articles_field_settings', $field_settings, $form, $form_state);
+  drupal_alter('fb_instant_articles_display_field_settings', $field_settings, $form, $form_state);
 
   // Save the record.
   if (!empty($field_settings)) {
@@ -548,10 +552,10 @@ function fb_instant_articles_field_ui_fields_save($form, &$form_state) {
     $record->bundle = $bundle;
     $record->view_mode = $view_mode;
     $record->settings = $field_settings;
-    drupal_write_record('fb_instant_articles_field_settings', $record);
+    drupal_write_record('fb_instant_articles_display_field_settings', $record);
   }
 
   // Clear the field cache.
-  cache_clear_all('fb_instant_articles_fields:', 'cache', TRUE);
-  cache_clear_all('fb_instant_articles_field_settings', 'cache');
+  cache_clear_all('fb_instant_articles_display_fields:', 'cache', TRUE);
+  cache_clear_all('fb_instant_articles_display_field_settings', 'cache');
 }
