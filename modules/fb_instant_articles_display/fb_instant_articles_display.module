@@ -108,33 +108,6 @@ function fb_instant_articles_display_is_article_type($entity_type, $bundle) {
 }
 
 /**
- * Boolean check to see if a given entity id is a product type.
- *
- * @param string $entity_id
- *   The entity id.
- *
- * @return bool
- *   Boolean TRUE or FALSE.
- */
-function fb_instant_articles_display_is_article($entity_id) {
-  $is_type = FALSE;
-  $results = db_select('fb_instant_articles_display_entity_settings', 'fiaes')
-    ->fields('fiaes', array('fia_enabled'))
-    ->condition('entity_id', $entity_id)
-    ->execute();
-  if (!$results->rowCount()) {
-    $is_type = variable_get('fb_instant_articles_display_all_enabled_default', TRUE);
-  }
-  else {
-    $is_type = $results->fetch()->fia_enabled;
-  }
-  // Allow other modules to alter.
-  drupal_alter('fb_instant_articles_display_is_article', $is_type, $entity_id);
-
-  return $is_type;
-}
-
-/**
  * Return an array of entity types that are treated as products.
  *
  * @return mixed
@@ -329,7 +302,7 @@ function fb_instant_articles_display_form_alter(&$form, &$form_state, $form_id) 
 
             // Is an Article?
             $type = $form['#node']->type;
-            $fb_instant_enabled = fb_instant_articles_display_is_article($form['#node']->nid);
+            $fb_instant_enabled = fb_instant_articles_rss_is_article($form['#node']->nid);
 
             // Previously checked the product checkbox?
             $previously_checked = (isset($form_state['values']) && $form_state['values']['fb_instant_articles_display']['fb_instant_enabled']);
@@ -369,46 +342,14 @@ function fb_instant_articles_display_node_form_submit($form, &$form_state) {
     if ($default_enabled xor $value) {
       // Save the new article entity setting if the value is different from the
       // default value.
-      fb_instant_articles_display_set_entity($form['nid']['#value'], $value);
+      fb_instant_articles_rss_set_entity($form['nid']['#value'], $value);
     }
     else {
       // Otherwise if the value and default value are the same, delete the entry
       // to keep the table clean.
-      fb_instant_articles_display_delete_entity($form['nid']['#value']);
+      fb_instant_articles_rss_delete_entity($form['nid']['#value']);
     }
   }
-}
-
-/**
- * Save the product id field for an entity.
- *
- * @param int $id
- *   The entity id.
- */
-function fb_instant_articles_display_set_entity($id, $enabled) {
-  db_merge('fb_instant_articles_display_entity_settings')
-    ->key(array('entity_id' => $id))
-    ->fields(array(
-      'entity_id' => $id,
-      'fia_enabled' => $enabled,
-    ))
-    ->execute();
-  // Allow other modules to perform actions.
-  module_invoke_all('fb_instant_articles_display_set_entity', $id, $enabled);
-}
-
-/**
- * Delete the field set to be used as the product id for entity.
- *
- * @param string $id
- *   The entity id.
- */
-function fb_instant_articles_display_delete_entity($id) {
-  db_delete('fb_instant_articles_display_entity_settings')
-    ->condition('entity_id', $id)
-    ->execute();
-  // Allow other modules to perform actions.
-  module_invoke_all('fb_instant_articles_display_delete_entity', $id);
 }
 
 /**

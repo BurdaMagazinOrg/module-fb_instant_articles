@@ -16,3 +16,29 @@ function fb_instant_articles_rss_uninstall() {
   variable_del('fb_instant_articles_rss_number_results_in_feed');
   variable_del('fb_instant_articles_rss_all_enabled_default');
 }
+
+/**
+ * Implements hook_schema().
+ */
+function fb_instant_articles_rss_schema() {
+  $schema['fb_instant_articles_rss_entity_settings'] = array(
+    'description' => 'The table that holds Facebook Instant Articles entity settings per entity.',
+    'fields' => array(
+      'entity_id' => array(
+        'description' => 'The entity id.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'fia_enabled' => array(
+        'description' => 'TRUE if the Facebook Instant Articles functionality is enabled for this node.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+    ),
+    'primary key' => array('entity_id'),
+  );
+
+  return $schema;
+}

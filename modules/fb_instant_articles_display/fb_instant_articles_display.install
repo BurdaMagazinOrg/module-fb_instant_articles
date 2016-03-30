@@ -151,24 +151,5 @@ function fb_instant_articles_display_schema() {
     ),
   );
 
-  $schema['fb_instant_articles_display_entity_settings'] = array(
-    'description' => 'The table that holds Facebook Instant Articles entity settings per entity.',
-    'fields' => array(
-      'entity_id' => array(
-        'description' => 'The entity id.',
-        'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-      ),
-      'fia_enabled' => array(
-        'description' => 'TRUE if the Facebook Instant Articles functionality is enabled for this node..',
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 1,
-      ),
-    ),
-    'primary key' => array('entity_id'),
-  );
-
   return $schema;
 }

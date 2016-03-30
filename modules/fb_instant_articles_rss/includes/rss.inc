@@ -62,7 +62,7 @@ function fb_instant_articles_rss_get_article_nodes() {
       $query->fields('n', array('nid'))
         ->condition('type', $content_type, '=')
         ->condition('status', NODE_PUBLISHED);
-      $published = db_select('fb_instant_articles_display_entity_settings', 'fiafs');
+      $published = db_select('fb_instant_articles_rss_entity_settings', 'fiafs');
       $published->fields('fiafs', array('entity_id'));
       if (!variable_get('fb_instant_articles_rss_all_enabled_default', TRUE)) {
         // If all nodes are disabled by default, select which nodes should be

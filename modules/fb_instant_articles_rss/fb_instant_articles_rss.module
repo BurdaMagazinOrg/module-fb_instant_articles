@@ -79,14 +79,73 @@ function fb_instant_articles_rss_mass_update($nodes, $fia_enabled) {
   foreach ($load_nodes as $node) {
     if (in_array($node->type, array_keys($fia_types['node']))) {
       if ($fia_enabled) {
-        fb_instant_articles_display_set_entity($node->nid, $fia_enabled);
+        fb_instant_articles_rss_set_entity($node->nid, $fia_enabled);
       }
       else {
-        fb_instant_articles_display_delete_entity($node->nid);
+        fb_instant_articles_rss_delete_entity($node->nid);
       }
     }
   }
   drupal_set_message(t('Selected nodes where %action Facebook Instant Articles RSS feed.', array(
     '%action' => ($fia_enabled) ? t('published on') : t('unpublished from'),
   )));
+}
+
+/**
+ * Boolean check to see if a given entity id is a product type.
+ *
+ * @param string $entity_id
+ *   The entity id.
+ *
+ * @return bool
+ *   Boolean TRUE or FALSE.
+ */
+function fb_instant_articles_rss_is_article($entity_id) {
+  $is_type = FALSE;
+  $results = db_select('fb_instant_articles_rss_entity_settings', 'fiaes')
+    ->fields('fiaes', array('fia_enabled'))
+    ->condition('entity_id', $entity_id)
+    ->execute();
+  if (!$results->rowCount()) {
+    $is_type = variable_get('fb_instant_articles_rss_all_enabled_default', TRUE);
+  }
+  else {
+    $is_type = $results->fetch()->fia_enabled;
+  }
+  // Allow other modules to alter.
+  drupal_alter('fb_instant_articles_rss_is_article', $is_type, $entity_id);
+
+  return $is_type;
+}
+
+/**
+ * Save the product id field for an entity.
+ *
+ * @param int $id
+ *   The entity id.
+ */
+function fb_instant_articles_rss_set_entity($id, $enabled) {
+  db_merge('fb_instant_articles_rss_entity_settings')
+    ->key(array('entity_id' => $id))
+    ->fields(array(
+      'entity_id' => $id,
+      'fia_enabled' => $enabled,
+    ))
+    ->execute();
+  // Allow other modules to perform actions.
+  module_invoke_all('fb_instant_articles_rss_set_entity', $id, $enabled);
+}
+
+/**
+ * Delete the field set to be used as the product id for entity.
+ *
+ * @param string $id
+ *   The entity id.
+ */
+function fb_instant_articles_rss_delete_entity($id) {
+  db_delete('fb_instant_articles_rss_entity_settings')
+    ->condition('entity_id', $id)
+    ->execute();
+  // Allow other modules to perform actions.
+  module_invoke_all('fb_instant_articles_rss_delete_entity', $id);
 }
