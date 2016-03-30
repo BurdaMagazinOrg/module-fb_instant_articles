@@ -47,7 +47,6 @@ function fb_instant_articles_display_form_node_type_form_alter(&$form, &$form_st
     $type = $form['#node_type']->type;
     $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $type);
 
-    // Previously checked the product checkbox?
     $previously_checked = (isset($form_state['values']) && $form_state['values']['fb_instant_articles_display']['fb_instant_enabled']);
 
     // Build the product checkbox.
@@ -82,7 +81,7 @@ function fb_instant_articles_display_node_type_form_submit($form, &$form_state) 
 }
 
 /**
- * Boolean check to see if a given entity type and bundle are a product type.
+ * Checks if an entity type and bundle are a Facebook Instant Article type.
  *
  * @param string $entity_type
  *   The entity type name.
@@ -94,7 +93,6 @@ function fb_instant_articles_display_node_type_form_submit($form, &$form_state) 
  */
 function fb_instant_articles_display_is_article_type($entity_type, $bundle) {
   $is_type = FALSE;
-  // Get array of entity types and bundles that are product types.
   if ($types = fb_instant_articles_display_get_article_entity_types()) {
     // See if this entity type and bundle exists.
     if (isset($types[$entity_type]) && isset($types[$entity_type][$bundle])) {
@@ -108,7 +106,7 @@ function fb_instant_articles_display_is_article_type($entity_type, $bundle) {
 }
 
 /**
- * Return an array of entity types that are treated as products.
+ * Gets entity types that are treated as Facebook Instant Articles.
  *
  * @return mixed
  *   Array of entity types and bundles.
@@ -134,7 +132,7 @@ function fb_instant_articles_display_get_article_entity_types() {
 }
 
 /**
- * Save the product id field for an entity type.
+ * Sets the entity type as an allowable Facebook Instant Article type.
  *
  * @param string $type
  *   The entity type.
@@ -153,7 +151,7 @@ function fb_instant_articles_display_set_entity_type($type, $bundle) {
 }
 
 /**
- * Delete the field set to be used as the product id for entity.
+ * Deletes the entity type as an allowable Facebook Instant Article type.
  *
  * @param string $type
  *   The entity type.

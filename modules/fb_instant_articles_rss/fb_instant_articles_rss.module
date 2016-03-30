@@ -93,7 +93,7 @@ function fb_instant_articles_rss_mass_update($nodes, $fia_enabled) {
 }
 
 /**
- * Boolean check to see if a given entity id is a product type.
+ * Checks to see if an entity is a Facebook Instant Article.
  *
  * @param string $entity_id
  *   The entity id.
@@ -120,7 +120,7 @@ function fb_instant_articles_rss_is_article($entity_id) {
 }
 
 /**
- * Save the product id field for an entity.
+ * Sets the entity as a Facebook Instant Article.
  *
  * @param int $id
  *   The entity id.
@@ -138,7 +138,7 @@ function fb_instant_articles_rss_set_entity($id, $enabled) {
 }
 
 /**
- * Delete the field set to be used as the product id for entity.
+ * Unsets the entity as a Facebook Instant Article.
  *
  * @param string $id
  *   The entity id.
@@ -180,10 +180,8 @@ function fb_instant_articles_rss_form_node_form_alter(&$form, &$form_state, $for
     // Is an Article?
     $fb_instant_enabled = fb_instant_articles_rss_is_article($form['#node']->nid);
 
-    // Previously checked the product checkbox?
     $previously_checked = (isset($form_state['values']) && $form_state['values']['fb_instant_articles_rss']['fb_instant_enabled']);
 
-    // Build the product checkbox.
     $form['fb_instant_articles_rss']['fb_instant_enabled'] = array(
       '#type' => 'checkbox',
       '#title' => t('Include in Facebook Instant Articles RSS feed.'),

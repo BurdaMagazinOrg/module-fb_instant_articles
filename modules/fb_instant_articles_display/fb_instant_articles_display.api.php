@@ -34,7 +34,7 @@ function hook_fb_instant_articles_display_is_article_type_alter(&$is_type, $enti
  * @see fb_instant_articles_display_get_article_entity_types()
  */
 function hook_fb_instant_articles_display_entity_types_alter(&$entity_types) {
-  // Explicitly set content type to be included as a product.
+  // Explicitly set content type to be included as a Facebook Instant Article.
   $entity_types['article']['node'] = array(
       'type' => 'article',
       'bundle' => 'node',
