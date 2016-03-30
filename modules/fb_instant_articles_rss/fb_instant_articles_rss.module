@@ -155,62 +155,45 @@ function fb_instant_articles_rss_delete_entity($id) {
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function fb_instant_articles_rss_form_node_form_alter(&$form, &$form_state, $form_id) {
-  $entity_types = fb_instant_articles_display_get_article_entity_types();
-  // If no entity types are defined for instant articles, return early.
-  if (empty($entity_types)) {
-    return;
-  }
-  foreach ($entity_types as $entity_type => $bundles) {
-    foreach ($bundles as $bundle_type => $bundle) {
-      $form_name = $bundle_type . '_node_form';
-      if ($form_id == $form_name) {
-        // Add the module's form settings to this individual node's form.
-        // Add a vertical tab to the node type form.
-        if (user_access('administer fb_instant_articles_rss')) {
-          // Build fieldset for vertical tab section.
-          $fieldset = array(
-            '#type' => 'fieldset',
-            '#title' => t('Facebook Instant Articles'),
-            '#description' => t('Facebook Instant Articles RSS settings.'),
-            '#group' => 'additional_settings',
-            '#collapsible' => TRUE,
-            '#collapsed' => TRUE,
-          );
+  $is_article_type = fb_instant_articles_display_is_article_type('node', $form['#node']->type);
+  if (user_access('administer fb_instant_articles_rss') && $is_article_type) {
+    // Build fieldset for vertical tab section.
+    $fieldset = array(
+      '#type' => 'fieldset',
+      '#title' => t('Facebook Instant Articles'),
+      '#description' => t('Facebook Instant Articles RSS settings.'),
+      '#group' => 'additional_settings',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
 
-          // Has the section already been created (perhaps by a sub module)?
-          if (isset($form['fb_instant_articles_rss'])) {
-            // Add additional fieldset data.
-            $form['fb_instant_articles_rss'] += $fieldset;
-          }
-          // Else, create the fieldset.
-          else {
-            $form['fb_instant_articles_rss'] = $fieldset;
-          }
-
-          // Is an Article?
-          $type = $form['#node']->type;
-          $fb_instant_enabled = fb_instant_articles_rss_is_article($form['#node']->nid);
-
-          // Previously checked the product checkbox?
-          $previously_checked = (isset($form_state['values']) && $form_state['values']['fb_instant_articles_rss']['fb_instant_enabled']);
-
-          // Build the product checkbox.
-          $form['fb_instant_articles_rss']['fb_instant_enabled'] = array(
-            '#type' => 'checkbox',
-            '#title' => t('Include in Facebook Instant Articles RSS feed.'),
-            '#description' => t('Enable this entity to be included in the Facebook Instant Articles RSS feed.'),
-            '#weight' => 0,
-            '#default_value' => ($previously_checked || $fb_instant_enabled) ? TRUE : FALSE,
-          );
-
-          // Add custom submit.
-          $form['#submit'][] = 'fb_instant_articles_rss_node_form_submit';
-        }
-        // Since only one node add/edit form can (probably?) be loaded on a
-        // page at a time, we can break out of this loop.
-        break;
-      }
+    // Has the section already been created (perhaps by a sub module)?
+    if (isset($form['fb_instant_articles_rss'])) {
+      // Add additional fieldset data.
+      $form['fb_instant_articles_rss'] += $fieldset;
     }
+    // Else, create the fieldset.
+    else {
+      $form['fb_instant_articles_rss'] = $fieldset;
+    }
+
+    // Is an Article?
+    $fb_instant_enabled = fb_instant_articles_rss_is_article($form['#node']->nid);
+
+    // Previously checked the product checkbox?
+    $previously_checked = (isset($form_state['values']) && $form_state['values']['fb_instant_articles_rss']['fb_instant_enabled']);
+
+    // Build the product checkbox.
+    $form['fb_instant_articles_rss']['fb_instant_enabled'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Include in Facebook Instant Articles RSS feed.'),
+      '#description' => t('Enable this entity to be included in the Facebook Instant Articles RSS feed.'),
+      '#weight' => 0,
+      '#default_value' => ($previously_checked || $fb_instant_enabled) ? TRUE : FALSE,
+    );
+
+    // Add custom submit.
+    $form['#submit'][] = 'fb_instant_articles_rss_node_form_submit';
   }
 }
 
