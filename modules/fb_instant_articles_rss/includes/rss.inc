@@ -18,11 +18,11 @@ function fb_instant_articles_rss_page() {
   $channel = $rss->addChild('channel');
 
   // Add Channel information;
-  $channel->addChild('title', variable_get('fb_instant_articles_channel_title', variable_get('site_name', 'Default site name')));
-  $channel->addChild('description', variable_get('fb_instant_articles_channel_description', variable_get('site_slogan', t('Default site slogan.'))));
+  $channel->addChild('title', variable_get('fb_instant_articles_rss_channel_title', variable_get('site_name', 'Default site name')));
+  $channel->addChild('description', variable_get('fb_instant_articles_rss_channel_description', variable_get('site_slogan', t('Default site slogan.'))));
   global $base_url;
   $channel->addChild('link', $base_url);
-  $channel->addChild('language', variable_get('fb_instant_articles_channel_language', 'en-gb'));
+  $channel->addChild('language', variable_get('fb_instant_articles_rss_channel_language', 'en-gb'));
 
   // Create ISO 8601 formatted date.
   $date_time = new DateTime('NOW');
