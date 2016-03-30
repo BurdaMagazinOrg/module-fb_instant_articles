@@ -47,6 +47,7 @@ function fb_instant_articles_rss_node_operations() {
   // Check for setting "All nodes enabled by default?".
   // Only show additional operations if setting is not set.
   $fia_all_enabled = variable_get('fb_instant_articles_rss_all_enabled_default', TRUE);
+  $operations = array();
   if (!$fia_all_enabled) {
     $operations = array(
       'add_fia' => array(
