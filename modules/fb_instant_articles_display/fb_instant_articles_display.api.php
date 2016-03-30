@@ -6,7 +6,8 @@
  */
 
 /**
- * Implements hook_fb_instant_articles_display_is_article_type_alter().
+ * Allows modules to alter if an entity type and bundle are treated as Facebook
+ * Instant Articles.
  *
  * @param $is_type
  *   A boolean for if this is a node type that should be served as a Facebook
@@ -26,7 +27,8 @@ function hook_fb_instant_articles_display_is_article_type_alter(&$is_type, $enti
 }
 
 /**
- * Implements hook_fb_instant_articles_display_entity_types_alter().
+ * Allows modules to alter entity types that are treated as Facebook Instant
+ * Articles.
  *
  * @param $entity_types
  *   Array of entity types and bundles.
@@ -42,91 +44,62 @@ function hook_fb_instant_articles_display_entity_types_alter(&$entity_types) {
 }
 
 /**
- * Implements hook_fb_instant_articles_display_set_type().
+ * Sets the entity type as an allowable Facebook Instant Article type.
  *
  * Perform actions when an fb_instant_article is about to be set.
  *
- * @param $type
+ * @param $entity_type
  *   The entity type name.
  * @param $bundle
  *   The entity bundle name.
  *
  * @see fb_instant_articles_display_set_entity_type()
  */
-function hook_fb_instant_articles_display_set_type($type, $bundle) {
-  if ($entity_type == 'article' && $bundle == 'node') {
+function hook_fb_instant_articles_display_set_type($entity_type, $bundle) {
+  if ($entity_type == 'node' && $bundle == 'article') {
     // Perform some action.
   }
 }
 
 /**
- * Implements hook_fb_instant_articles_display_delete_type().
+ * Deletes the entity type as an allowable Facebook Instant Article type.
  *
  * Perform actions when an fb_instant_article is about to be deleted.
  *
- * @param $type
+ * @param $entity_type
  *   The entity type name.
  * @param $bundle
  *   The entity bundle name.
  *
  * @see fb_instant_articles_display_delete_entity_type()
  */
-function hook_fb_instant_articles_display_delete_entity_type($type, $bundle) {
-  if ($entity_type == 'article' && $bundle == 'node') {
+function hook_fb_instant_articles_display_delete_type($entity_type, $bundle) {
+  if ($entity_type == 'node' && $bundle == 'article') {
     // Perform some action.
   }
 }
 
 /**
- * Implements hook_fb_instant_articles_display_layout_region_alter().
+ * Allows other modules to alter Facebook Instant Articles region info.
  *
  * @param $context
  *   An array of consisting of the entity type, bundle and view_mode.
  * @param $region_info
  *   Region table options.
  *
- * @see fb_instant_articles_display_layout_region_alter()
+ * @see fb_instant_articles_display_add_regions()
  */
-function hook_fb_instant_articles_display_layout_region_alter(&$context, &$region_info) {
-  // Let other modules alter the regions.
-  $context = array(
-    'entity_type' => $entity_type,
-    'bundle' => $bundle,
-    'view_mode' => $view_mode,
-  );
-
-  $region_info = array(
-    'region_options' => array(),
-    'table_regions' => array(),
-  );
+function hook_fb_instant_articles_display_layout_region_alter($context, &$region_info) {
+  if ($context['entity_type'] == 'node' && $context['bundle'] == 'article') {
+    $region_info = array(
+      'region_options' => array(),
+      'table_regions' => array(),
+    );
+  }
 }
 
 /**
- * Implements hook_fb_instant_articles_display_layout_region_alter().
- *
- * @param $context
- *   An array of consisting of the entity type, bundle and view_mode.
- * @param $region_info
- *   Region table options.
- *
- * @see fb_instant_articles_display_layout_region_alter()
- */
-function hook_fb_instant_articles_display_layout_region_alter(&$context, &$region_info) {
-  // Let other modules alter the regions.
-  $context = array(
-    'entity_type' => $entity_type,
-    'bundle' => $bundle,
-    'view_mode' => $view_mode,
-  );
-
-  $region_info = array(
-    'region_options' => array(),
-    'table_regions' => array(),
-  );
-}
-
-/**
- * Implements hook_fb_instant_articles_display_layout_settings().
+ * Allows other modules to alter Facebook Instant Articles layout settings.
  *
  * @param $record
  *   The exportable of the view mode layout.
@@ -138,4 +111,26 @@ function hook_fb_instant_articles_display_layout_region_alter(&$context, &$regio
 function hook_fb_instant_articles_display_layout_settings_alter(&$record, &$form_state) {
   // Alter $form_state or/and $record.
 }
-?>
+
+/**
+ * Allows modules to alter Facebook Instant Articles display label options.
+ *
+ * @param array $field_label_options
+ *   An array of field label options.
+ *
+ * @see fb_instant_articles_display_field_ui_fields()
+ */
+function hook_fb_instant_articles_display_label_options_alter(&$field_label_options) {
+}
+
+/**
+ * Allows other modules to modify the field settings before they get saved.
+ *
+ * @param $field_settings
+ * @param $form
+ * @param $form_state
+ *
+ * @see fb_instant_articles_display_field_ui_fields_save()
+ */
+function hook_fb_instant_articles_display_field_settings_alter(&$field_settings, &$form, &$form_state) {
+}
