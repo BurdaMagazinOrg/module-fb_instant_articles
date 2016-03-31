@@ -178,7 +178,13 @@ function fb_instant_articles_rss_form_node_form_alter(&$form, &$form_state, $for
     }
 
     // Is an Article?
-    $fb_instant_enabled = fb_instant_articles_rss_is_article($form['#node']->nid);
+    $type = $form['#node']->type;
+    if (!empty($form['#node']->nid)) {
+      $fb_instant_enabled = fb_instant_articles_rss_is_article($form['#node']->nid);
+    }
+    else {
+      $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $type);
+    }
 
     $previously_checked = (isset($form_state['values']) && $form_state['values']['fb_instant_articles_rss']['fb_instant_enabled']);
 
