@@ -48,14 +48,17 @@ If you're a publisher who wants more control over exact timing of publishing -
 editing, modifying public access, or removing content from your Facebook Instant 
 Articles library - the API approach allows for greater control.
 
-#### API Rules integration
+#### API Rules integration (optional)
 
 If you're using the API you will need to determine under what conditions the API
 creates, edits or removes content from Facebook's Instant Articles library. This
 submodule adds actions (both Drupal core actions and [Rules](https://drupal.org/project/rules) 
-module actions) which can be triggered based on your chosen configurations.
+module actions) which can be triggered based on your chosen configurations. 
+Alternately, If you do not choose to use this module to trigger API actions, you 
+will want to trigger them some other way (via a custom module implementing 
+entity CRUD hooks checking your own custom conditions in code, etc).
 
-#### API Report
+#### API Report (optional)
 
 Optionally enable this module to give a report of API interactions, so that for 
 example any content that fails Facebook Instant Article format validation will
