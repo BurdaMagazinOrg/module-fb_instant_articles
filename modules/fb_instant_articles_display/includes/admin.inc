@@ -7,7 +7,7 @@
 /**
  * Admin settings form.
  */
-function fb_instant_articles_admin_settings_form() {
+function fb_instant_articles_display_admin_settings_form() {
   $form['logging'] = array(
     '#type' => 'fieldset',
     '#title' => t('Logging'),
@@ -16,7 +16,7 @@ function fb_instant_articles_admin_settings_form() {
   $form['logging']['fb_instant_articles_display_enable_transformer_logging'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable Instant Article Transformer logging?'),
-    '#default_value' => variable_get('fb_instant_articles_enable_transformer_logging', FALSE),
+    '#default_value' => variable_get('fb_instant_articles_display_enable_transformer_logging', FALSE),
   );
   $form = system_settings_form($form);
 
