@@ -1,0 +1,75 @@
+<?php
+/**
+ * @file
+ * Facebook Instant Articles core functions.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function fb_instant_articles_menu() {
+  // Top level configuration page.
+  $items['admin/config/services/fb-instant-articles'] = array(
+    'title' => 'Facebook Instant Articles',
+    'description' => 'Settings related to Facebook Instant Articles.',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function fb_instant_articles_permission() {
+  $permissions = array();
+
+  $permissions['administer fb_instant_articles'] = array(
+    'title' => t('Administer Facebook Instant Articles'),
+  );
+  return $permissions;
+}
+
+/**
+ * Implements hook_help().
+ */
+function fb_instant_articles_help($path, $arg) {
+  $output = '';
+
+  switch ($path) {
+    // Main module help for the block module.
+    case 'admin/help#fb_instant_articles':
+      $filepath = dirname(__FILE__) . '/README.txt';
+      if (file_exists($filepath)) {
+        $readme = file_get_contents($filepath);
+      }
+      $output = '<pre>' . $readme . '</pre>';
+      break;
+
+  }
+  return $output;
+}
+
+/**
+ * Implements hook_html_head_alter().
+ */
+function fb_instant_articles_html_head_alter(&$head_elements) {
+  if (drupal_is_front_page()) {
+    $tag_content = variable_get('fb_instant_articles_page_id', NULL);
+
+    if (!empty($tag_content)) {
+      $head_elements['fb_instant_articles_page'] = array(
+        '#type' => 'html_tag',
+        '#tag' => 'meta',
+        '#attributes' => array(
+          'property' => 'fb:pages',
+          'content' => $tag_content,
+        ),
+      );
+      drupal_add_html_head($head_elements, 'fb_instant_articles_page');
+    }
+  }
+}
