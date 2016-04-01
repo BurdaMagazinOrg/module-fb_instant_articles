@@ -5,7 +5,7 @@
  * Hook implementations for Facebook Instant Articles Display module.
  */
 
- require __DIR__ . '../../vendor/autoload.php';
+ require __DIR__ . '/../../vendor/autoload.php';
 
  use Facebook\InstantArticles\Elements\Author;
  use Facebook\InstantArticles\Elements\Header;
