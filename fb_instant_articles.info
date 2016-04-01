@@ -1,6 +1,5 @@
 name = Facebook Instant Articles
-description = Allows content to be syndicated to Facebook Instant Articles.
-package = Syndication
+description = Base module for Facebook Instant Articles.
+package = Facebook Instant Articles
 core = 7.x
 configure = admin/config/services/fb-instant-articles
-dependencies[] = ctools

@@ -1,6 +1,6 @@
 /**
  * @file
- * Javascript functionality for Display Suite's administration UI.
+ * Javascript functionality for Facebook Instant Articles Display module.
  */
 
 (function ($) {
@@ -9,7 +9,7 @@
   // Row handlers for the 'Manage display' screen.
   Drupal.fieldUIDisplayOverview = Drupal.fieldUIDisplayOverview || {};
 
-  Drupal.fieldUIDisplayOverview.facebookInstantArticles = function (row, data) {
+  Drupal.fieldUIDisplayOverview.facebookInstantArticlesDisplay = function (row, data) {
 
     this.row = row;
     this.name = data.name;
@@ -27,7 +27,7 @@
     return this;
   };
 
-  Drupal.fieldUIDisplayOverview.facebookInstantArticles.prototype = {
+  Drupal.fieldUIDisplayOverview.facebookInstantArticlesDisplay.prototype = {
 
     /**
      * Returns the region corresponding to the current form values of the row.

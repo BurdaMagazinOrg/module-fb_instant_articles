@@ -1,10 +1,9 @@
 <?php
-/**
- * @file
- * Field template for Facebook Instant Article fields.
- */
 
 /**
+ * @file
+ * Field template for Facebook Instant Articles Display.
+ *
  * Variables that can be used in this template.
  *
  * @see theme_field()
