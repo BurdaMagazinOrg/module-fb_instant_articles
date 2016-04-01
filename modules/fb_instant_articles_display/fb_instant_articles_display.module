@@ -175,7 +175,9 @@ function fb_instant_articles_display_entity_info_alter(&$entity_info) {
     'label' => t('Facebook Instant Articles'),
     'custom settings' => TRUE,
   );
-}/**
+}
+
+/**
  * Implements hook_preprocess_node().
  */
 function fb_instant_articles_display_preprocess_node(&$vars) {
@@ -347,7 +349,7 @@ function fb_instant_articles_display_field_formatter_info() {
       'caption' => '',
       'likes' => '',
       'comments' => '',
-      'fullscreen' => '',
+      'presentation' => 'aspect-fit',
     ),
   );
   $formats['fbia_interactive_formatter'] = array(
@@ -466,10 +468,21 @@ function fb_instant_articles_display_field_formatter_settings_form($field, $inst
         '#title' => t('Enable Facebook Comments. (data-feedback)'),
         '#default_value' => $settings['comments'],
       );
-      $element['fullscreen'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Enable Fullscreen.'),
-        '#default_value' => $settings['fullscreen'],
+      $element['presentation'] = array(
+        '#type' => 'radios',
+        '#title' => t('Presentation style.'),
+        '#description' => t('See the "Presentation" option') . ' ' . l(t('here'), 'https://developers.facebook.com/docs/instant-articles/reference/image#options', array(
+          'attributes' => array(
+            'target' => '_blank',
+          ),
+        )) . ' ' . t('for more information.'),
+        '#options' => array(
+          'aspect-fit' => 'aspect-fit',
+          'aspect-fit-only' => 'aspect-fit-only',
+          'fullscreen' => 'fullscreen',
+          'non-interactive' => 'non-interactive',
+        ),
+        '#default_value' => $settings['presentation'],
       );
       break;
 

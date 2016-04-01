@@ -98,12 +98,12 @@ function fb_instant_articles_display_field_format_image_element($items, $setting
       $data_feedback_attribute = ' data-feedback="' . implode(',', $data_feedback) . '"';
     }
 
-    $data_mode_fullscreen = '';
-    if (!empty($settings['fullscreen'])) {
-      $data_mode_fullscreen = ' data-mode="fullscreen"';
+    $data_mode_presentation = '';
+    if (!empty($settings['presentation'])) {
+      $data_mode_presentation = ' data-mode="' . $settings['presentation'] . '"';
     }
 
-    $output = '<figure' . $data_feedback_attribute . $data_mode_fullscreen . '>' . $image . $caption . '</figure>';
+    $output = '<figure' . $data_feedback_attribute . $data_mode_presentation . '>' . $image . $caption . '</figure>';
     $element[$delta]['#markup'] = $output;
   }
 
