@@ -176,34 +176,3 @@ function fb_instant_articles_display_schema() {
 
   return $schema;
 }
-
-/**
- * Update fb_instant_articles_entity_types schema.
- */
-function fb_instant_articles_display_update_7000() {
-  // Add the id column to fb_instant_articles_display_entity_types
-  $field = array(
-    'description' => 'The unique id of this entity type mapping.',
-    'type' => 'varchar',
-    'length' => 255,
-    'not null' => TRUE,
-    'default' => '',
-  );
-  db_add_field('fb_instant_articles_display_entity_types', 'id', $field);
-
-  // Populate the new field with the appropriate value
-  $result = db_select('fb_instant_articles_display_entity_types', 'fiad_et')
-    ->fields('fiad_et')
-    ->execute();
-  foreach ($result as $row) {
-    $id = $row->entity_type . '|' . $row->entity_bundle;
-    db_update('fb_instant_articles_display_entity_types')
-      ->fields(array('id' => $id))
-      ->condition('entity_type', $row->entity_type)
-      ->condition('entity_bundle', $row->entity_bundle)
-      ->execute();
-  }
-
-  // Make the new 'id' field the primary key
-  db_add_primary_key('fb_instant_articles_display_entity_types', array('id'));
-}
