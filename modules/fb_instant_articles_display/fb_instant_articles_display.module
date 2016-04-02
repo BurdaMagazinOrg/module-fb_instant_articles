@@ -327,15 +327,8 @@ function fb_instant_articles_display_theme() {
  */
 function theme_node__fb_instant_article($vars) {
   $node = $vars['node'];
-  $content = $vars['content'];
   /** @var InstantArticle $instant_article */
   $instant_article = $node->fb_instant_articles_display_instant_article;
-
-  // @todo just for testing, need to write a new field formater that integrates Transfomer
-  $instant_article->addChild(
-    Paragraph::create()
-      ->appendText('Hello World!')
-  );
 
   return $instant_article->render('<!doctype html>', TRUE);
 }
@@ -376,6 +369,7 @@ function fb_instant_articles_display_get_node_layout_settings($bundle_name) {
  */
 function fb_instant_articles_display_field_formatter_info() {
   $formats = array();
+  // Header only elements
   $formats['fbia_subtitle_formatter'] = array(
     'label' => t('FBIA Subtitle'),
     'field types' => array('text', 'text_long', 'text_with_summary'),
@@ -453,6 +447,10 @@ function fb_instant_articles_display_field_formatter_info() {
     'settings'  => array(
       'list_type' => 'ol',
     ),
+  );
+  $formats['fbia_transformer_formatter'] = array(
+    'label' => t('FBIA Transfomer'),
+    'field types' => array('text', 'text_long', 'text_with_summary'),
   );
   return $formats;
 }
@@ -718,6 +716,11 @@ function fb_instant_articles_display_field_formatter_view($entity_type, $entity,
       case 'fbia_copyright_formatter':
         if ($active_region === 'footer') {
           fb_instant_articles_display_field_format_copyright($items, $footer);
+        }
+        break;
+      case 'fbia_transformer_formatter':
+        if ($active_region === 'body') {
+          fb_instant_articles_display_field_format_transfomer($items, $instant_article, $instance, $langcode);
         }
         break;
 

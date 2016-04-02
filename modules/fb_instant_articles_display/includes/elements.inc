@@ -14,6 +14,7 @@ use Facebook\InstantArticles\Elements\Author;
 use Facebook\InstantArticles\Elements\Footer;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
+use Facebook\InstantArticles\Transformer\Transformer;
 
 /**
  * Formatter for the Subtitle element.
@@ -188,6 +189,36 @@ function fb_instant_articles_display_field_format_image_element($items, $region,
     else if ($region instanceof InstantArticle) {
       $region->addChild($image);
     }
+  }
+}
+
+/**
+ * Formatter for any markup field that must needs be piped through the
+ * Transfomer object.
+ *
+ * @param $items
+ * @param InstantArticle $body
+ * @param $instance
+ * @param $langcode
+ */
+function fb_instant_articles_display_field_format_transfomer($items, $body, $instance, $langcode) {
+  $transformer = new Transformer();
+  $transformer->loadRules(file_get_contents(__DIR__ . '/../transformer_config.json'));
+  foreach($items as $delta => $item) {
+    // @see _text_sanitize().
+    if (isset($item['safe_value'])) {
+      $output = $item['safe_value'];
+    }
+    else {
+      $output = $instance['settings']['text_processing'] ? check_markup($item['value'], $item['format'], $langcode) : check_plain($item['value']);
+    }
+
+    // Pass the markup through Transformer::transform().
+    $document = new \DOMDocument();
+    @$document->loadHTML($output);
+    $transformer->transform($body, $document);
+
+    // @todo store entity warnings so we can display them in the admin
   }
 }
 
