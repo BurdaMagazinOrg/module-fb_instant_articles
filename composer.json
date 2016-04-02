@@ -16,14 +16,11 @@
   }, {
     "name": "Simon Engelhardt",
     "homepage": "https://www.drupal.org/u/simonengelhardt"
-  }],
-  "repositories": [{
-    "type": "composer",
-    "url": "https://packagist.drupal-composer.org"
+  }, {
+    "name": "Matthew Oliveira",
+    "homepage": "https://www.drupal.org/u/m4olivei"
   }],
   "require": {
-    "drupal/drupal": "7.*",
-    "drupal/ctools": "^7.1",
     "facebook/facebook-instant-articles-sdk-php": "^0.4.0"
   }
 }

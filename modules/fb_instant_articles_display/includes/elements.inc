@@ -4,110 +4,191 @@
  * Formatter output functions for Facebook Instant Articles Display.
  */
 
+use Facebook\InstantArticles\Elements\Image;
+use Facebook\InstantArticles\Elements\Header;
+use Facebook\InstantArticles\Elements\InstantArticle;
+use Facebook\InstantArticles\Elements\Caption;
+use Facebook\InstantArticles\Elements\Element;
+use Facebook\InstantArticles\Elements\TextContainer;
+use Facebook\InstantArticles\Elements\Author;
+use Facebook\InstantArticles\Elements\Footer;
+use Facebook\InstantArticles\Elements\Ad;
+use Facebook\InstantArticles\Elements\Analytics;
+
+/**
+ * Formatter for the Subtitle element.
+ *
+ * @param $items
+ * @param Header $header
+ */
+function fb_instant_articles_display_field_format_subtitle($items, $header) {
+  // We can only have a single subtitle, so just take the first delta to
+  // be the subtitle.
+  // @todo do we have to sanitize first, or will FB IA SDK take care of it?
+  $header->withSubTitle(strip_tags($items[0]['value']));
+}
+
+/**
+ * Formatter for the Kicker element.
+ *
+ * @param $region
+ * @param $items
+ * @param Header $header
+ */
+function fb_instant_articles_display_field_format_kicker($items, $header) {
+  // We can only have a single kicker, so just take the first delta to
+  // be the kicker.
+  $header->withKicker($items[0]['value']);
+}
+
 /**
  * Formatter for standard elements.
+ *
+ * @param $items
+ * @param InstantArticle $body
+ * @param TextContainer $text_container
  */
-function fb_instant_articles_display_field_format_standard_element($items, $wrapper_tag = 'p', $class = '') {
-  $element = array();
-
-  if (!empty($class)) {
-    $class = ' class="' . $class . '"';
-  }
-
+function fb_instant_articles_display_field_format_text_container($items, $body, $text_container) {
   foreach ($items as $delta => $item) {
-    $element[$delta]['#markup'] = '<' . $wrapper_tag . $class . '>' . $item['safe_value'] . '</' . $wrapper_tag . '>';
+    // @todo sanitize text before sending off to FB IA SDK?
+    // @todo how does this do with markup in $item['value']?
+    $body->addChild(
+      $text_container->appendText($item['value'])
+    );
   }
-  return $element;
+}
+
+/**
+ * Formatter for authors.
+ *
+ * @param $items
+ * @param Header $header
+ */
+function fb_instant_articles_display_field_format_author($items, $header) {
+  foreach ($items as $delta => $item) {
+    // @todo sanitize text before sending off to FB IA SDK?
+    $header->addAuthor(
+      Author::create()
+        ->withName($item['value'])
+    );
+  }
+}
+
+/**
+ * Formatter for credits.
+ *
+ * @param $items
+ * @param Footer $footer
+ */
+function fb_instant_articles_display_field_format_credits($items, $footer) {
+  // We can only have a single credits group.
+  // @todo sanitize text before sending off to FB IA SDK?
+  $footer->withCredits($items[0]['value']);
+}
+
+/**
+ * Formatter for copyright.
+ *
+ * @param $items
+ * @param Footer $footer
+ */
+function fb_instant_articles_display_field_format_copyright($items, $footer) {
+  // We can only have a single copyright line.
+  // @todo sanitize text before sending off to FB IA SDK?
+  $footer->withCopyright($items[0]['value']);
 }
 
 /**
  * Formatter for the Ad element.
+ *
+ * @param $items
+ * @param Header $header
+ * @param $settings
  */
-function fb_instant_articles_display_field_format_ad_element($items, $settings) {
-  $element = array();
-
+function fb_instant_articles_display_field_format_ad_element($items, $header, $settings) {
   foreach ($items as $delta => $item) {
-    $attributes = "";
-
+    $ad = Ad::create();
     if (!empty($settings['height'])) {
-      $attributes .= ' height="' . $settings['height'] . '"';
+      $ad->withHeight($settings['height']);
     }
     if (!empty($settings['width'])) {
-      $attributes .= ' width="' . $settings['width'] . '"';
+      $ad->withWidth($settings['width']);
     }
-    switch ($settings['source']) {
-      case 'embed':
-        $element[$delta]['#markup'] = '<figure class="op-ad"><iframe ' . $attributes . '>' . $item['safe_value'] . '</iframe></figure>';
-        break;
-
-      default:
-        $element[$delta]['#markup'] = '<figure class="op-ad"><iframe src="' . $item['safe_value'] . '"' . $attributes . ' /></figure>';
-        break;
+    if ($settings['source'] === 'embed') {
+      // @todo sanitize text before sending off to FB IA SDK?
+      $ad->withHtml($item['value']);
     }
+    else {
+      // @todo sanitize text before sending off to FB IA SDK?
+      $ad->withSource($item['value']);
+    }
+    $header->addAd($ad);
   }
-  return $element;
 }
 
 /**
  * Formatter for the Analytics element.
+ *
+ * @param $items
+ * @param InstantArticle $body
+ * @param $settings
  */
-function fb_instant_articles_display_field_format_analytics_element($items, $settings) {
-  $element = array();
+function fb_instant_articles_display_field_format_analytics_element($items, $body, $settings) {
   foreach ($items as $delta => $item) {
-    switch ($settings['source']) {
-      case 'embed':
-        $element[$delta]['#markup'] = '<figure class="op-tracker"><iframe>' . $item['safe_value'] . '</iframe></figure>';
-        break;
+    $analytics = Analytics::create();
 
-      default:
-        $element[$delta]['#markup'] = '<figure class="op-tracker"><iframe src="' . $item['safe_value'] . '" /></figure>';
-        break;
-
+    if ($settings['source'] === 'embed') {
+      // @todo sanitize text before sending off to FB IA SDK?
+      $analytics->withHTML($item['value']);
     }
+    else {
+      // @todo sanitize text before sending off to FB IA SDK?
+      $analytics->withSource($item['value']);
+    }
+    $body->addChild($analytics);
   }
-  return $element;
 }
 
 /**
  * Formatter for the Image element.
+ *
+ * @param $items
+ * @param Element $region
+ * @param $settings
  */
-function fb_instant_articles_display_field_format_image_element($items, $settings) {
-  $element = array();
-
+function fb_instant_articles_display_field_format_image_element($items, $region, $settings) {
   foreach ($items as $delta => $item) {
-    $image_settings = array(
-      'style_name' => $settings['style'],
-      'path' => $item['uri'],
-    );
-    $image = theme('image_style', $image_settings);
+    $image_url = image_style_url($settings['style'], $item['uri']);
+    $image = Image::create()
+      ->withURL($image_url);
 
-    $caption = "";
-    if (!empty($settings['caption'])) {
-      $caption = '<figcaption>' . $item['alt'] . '</figcaption>';
+    if (!empty($settings['caption']) && !empty($item['alt'])) {
+      $image->withCaption(
+        Caption::create()
+          ->appendText($item['alt'])
+      );
     }
 
-    $data_feedback = array();
-    $data_feedback_attribute = '';
     if (!empty($settings['likes'])) {
-      $data_feedback[] = 'fb:likes';
+      $image->enableLike();
     }
     if (!empty($settings['comments'])) {
-      $data_feedback[] = 'fb:comments';
+      $image->enableComments();
     }
-    if (!empty($data_feedback)) {
-      $data_feedback_attribute = ' data-feedback="' . implode(',', $data_feedback) . '"';
-    }
-
-    $data_mode_fullscreen = '';
     if (!empty($settings['fullscreen'])) {
-      $data_mode_fullscreen = ' data-mode="fullscreen"';
+      // @todo support other presentations.
+      $image->withPresentation(Image::FULLSCREEN);
     }
 
-    $output = '<figure' . $data_feedback_attribute . $data_mode_fullscreen . '>' . $image . $caption . '</figure>';
-    $element[$delta]['#markup'] = $output;
+    if ($region instanceof Header) {
+      $region->withCover($image);
+      // Header can only have one image, break after the first.
+      break;
+    }
+    else if ($region instanceof InstantArticle) {
+      $region->addChild($image);
+    }
   }
-
-  return $element;
 }
 
 /**
