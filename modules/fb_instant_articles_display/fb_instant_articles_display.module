@@ -692,6 +692,18 @@ function fb_instant_articles_display_field_formatter_view($entity_type, $entity,
           fb_instant_articles_display_field_format_image_element($items, $pass_region, $settings);
         }
         break;
+      case 'fbia_video_formatter':
+        $pass_region = null;
+        if ($active_region === 'header') {
+          $pass_region = $header;
+        }
+        else if ($active_region === 'body') {
+          $pass_region = $header;
+        }
+        if ($pass_region) {
+          fb_instant_articles_display_field_format_video_element($items, $pass_region, $settings);
+        }
+        break;
       case 'fbia_blockquote_formatter':
         if ($active_region === 'body') {
           fb_instant_articles_display_field_format_text_container($items, $instant_article, Blockquote::create());
@@ -705,6 +717,21 @@ function fb_instant_articles_display_field_formatter_view($entity_type, $entity,
       case 'fbia_analytics_formatter':
         if ($active_region === 'body') {
           fb_instant_articles_display_field_format_analytics_element($items, $instant_article, $settings);
+        }
+        break;
+      case 'fbia_interactive_formatter':
+        if ($active_region === 'body') {
+          fb_instant_articles_display_field_format_interactive_element($items, $instant_article, $settings);
+        }
+        break;
+      case 'fbia_list_formatter':
+        if ($active_region === 'body') {
+          fb_instant_articles_display_field_format_list_element($items, $instant_article, $settings);
+        }
+        break;
+      case 'fbia_social_formatter':
+        if ($active_region === 'body') {
+          fb_instant_articles_display_field_format_social_element($items, $instant_article);
         }
         break;
       case 'fbia_credits_formatter':
@@ -721,23 +748,6 @@ function fb_instant_articles_display_field_formatter_view($entity_type, $entity,
         if ($active_region === 'body') {
           fb_instant_articles_display_field_format_transfomer($items, $instant_article, $instance, $langcode);
         }
-        break;
-
-      // @todo convert the rest of these to use InstantArticle object
-      case 'fbia_video_formatter':
-        $element = fb_instant_articles_display_field_format_video_element($items, $settings);
-        break;
-
-      case 'fbia_interactive_formatter':
-        $element = fb_instant_articles_display_field_format_interactive_element($items, $settings);
-        break;
-
-      case 'fbia_list_formatter':
-        $element = fb_instant_articles_display_field_format_list_element($items, $settings);
-        break;
-
-      case 'fbia_social_formatter':
-        $element = fb_instant_articles_display_field_format_social_element($items, $settings);
         break;
     }
     return $element;

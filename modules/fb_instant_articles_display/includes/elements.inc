@@ -14,6 +14,11 @@ use Facebook\InstantArticles\Elements\Author;
 use Facebook\InstantArticles\Elements\Footer;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
+use Facebook\InstantArticles\Elements\Video;
+use Facebook\InstantArticles\Elements\Interactive;
+use Facebook\InstantArticles\Elements\ListElement;
+use Facebook\InstantArticles\Elements\ListItem;
+use Facebook\InstantArticles\Elements\SocialEmbed;
 use Facebook\InstantArticles\Transformer\Transformer;
 
 /**
@@ -224,70 +229,87 @@ function fb_instant_articles_display_field_format_transfomer($items, $body, $ins
 
 /**
  * Formatter for the Interactive element.
+ *
+ * @param $items
+ * @param InstantArticle $body
+ * @param $settings
  */
-function fb_instant_articles_display_field_format_interactive_element($items, $settings) {
-  $element = array();
-
+function fb_instant_articles_display_field_format_interactive_element($items, $body, $settings) {
   foreach ($items as $delta => $item) {
-    $attributes = "";
+    $interactive = Interactive::create();
 
     if (!empty($settings['height'])) {
-      $attributes .= ' height="' . $settings['height'] . '"';
+      $interactive->withHeight($settings['height']);
     }
     if (!empty($settings['width'])) {
-      $attributes .= ' class="' . $settings['width'] . '"';
+      $interactive->withWidth($settings['width']);
     }
 
-    $element[$delta]['#markup'] = '<figure class="op-interactive"><iframe src="' . $item['safe_value'] . '"' . $attributes . ' /></figure>';
+    // @todo sanitize text before sending off to FB IA SDK?
+    $interactive->withHTML($item['value']);
+    $body->addChild($interactive);
   }
-  return $element;
 }
 
 /**
  * Formatter for the List element.
+ *
+ * @param $items
+ * @param InstantArticle $body
+ * @param $settings
  */
-function fb_instant_articles_display_field_format_list_element($items, $settings) {
-  $element = array();
-
-  if (empty($items) || count($items) == 0) {
-    return $element;
-  }
-
+function fb_instant_articles_display_field_format_list_element($items, $body, $settings) {
   $list_type = !empty($settings['list_type']) ? $settings['list_type'] : 'ol';
-
-  $list_markup = '<' . $list_type . '>';
+  if ($list_type == 'ol') {
+    $list_element = ListElement::createOrdered();
+  }
+  else {
+    $list_element = ListElement::createUnordered();
+  }
 
   foreach ($items as $delta => $item) {
-    $list_markup .= '<li>' . $item['value'] . '</li>';
+    // @todo sanitize text before sending off to FB IA SDK?
+    $list_item = ListItem::create()
+      ->appendText($item['value']);
+    $list_element->addItem($list_item);
   }
-
-  $list_markup .= '</' . $list_type . '>';
-
-  $element[$delta]['#markup'] = $list_markup;
-  return $element;
+  $body->addChild($list_element);
 }
 
 /**
  * Formatter for the Video element.
+ *
+ * @param $items
+ * @param Element $region
+ * @param $settings
  */
-function fb_instant_articles_display_field_format_video_element($items, $settings) {
-  $element = array();
-
+function fb_instant_articles_display_field_format_video_element($items, $region, $settings) {
   foreach ($items as $delta => $item) {
-    $element[$delta]['#markup'] = '<figure><video><source src="' . file_create_url($item['uri']) . '" type="' . $item['filemime'] . '" /></video></figure>';
+    $video = Video::create()
+      ->withURL(file_create_url($item['uri']));
+
+    if ($region instanceof Header) {
+      $region->withCover($video);
+      // If the video is for the cover, there can be only one.
+      break;
+    }
+    else if ($region instanceof InstantArticle) {
+      $region->addChild($video);
+    }
   }
-  return $element;
 }
 
 /**
  * Formatter for the Social element.
+ *
+ * @param $items
+ * @param InstantArticle $body
  */
-function fb_instant_articles_display_field_format_social_element($items, $settings) {
-  $element = array();
-
+function fb_instant_articles_display_field_format_social_element($items, $body) {
   foreach ($items as $delta => $item) {
-    $element[$delta]['#markup'] = '<figure class="op-social"><iframe>' . $item['safe_value'] . '</iframe></figure>';
+    // @todo sanitize text before sending off to FB IA SDK?
+    $social = SocialEmbed::create()
+      ->withHTML($item['value']);
+    $body->addChild($social);
   }
-
-  return $element;
 }
