@@ -236,8 +236,7 @@ function fb_instant_articles_display_entity_info_alter(&$entity_info) {
  */
 function fb_instant_articles_display_node_load($nodes, $types) {
   $enabled_entity_types = fb_instant_articles_display_get_article_entity_types();
-  $enabled_node_types = array_keys($enabled_entity_types['node']);
-  if (count(array_intersect($enabled_node_types, $types))) {
+  if (!empty(array_keys($enabled_entity_types['node'])) && count(array_intersect(array_keys($enabled_entity_types['node']), $types))) {
     foreach ($nodes as $node) {
       // Load and store the layout_settings, which maps fields to Facebook Instant
       // Articles settings.
