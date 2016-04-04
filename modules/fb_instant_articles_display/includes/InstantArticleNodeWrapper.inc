@@ -88,8 +88,8 @@ class InstantArticleNodeWrapper {
   /**
    * @return InstantArticle
    */
-  public function getInstantArticle() {
-    return $this->instantArticle;
+  public function render() {
+    return $this->instantArticle->render('<!doctype html>', TRUE);
   }
 
   /**

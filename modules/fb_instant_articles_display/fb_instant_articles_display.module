@@ -277,9 +277,7 @@ function theme_node__fb_instant_article($vars) {
   $node = $vars['node'];
   /** @var InstantArticleNodeWrapper $wrapper */
   $wrapper = $node->fb_instant_articles_display_wrapper;
-  $instant_article = $wrapper->getInstantArticle();
-
-  return $instant_article->render('<!doctype html>', TRUE);
+  return $wrapper->render();
 }
 
 /**
