@@ -471,11 +471,7 @@ function fb_instant_articles_display_field_formatter_settings_form($field, $inst
       $element['presentation'] = array(
         '#type' => 'radios',
         '#title' => t('Presentation style.'),
-        '#description' => t('See the "Presentation" option') . ' ' . l(t('here'), 'https://developers.facebook.com/docs/instant-articles/reference/image#options', array(
-          'attributes' => array(
-            'target' => '_blank',
-          ),
-        )) . ' ' . t('for more information.'),
+        '#description' => t("See the \"Presentation\" option under the <a href=\"@fbia-docs-image-presentation\">image section of Facebook's Instant Articles documentation</a> for more information.", array('@fbia-docs-image-presentation' => 'https://developers.facebook.com/docs/instant-articles/reference/image#options')),
         '#options' => array(
           'aspect-fit' => 'aspect-fit',
           'aspect-fit-only' => 'aspect-fit-only',
