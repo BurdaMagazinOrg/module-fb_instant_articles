@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Provide Drupal rules to manage facebook instant article using API.
+ */
+
+/**
+ * Implements hook_action_info().
+ */
+function fb_instant_articles_api_rules_action_info() {
+  return array(
+    'facebook_instant_articles_insert_action' => array(
+      'type' => 'node',
+      'label' => t('Add facebook instant article'),
+      'configurable' => FALSE,
+      'triggers' => array(
+        'node_insert',
+      ),
+    ),
+    'facebook_instant_articles_update_action' => array(
+      'type' => 'node',
+      'label' => t('Update facebook instant article'),
+      'configurable' => FALSE,
+      'triggers' => array(
+        'node_update',
+      ),
+    ),
+    'facebook_instant_articles_delete_action' => array(
+      'type' => 'node',
+      'label' => t('Delete facebook instant article'),
+      'configurable' => FALSE,
+      'triggers' => array(
+        'node_delete',
+      ),
+    ),
+  );
+}
+
+
+/**
+ * Implementation of a Facebook instant article node insert action.
+ *
+ */
+function facebook_instant_articles_insert_action($node, $context) {
+  if (isset($node->nid)) {
+    //@todo Flesh out these calls when the API module is ready.
+  }
+}
+
+/**
+ * Implementation of a Facebook instant article node update action.
+ *
+ */
+function facebook_instant_articles_update_action($node, $context) {
+  if (isset($node->nid)) {
+    //@todo Flesh out these calls when the API module is ready.
+  }
+}
+
+/**
+ * Implementation of a Facebook instant article node delete action.
+ *
+ */
+function facebook_instant_articles_delete_action($node, $context) {
+  if (isset($node->nid)) {
+    $url = url(drupal_get_path_alias("node/" . $node->nid), array('absolute' => TRUE));
+    //@todo Flesh out these calls when the API module is ready.
+  }
+}
