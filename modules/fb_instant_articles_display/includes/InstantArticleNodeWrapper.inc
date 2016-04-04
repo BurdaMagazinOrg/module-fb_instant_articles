@@ -24,6 +24,8 @@ use Facebook\InstantArticles\Transformer\Transformer;
 
 class InstantArticleNodeWrapper {
 
+  const FB_INSTANT_ARTICLES_VERSION = '0.1.0';
+
   private $node;
 
   private $layoutSettings;
@@ -52,7 +54,7 @@ class InstantArticleNodeWrapper {
     // formatters and rendered out in hook_preprocess_node().
     $instantArticle = InstantArticle::create()
       ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
-      ->addMetaProperty('op:generator:application:version', FB_INSTANT_ARTICLES_VERSION)
+      ->addMetaProperty('op:generator:application:version', self::FB_INSTANT_ARTICLES_VERSION)
       ->withCanonicalUrl(url('node/' . $node->nid, array('absolute' => TRUE)))
       // @todo where best to store this for alter?
       ->withStyle('default');
