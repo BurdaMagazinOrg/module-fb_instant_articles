@@ -7,3 +7,4 @@ dependencies[] = ctools
 dependencies[] = fb_instant_articles
 
 files[] = includes/LoggerAppenderDrupal.inc
+files[] = includes/InstantArticleNodeWrapper.inc
