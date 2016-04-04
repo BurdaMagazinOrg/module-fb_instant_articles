@@ -220,15 +220,18 @@ function fb_instant_articles_display_entity_info_alter(&$entity_info) {
  * Implements hook_node_load().
  */
 function fb_instant_articles_display_node_load($nodes, $types) {
-  $enabled_entity_types = fb_instant_articles_display_get_article_entity_types();
-  if (!empty(array_keys($enabled_entity_types['node'])) && count(array_intersect(array_keys($enabled_entity_types['node']), $types))) {
-    foreach ($nodes as $node) {
-      $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
-      $wrapper = InstantArticleNodeWrapper::create($node, $layout_settings);
-      // Store the InstantArticle wrapper object on the node entity to allow
-      // field formatters and others to make changes/additions to it until it's
-      // finally rendered out in hook_preprocess_node().
-      $node->fb_instant_articles_display_wrapper = $wrapper;
+  if ($enabled_entity_types = fb_instant_articles_display_get_article_entity_types()) {
+    $enabled_bundles = array_keys($enabled_entity_types['node']);
+
+    if (!empty($enabled_bundles) && count(array_intersect($enabled_bundles, $types))) {
+      foreach ($nodes as $node) {
+        $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
+        $wrapper = InstantArticleNodeWrapper::create($node, $layout_settings);
+        // Store the InstantArticle wrapper object on the node entity to allow
+        // field formatters and others to make changes/additions to it until it's
+        // finally rendered out in hook_preprocess_node().
+        $node->fb_instant_articles_display_wrapper = $wrapper;
+      }
     }
   }
 }
@@ -275,9 +278,11 @@ function fb_instant_articles_display_theme() {
  */
 function theme_node__fb_instant_article($vars) {
   $node = $vars['node'];
-  /** @var InstantArticleNodeWrapper $wrapper */
-  $wrapper = $node->fb_instant_articles_display_wrapper;
-  return $wrapper->render();
+  if (isset($node->fb_instant_articles_display_wrapper)) {
+    /** @var InstantArticleNodeWrapper $wrapper */
+    $wrapper = $node->fb_instant_articles_display_wrapper;
+    return $wrapper->render();
+  }
 }
 
 /**
