@@ -91,6 +91,9 @@ class InstantArticleNodeWrapper {
    * @return InstantArticle
    */
   public function render() {
+    // Give anyone a chance to alter the InstantArticle object prior to
+    // rendering.
+    drupal_alter('fb_instant_articles_display_instant_article', $this->instantArticle, $this->node);
     return $this->instantArticle->render('<!doctype html>', TRUE);
   }
 
