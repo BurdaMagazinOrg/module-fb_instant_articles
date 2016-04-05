@@ -44,7 +44,7 @@ function fb_instant_articles_api_rules_action_info() {
  */
 function facebook_instant_articles_insert_action($node, $context = array()) {
   if (isset($node->nid)) {
-    //@todo Flesh out these calls when the API module is ready.
+    // @todo Flesh out these calls when the API module is ready.
   }
 }
 
@@ -54,7 +54,7 @@ function facebook_instant_articles_insert_action($node, $context = array()) {
  */
 function facebook_instant_articles_update_action($node, $context = array()) {
   if (isset($node->nid)) {
-    //@todo Flesh out these calls when the API module is ready.
+    // @todo Flesh out these calls when the API module is ready.
   }
 }
 
@@ -65,6 +65,6 @@ function facebook_instant_articles_update_action($node, $context = array()) {
 function facebook_instant_articles_delete_action($node, $context = array()) {
   if (isset($node->nid)) {
     $url = url(drupal_get_path_alias("node/" . $node->nid), array('absolute' => TRUE));
-    //@todo Flesh out these calls when the API module is ready.
+    // @todo Flesh out these calls when the API module is ready.
   }
 }

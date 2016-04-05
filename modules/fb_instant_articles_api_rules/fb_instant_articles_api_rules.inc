@@ -50,7 +50,7 @@ function fb_instant_articles_api_rules_integration_access($type, $name) {
  */
 function rules_action_fb_instant_articles_create($entity) {
   if (isset($entity->entity_id)) {
-    //@todo Flesh out these calls when the API module is ready.
+    // @todo Flesh out these calls when the API module is ready.
   }
 }
 
@@ -61,7 +61,7 @@ function rules_action_fb_instant_articles_create($entity) {
  */
 function rules_action_fb_instant_articles_update($entity) {
   if (isset($entity->entity_id)) {
-    //@todo Flesh out these calls when the API module is ready.
+    // @todo Flesh out these calls when the API module is ready.
   }
 }
 
@@ -72,7 +72,7 @@ function rules_action_fb_instant_articles_update($entity) {
  */
 function rules_action_fb_instant_articles_delete($entity) {
   if (isset($entity->id)) {
-    $url = url(drupal_get_path_alias($entity->entity_type . "/" . $entity->entity_id), array('absolute' => TRUE));
-    //@todo Flesh out these calls when the API module is ready.
+    $url = entity_uri($entity->entity_type, $entity);
+    // @todo Flesh out these calls when the API module is ready.
   }
 }
