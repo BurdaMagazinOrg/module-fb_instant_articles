@@ -3,4 +3,4 @@ description = API module for Facebook Instant Articles.
 package = Facebook Instant Articles
 core = 7.x
 dependencies[] = fb_instant_articles
-files[] = DrupalClient.php
+files[] = includes/DrupalClient.php
