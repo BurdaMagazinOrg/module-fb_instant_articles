@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Provides the Facebook Instant Articles administrative interface.

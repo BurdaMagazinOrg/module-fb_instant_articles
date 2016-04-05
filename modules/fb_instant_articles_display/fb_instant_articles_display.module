@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Hook implementations for Facebook Instant Articles Display module.
@@ -6,6 +7,9 @@
 
 /**
 * Implements hook_init().
+ *
+ * @todo Update to use a custom DrupalFBInstantArticlesLogger once
+ *   @link https://github.com/facebook/facebook-instant-articles-sdk-php/issues/14 this SDK issue @endlink is in resolved.
 */
 function fb_instant_articles_display_init() {
  // Configure Instant Articles Transformer logger to append to Drupal log if enabled

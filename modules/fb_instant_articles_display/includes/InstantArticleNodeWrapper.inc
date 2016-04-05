@@ -1,7 +1,10 @@
 <?php
+
 /**
  * @file
+ * Defines the InstantArticleNodeWrapper class.
  */
+
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
 use Facebook\InstantArticles\Elements\Author;
@@ -22,15 +25,36 @@ use Facebook\InstantArticles\Elements\Time;
 use Facebook\InstantArticles\Elements\Video;
 use Facebook\InstantArticles\Transformer\Transformer;
 
+/**
+ * Facebook Instant Article node wrapper class.  Builds up an InstantArticle
+ * object using field formatters.
+ */
 class InstantArticleNodeWrapper {
 
+  /**
+   * Facebook Instant Articles version number.
+   */
   const FB_INSTANT_ARTICLES_VERSION = '0.1.0';
 
+  /**
+   * Node object for which we are building an InstantArticle object.
+   *
+   * @var \stdClass
+   */
   private $node;
 
+  /**
+   * Layout settings which map fields to the Facebook Instant Article region
+   * (header, footer, body).
+   *
+   * @var array
+   */
   private $layoutSettings;
 
   /**
+   * Facebook Instant Articles object that encapsulates the structure and
+   * content of the node object we are wrapping.
+   *
    * @var InstantArticle
    */
   private $instantArticle;
@@ -516,5 +540,4 @@ class InstantArticleNodeWrapper {
       $body->addChild($social);
     }
   }
-
 }
