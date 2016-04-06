@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Update and install functions for Facebook Instant Articles API module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function fb_instant_articles_api_uninstall() {
+  variable_del('fb_instant_articles_api_app_id');
+  variable_del('fb_instant_articles_api_app_secret');
+  variable_del('fb_instant_articles_api_development_mode');
+}
