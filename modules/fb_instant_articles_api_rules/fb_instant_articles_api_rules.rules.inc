@@ -23,7 +23,7 @@ function fb_instant_articles_api_rules_rules_action_info() {
   );
   $actions['fb_instant_articles_create'] = $defaults + array(
     'label' => t('Add facebook instant article'),
-    'base' => 'rules_action_fb_instant_articles_add',
+    'base' => 'rules_action_fb_instant_articles_create',
   );
   $actions['fb_instant_articles_update'] = $defaults + array(
     'label' => t('Update facebook instant article'),

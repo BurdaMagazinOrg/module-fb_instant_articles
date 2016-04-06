@@ -15,10 +15,9 @@ function fb_instant_articles_api_rules_default_rules_configuration() {
                    'when a published Article node is saved');
   $rule->active = FALSE;
   $rule->event('node_presave')
-    ->condition(rules_condition('data_is', array('data:select' => 'node:status',
-      'value' => TRUE))->negate())
+    ->condition('data_is', array('data:select' => 'node:status', 'value' => TRUE))
     ->condition('data_is', array('data:select' => 'node:type', 'value' => 'article'))
-    ->action('rules_action_fb_instant_articles_update', array('data:select' => 'node'));
+    ->action('fb_instant_articles_update', array('entity:select' => 'node'));
 
   $configs['fb_instant_articles_rules_default_published'] = $rule;
 
@@ -28,10 +27,9 @@ function fb_instant_articles_api_rules_default_rules_configuration() {
     'when a unpublished Article node is saved');
   $rule->active = FALSE;
   $rule->event('node_presave')
-    ->condition(rules_condition('data_is', array('data:select' => 'node:status',
-      'value' => TRUE))->negate())
+    ->condition('data_is', array('data:select' => 'node:status', 'value' => FALSE))
     ->condition('data_is', array('data:select' => 'node:type', 'value' => 'article'))
-    ->action('rules_action_fb_instant_articles_update', array('data:select' => 'node'));
+    ->action('fb_instant_articles_update', array('entity:select' => 'node'));
 
   $configs['fb_instant_articles_rules_default_unpublished'] = $rule;
 
@@ -41,11 +39,10 @@ function fb_instant_articles_api_rules_default_rules_configuration() {
                    'node is deleted');
   $rule->active = FALSE;
   $rule->event('node_delete')
-    ->condition(rules_condition('data_is', array('data:select' => 'node:status',
-      'value' => TRUE))->negate())
     ->condition('data_is', array('data:select' => 'node:type', 'value' => 'article'))
-    ->action('facebook_instant_articles_delete_action', array('data:select' => 'node'));
+    ->action('fb_instant_articles_delete', array('entity:select' => 'node'));
 
   $configs['fb_instant_articles_rules_default_deleted'] = $rule;
+
   return $configs;
 }

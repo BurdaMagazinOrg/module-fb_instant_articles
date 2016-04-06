@@ -15,7 +15,7 @@ function fb_instant_articles_api_rules_action_info() {
       'label' => t('Add facebook instant article'),
       'configurable' => FALSE,
       'triggers' => array(
-        'node_insert',
+        'node_presave', 'node_insert',
       ),
     ),
     'facebook_instant_articles_update_action' => array(
@@ -23,7 +23,7 @@ function fb_instant_articles_api_rules_action_info() {
       'label' => t('Update facebook instant article'),
       'configurable' => FALSE,
       'triggers' => array(
-        'node_update',
+        'node_presave', 'node_update',
       ),
     ),
     'facebook_instant_articles_delete_action' => array(
