@@ -1,14 +1,14 @@
 <?php
+
 /**
  * @file
- * Facebook Instant Articles core functions.
+ * Hook implementations for Facebook Instant Articles Base module.
  */
 
 /**
  * Implements hook_menu().
  */
 function fb_instant_articles_menu() {
-  // Top level configuration page.
   $items['admin/config/services/fb-instant-articles'] = array(
     'title' => 'Facebook Instant Articles',
     'description' => 'Settings related to Facebook Instant Articles.',
@@ -16,6 +16,16 @@ function fb_instant_articles_menu() {
     'access arguments' => array('access administration pages'),
     'file' => 'system.admin.inc',
     'file path' => drupal_get_path('module', 'system'),
+  );
+
+  $items['admin/config/services/fb-instant-articles/settings'] = array(
+    'title' => 'Facebook Instant Articles Base settings',
+    'description' => 'Base settings for Facebook Instant Articles.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('fb_instant_articles_settings'),
+    'access arguments' => array('administer fb_instant_articles'),
+    'file' => 'includes/admin.inc',
+    'weight' => -10,
   );
 
   return $items;
