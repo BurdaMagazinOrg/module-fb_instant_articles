@@ -1,0 +1,26 @@
+{
+  "name": "drupal/fb_instant_articles",
+  "description": "Allows content to be syndicated to Facebook Instant Articles.",
+  "keywords": ["facebook", "instant", "articles", "drupal"],
+  "type": "drupal-module",
+  "license": "GPL-2.0+",
+  "authors": [{
+    "name": "Vin Gardner",
+    "homepage": "https://www.drupal.org/u/vgardner"
+  }, {
+    "name": "Steffen Rühlmann",
+    "homepage": "https://www.drupal.org/u/steffenr"
+  }, {
+    "name": "James Nesbitt",
+    "homepage": "https://www.drupal.org/u/jaxxed"
+  }, {
+    "name": "Simon Engelhardt",
+    "homepage": "https://www.drupal.org/u/simonengelhardt"
+  }, {
+    "name": "Matthew Oliveira",
+    "homepage": "https://www.drupal.org/u/m4olivei"
+  }],
+  "require": {
+    "facebook/facebook-instant-articles-sdk-php": "^0.4.0"
+  }
+}

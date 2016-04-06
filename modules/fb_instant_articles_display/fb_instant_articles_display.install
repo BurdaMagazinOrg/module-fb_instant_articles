@@ -6,6 +6,13 @@
  */
 
 /**
+ * Implements hook_uninstall().
+ */
+function fb_instant_articles_display_uninstall() {
+  variable_del('fb_instant_articles_display_enable_transformer_logging');
+}
+
+/**
  * Implements hook_schema().
  */
 function fb_instant_articles_display_schema() {

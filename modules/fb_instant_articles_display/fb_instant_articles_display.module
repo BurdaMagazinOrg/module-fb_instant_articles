@@ -6,6 +6,49 @@
  */
 
 /**
+* Implements hook_init().
+ *
+ * @todo Update to use a custom DrupalFBInstantArticlesLogger once
+ *   @link https://github.com/facebook/facebook-instant-articles-sdk-php/issues/14 this SDK issue @endlink is in resolved.
+*/
+function fb_instant_articles_display_init() {
+ // Configure Instant Articles Transformer logger to append to Drupal log if enabled
+ $enable_transformer_logging = variable_get('fb_instant_articles_display_enable_transformer_logging', FALSE);
+ \Logger::configure(
+   array(
+     'rootLogger' => array(
+       'appenders' => array('facebook-instantarticles-transformer')
+     ),
+     'appenders' => array(
+       'facebook-instantarticles-transformer' => array(
+         'class' => $enable_transformer_logging ? 'LoggerAppenderDrupal' : 'LoggerAppenderNull',
+         'layout' => array(
+           'class' => 'LoggerLayoutSimple'
+         )
+       )
+     )
+   )
+ );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function fb_instant_articles_display_menu() {
+  // Top level configuration page.
+  $items['admin/config/services/fb-instant-articles/display'] = array(
+    'title' => 'Facebook Instant Articles Display',
+    'description' => 'Display settings for Facebook Instant Articles.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('fb_instant_articles_display_admin_settings_form'),
+    'access arguments' => array('administer fb_instant_articles_display'),
+    'file' => 'includes/admin.inc',
+  );
+
+  return $items;
+}
+
+/**
  * Implements hook_permission().
  */
 function fb_instant_articles_display_permission() {
@@ -175,49 +218,34 @@ function fb_instant_articles_display_entity_info_alter(&$entity_info) {
     'label' => t('Facebook Instant Articles'),
     'custom settings' => TRUE,
   );
-}/**
+}
+
+/**
+ * Implements hook_node_load().
+ */
+function fb_instant_articles_display_node_load($nodes, $types) {
+  if ($enabled_entity_types = fb_instant_articles_display_get_article_entity_types()) {
+    $enabled_bundles = array_keys($enabled_entity_types['node']);
+
+    if (!empty($enabled_bundles) && count(array_intersect($enabled_bundles, $types))) {
+      foreach ($nodes as $node) {
+        $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
+        $wrapper = InstantArticleNodeWrapper::create($node, $layout_settings);
+        // Store the InstantArticle wrapper object on the node entity to allow
+        // field formatters and others to make changes/additions to it until it's
+        // finally rendered out in hook_preprocess_node().
+        $node->fb_instant_articles_display_wrapper = $wrapper;
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_preprocess_node().
  */
 function fb_instant_articles_display_preprocess_node(&$vars) {
 
-  if ($vars['view_mode'] == 'fb_instant_article') {
-
-    $layout_settings = fb_instant_articles_display_get_node_layout_settings($vars['type']);
-
-    // If no regions are set, return early.
-    if (empty($layout_settings->settings['regions'])) {
-      return;
-    }
-
-    $regions = $layout_settings->settings['regions'];
-
-    foreach ($regions as $region => $fields) {
-      foreach ($fields as $field) {
-
-        if (!isset($vars['content'][$field])) {
-          continue;
-        }
-
-        $field_array = $vars['content'][$field];
-
-        // TODO: Make title field format configurable.
-        if ($field == 'title') {
-          $field_array = array(
-            '#markup' => '<h1>' . $vars['title'] . '</h1>',
-          );
-        }
-
-        $vars['fb_instant_article_' . $region][$field] = $field_array;
-      }
-    }
-
-    // Set the style of the article from configuration.
-    $vars['fb_instant_article_style'] = variable_get('fb_instant_articles_display_style', 'default');
-
-    $vars['canonical_url'] = url('node/' . $vars['nid'], array('absolute' => TRUE));
-    $vars['published'] = fb_instant_articles_display_time_element($vars['created'], 'op-published');
-    $vars['modified'] = fb_instant_articles_display_time_element($vars['changed'], 'op-modified');
-
+  if ($vars['view_mode'] === 'fb_instant_article') {
     $vars['theme_hook_suggestions'][] = 'node__fb_instant_article';
   }
 }
@@ -239,9 +267,7 @@ function fb_instant_articles_display_theme() {
   $theme_path = drupal_get_path('module', 'fb_instant_articles_display') . '/theme';
   return array(
     'node__fb_instant_article' => array(
-      'template' => 'node--fb-instant-article',
-      'path' => $theme_path,
-      'render element' => 'elements',
+      'variables' => array(),
     ),
     'field__fb_instant_article' => array(
       'template' => 'field--fb-instant-article',
@@ -249,6 +275,18 @@ function fb_instant_articles_display_theme() {
       'render element' => 'element',
     ),
   );
+}
+
+/**
+ * Theme function for the fb_instant_article node view mode.
+ */
+function theme_node__fb_instant_article($vars) {
+  $node = $vars['node'];
+  if (isset($node->fb_instant_articles_display_wrapper)) {
+    /** @var InstantArticleNodeWrapper $wrapper */
+    $wrapper = $node->fb_instant_articles_display_wrapper;
+    return $wrapper->render();
+  }
 }
 
 /**
@@ -287,13 +325,14 @@ function fb_instant_articles_display_get_node_layout_settings($bundle_name) {
  */
 function fb_instant_articles_display_field_formatter_info() {
   $formats = array();
+  // Header only elements
   $formats['fbia_subtitle_formatter'] = array(
     'label' => t('FBIA Subtitle'),
-    'field types' => array('text', 'text_with_summary'),
+    'field types' => array('text', 'text_long', 'text_with_summary'),
   );
   $formats['fbia_kicker_formatter'] = array(
     'label' => t('FBIA Kicker'),
-    'field types' => array('text', 'text_with_summary'),
+    'field types' => array('text', 'text_long', 'text_with_summary'),
   );
   $formats['fbia_blockquote_formatter'] = array(
     'label' => t('FBIA Blockquote'),
@@ -364,6 +403,10 @@ function fb_instant_articles_display_field_formatter_info() {
     'settings'  => array(
       'list_type' => 'ol',
     ),
+  );
+  $formats['fbia_transformer_formatter'] = array(
+    'label' => t('FBIA Transfomer'),
+    'field types' => array('text', 'text_long', 'text_with_summary'),
   );
   return $formats;
 }
@@ -538,68 +581,14 @@ function fb_instant_articles_display_field_formatter_settings_summary($field, $i
  * Implements hook_field_formatter_view().
  */
 function fb_instant_articles_display_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
-
-  module_load_include('inc', 'fb_instant_articles_display', 'includes/elements');
-  $element = array();
-  $settings = $display['settings'];
-
-  switch ($display['type']) {
-
-    case 'fbia_subtitle_formatter':
-      $element = fb_instant_articles_display_field_format_standard_element($items, 'h2');
-      break;
-
-    case 'fbia_kicker_formatter':
-      $element = fb_instant_articles_display_field_format_standard_element($items, 'h3', 'op-kicker');
-      break;
-
-    case 'fbia_blockquote_formatter':
-      $element = fb_instant_articles_display_field_format_standard_element($items, 'blockquote');
-      break;
-
-    case 'fbia_author_formatter':
-      $element = fb_instant_articles_display_field_format_standard_element($items, 'address');
-      break;
-
-    case 'fbia_credits_formatter':
-    case 'fbia_pullquote_formatter':
-      $element = fb_instant_articles_display_field_format_standard_element($items, 'aside');
-      break;
-
-    case 'fbia_copyright_formatter':
-      $element = fb_instant_articles_display_field_format_standard_element($items, 'small');
-      break;
-
-    case 'fbia_ad_formatter':
-      $element = fb_instant_articles_display_field_format_ad_element($items, $settings);
-      break;
-
-    case 'fbia_analytics_formatter':
-      $element = fb_instant_articles_display_field_format_analytics_element($items, $settings);
-      break;
-
-    case 'fbia_video_formatter':
-      $element = fb_instant_articles_display_field_format_video_element($items, $settings);
-      break;
-
-    case 'fbia_image_formatter':
-      $element = fb_instant_articles_display_field_format_image_element($items, $settings);
-      break;
-
-    case 'fbia_interactive_formatter':
-      $element = fb_instant_articles_display_field_format_interactive_element($items, $settings);
-      break;
-
-    case 'fbia_list_formatter':
-      $element = fb_instant_articles_display_field_format_list_element($items, $settings);
-      break;
-
-    case 'fbia_social_formatter':
-      $element = fb_instant_articles_display_field_format_social_element($items, $settings);
-      break;
+  // Grab the InstantArticle object we're going to be building up.  If it's not
+  // present, it means that a site admin selected an FB IA field formatter for
+  // a non-FB IA content type.
+  if (isset($entity->fb_instant_articles_display_wrapper)) {
+    /** @var InstantArticleNodeWrapper $wrapper */
+    $wrapper = $entity->fb_instant_articles_display_wrapper;
+    $wrapper->fieldFormatterView($field, $instance, $langcode, $items, $display);
   }
-
-  return $element;
 }
 
 /**
