@@ -447,6 +447,10 @@ class InstantArticleNodeWrapper {
 
       // Pass the markup through Transformer::transform().
       $document = new \DOMDocument();
+      // Before loading into DOMDocument, setup for success by taking care of
+      // encoding issues.  Since we're dealing with HTML snippets, it will
+      // always be missing a <meta charset="utf-8" /> or equivalent.
+      $output = mb_convert_encoding($output, 'HTML-ENTITIES', 'UTF-8');
       @$document->loadHTML($output);
       $transformer->transform($body, $document);
 
