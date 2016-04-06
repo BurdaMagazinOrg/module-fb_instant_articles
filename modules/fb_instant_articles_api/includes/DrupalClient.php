@@ -28,7 +28,7 @@ class DrupalClient extends Client {
    *
    * See also @link https://developers.facebook.com/docs/facebook-login/access-tokens#apptokens Facebook documentation note about the app static token method. @endlink
    */
-  public function create() {
+  public static function create() {
     $appID = variable_get('fb_instant_articles_api_app_id');
     $appSecret = variable_get('fb_instant_articles_api_app_secret');
     $accessToken = $appID . '|' . $appSecret;
