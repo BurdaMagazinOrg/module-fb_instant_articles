@@ -436,6 +436,7 @@ class InstantArticleNodeWrapper {
   private function fieldFormatTransfomer($items, $body, $instance, $langcode) {
     $transformer = new Transformer();
     $transformer->loadRules(file_get_contents(__DIR__ . '/../transformer_config.json'));
+    drupal_alter('fb_instant_articles_display_transformer', $transformer);
     foreach($items as $delta => $item) {
       // @see _text_sanitize().
       if (isset($item['safe_value'])) {
