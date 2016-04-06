@@ -53,8 +53,10 @@ class DrupalClient extends Client {
     }
     catch(FacebookAuthorizationException $e) {
       // A Facebook authorization exception probably means the page has not yet
-      // passed review. In that case, try posting the article unpublished.
-      if (!$takeLive) {
+      // passed review. In that case, try posting the article unpublished. Only
+      // try again if the article was intended to pe published, so we don't try
+      // to post unpublished twice.
+      if ($takeLive) {
         parent::importArticle($article, FALSE);
       }
     }
