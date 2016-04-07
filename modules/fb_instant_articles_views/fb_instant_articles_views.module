@@ -10,14 +10,15 @@
  */
 function fb_instant_articles_views_help($path, $arg) {
   switch ($path) {
-    // Main module help for the fb_instant_articles_views module.
     case 'admin/help#fb_instant_articles_views':
-      $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Views module for Facebook Instant Articles.') . '</p>';
-      return $output;
-
-    default:
+      $filepath = dirname(__FILE__) . '/README.md';
+      if (file_exists($filepath)) {
+        $string = file_get_contents($filepath);
+        if ($processed = fb_instant_articles_help_markdown($string)) {
+          return $processed;
+        }
+        return '<pre>' . $string . '</pre>';
+      }
   }
 }
 
