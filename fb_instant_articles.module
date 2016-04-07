@@ -52,7 +52,7 @@ function fb_instant_articles_help($path, $arg) {
   switch ($path) {
     // Main module help for the block module.
     case 'admin/help#fb_instant_articles':
-      $filepath = dirname(__FILE__) . '/README.txt';
+      $filepath = dirname(__FILE__) . '/README.md';
       if (file_exists($filepath)) {
         $readme = file_get_contents($filepath);
       }
