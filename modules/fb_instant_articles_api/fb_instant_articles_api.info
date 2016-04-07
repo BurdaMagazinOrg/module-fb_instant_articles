@@ -1,0 +1,7 @@
+name = Facebook Instant Articles API
+description = API module for Facebook Instant Articles.
+package = Facebook Instant Articles
+core = 7.x
+configure = admin/config/services/fb-instant-articles/api
+dependencies[] = fb_instant_articles
+files[] = includes/DrupalClient.php

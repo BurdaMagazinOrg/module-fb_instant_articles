@@ -1,0 +1,14 @@
+{
+  "name": "drupal/fb_instant_articles",
+  "description": "Drupal Facebook Instant Articles.",
+  "keywords": ["facebook", "instant", "articles", "drupal"],
+  "type": "drupal-module",
+  "license": "GPL-2.0+",
+  "authors": [{
+    "name": "Drupal community",
+    "homepage": "https://www.drupal.org/node/2676800/committers"
+  }],
+  "require": {
+    "facebook/facebook-instant-articles-sdk-php": "^0.6.0"
+  }
+}
