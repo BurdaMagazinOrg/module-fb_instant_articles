@@ -1,0 +1,6 @@
+name = Facebook Instant Articles API Rules
+description = Provide Drupal rules to manage facebook instant article using API.
+package = Facebook Instant Articles
+core = 7.x
+dependencies[] = fb_instant_articles_api
+dependencies[] = fb_instant_articles_display

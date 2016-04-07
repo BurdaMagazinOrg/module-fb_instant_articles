@@ -1,0 +1,85 @@
+<?php
+
+/**
+ * @file
+ * Provide Drupal rules to manage facebook instant article using API.
+ */
+
+/**
+ * Implements hook_action_info().
+ *
+ * @todo - Convert this entire module to support entity instead of only Node.
+ *
+ */
+function fb_instant_articles_api_rules_action_info() {
+  return array(
+    'facebook_instant_articles_api_import_action' => array(
+      'type' => 'node',
+      'label' => t('Add facebook instant article'),
+      'configurable' => FALSE,
+      'triggers' => array(
+        'node_presave', 'node_insert', 'node_update',
+      ),
+    ),
+    'facebook_instant_articles_api_remove_action' => array(
+      'type' => 'node',
+      'label' => t('Delete facebook instant article'),
+      'configurable' => FALSE,
+      'triggers' => array(
+        'node_delete',
+      ),
+    ),
+  );
+}
+
+
+/**
+ * Implementation of a Facebook instant article node import action.
+ *
+ */
+function facebook_instant_articles_api_import_action($node, $context = array()) {
+  $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $node);
+  if($fb_instant_enabled) {
+    fb_instant_articles_api_rules_import_article($node);
+  }
+}
+
+
+/**
+ * Implementation of a Facebook instant article node delete action.
+ *
+ */
+function facebook_instant_articles_api_remove_action($node, $context = array()) {
+  $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $node);
+  if($fb_instant_enabled) {
+    fb_instant_articles_api_rules_remove_article($node);
+  }
+}
+
+/**
+ * Implementation of a Facebook instant article import.
+ *
+ * @param object $node
+ */
+function fb_instant_articles_api_rules_import_article($node) {
+  if (isset($node->nid)) {
+    $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
+    $wrapper = InstantArticleNodeWrapper::create($node, $layout_settings);
+    $node->fb_instant_articles_display_wrapper = $wrapper;
+    $node_view = node_view($node, $view_mode = 'fb_instant_article');
+    $import_article = drupal_render($node_view);
+    Drupal\FBInstantArticles\DrupalClient::importArticle($import_article, $node->status);
+  }
+}
+
+/**
+ * Implementation of a Facebook instant article remove.
+ *
+ * @param object $node
+ */
+function fb_instant_articles_api_rules_remove_article($node) {
+  if (isset($node->nid)) {
+    $url = url(drupal_get_path_alias("node/" . $node->nid), array('absolute' => TRUE));
+    Facebook\InstantArticles\Client::removeArticle($url);
+  }
+}
