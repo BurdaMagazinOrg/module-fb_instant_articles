@@ -11,13 +11,11 @@
  */
 class views_handler_filter_valid_fia extends views_handler_filter {
 
-  var $fia_view_mode = 'fb_instant_article';
-
   /**
    * Display the filter on the administrative summary
    */
   function admin_summary() {
-    return t('Filtering for items that have custom Facebook View Mode settings.');
+    return t('Filtering for valid Facebook Instant Articles content types.');
   }
 
   /**
@@ -43,12 +41,12 @@ class views_handler_filter_valid_fia extends views_handler_filter {
    */
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
-    $form['info'] = [
+    $form['info'] = array(
       '#type' => 'markup',
-      '#markup' => 'Filter for nodes that implement the FIA view mode',
+      '#markup' => 'Filter for nodes marked as "Include Content Type in Facebook Instant Articles feed."',
       '#prefix' => '<div class="clearfix">',
       '#suffix' => '</div>',
-    ];
+    );
   }
 
   /**

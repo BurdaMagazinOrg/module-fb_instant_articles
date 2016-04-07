@@ -53,10 +53,14 @@ function fb_instant_articles_views_views_default_views() {
   $handler->display->display_options['filters']['status']['value'] = 1;
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Selected Content for Facebook instant articles filter */
+  $handler->display->display_options['filters']['fb_instant_articles_selected_views']['id'] = 'fb_instant_articles_selected_views';
+  $handler->display->display_options['filters']['fb_instant_articles_selected_views']['table'] = 'node';
+  $handler->display->display_options['filters']['fb_instant_articles_selected_views']['field'] = 'fb_instant_articles_selected_views';
   /* Filter criterion: Content: Valid Facebook instant articles filter */
-  $handler->display->display_options['filters']['fb_instant_articles_views']['id'] = 'fb_instant_articles_views';
-  $handler->display->display_options['filters']['fb_instant_articles_views']['table'] = 'node';
-  $handler->display->display_options['filters']['fb_instant_articles_views']['field'] = 'fb_instant_articles_views';
+  $handler->display->display_options['filters']['fb_instant_articles_valid_views']['id'] = 'fb_instant_articles_valid_views';
+  $handler->display->display_options['filters']['fb_instant_articles_valid_views']['table'] = 'node';
+  $handler->display->display_options['filters']['fb_instant_articles_valid_views']['field'] = 'fb_instant_articles_valid_views';
 
   /* Display: Feed */
   $handler = $view->new_display('feed', 'Feed', 'feed_fia_rss');
