@@ -118,3 +118,7 @@ See the README in your selected submodules for configuration help.
 
 - Issues should be made in the project's issue queue on Drupal.org.
 - All development is happening via PRs in [GitHub](https://github.com/BurdaMagazinOrg/module-fb_instant_articles).
+
+## Maintainers
+
+This module is maintained by the [Drupal community](https://www.drupal.org/node/2676800/committers).
