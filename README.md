@@ -87,9 +87,6 @@ you will need to include Composer's autoload file somewhere in your code).
         configurations.
 - RSS feed (fb_instant_articles_rss.module)
     - No external dependencies.
-- Views feed (fb_instant_articles_views.module)
-    - Depends on:
-        - [Views](https://drupal.org/project/views)
 - API (fb_instant_articles_api.module)
     - No external dependencies.
 - API Rules integration (fb_instant_articles_api_rules.module)
