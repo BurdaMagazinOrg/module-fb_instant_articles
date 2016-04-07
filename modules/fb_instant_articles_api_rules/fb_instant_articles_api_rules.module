@@ -7,6 +7,9 @@
 
 /**
  * Implements hook_action_info().
+ *
+ * @todo - Convert this entire module to support entity instead of only Node.
+ *
  */
 function fb_instant_articles_api_rules_action_info() {
   return array(
@@ -51,7 +54,7 @@ function facebook_instant_articles_api_remove_action($node, $context = array()) 
 /**
  * Implementation of a Facebook instant article import.
  *
- *@param object $node
+ * @param object $node
  */
 function fb_instant_articles_api_rules_import_article($node) {
   if (isset($node->nid)) {
@@ -60,19 +63,14 @@ function fb_instant_articles_api_rules_import_article($node) {
     $node->fb_instant_articles_display_wrapper = $wrapper;
     $node_view = node_view($node, $view_mode = 'fb_instant_article');
     $import_article = drupal_render($node_view);
-    try {
-      Drupal\FBInstantArticles\DrupalClient::importArticle($import_article, $node->status);
-    }
-    catch(Facebook\Exceptions\FacebookAuthorizationException $e) {
-      watchdog_exception('facebook_instant_article', $e);
-    }
+    Drupal\FBInstantArticles\DrupalClient::importArticle($import_article, $node->status);
   }
 }
 
 /**
  * Implementation of a Facebook instant article remove.
  *
- *@param object $node
+ * @param object $node
  */
 function fb_instant_articles_api_rules_remove_article($node) {
   if (isset($node->nid)) {
@@ -80,6 +78,3 @@ function fb_instant_articles_api_rules_remove_article($node) {
     Facebook\InstantArticles\Client::removeArticle($url);
   }
 }
-
-// @todo
-// - Convert this entire module to support entity instead of only Node.

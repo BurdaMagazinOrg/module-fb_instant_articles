@@ -19,7 +19,6 @@ function fb_instant_articles_api_rules_rules_action_info() {
       ),
     ),
     'group' => t('Node'),
-    'access callback' => 'fb_instant_articles_api_rules_integration_access',
   );
   $actions['fb_instant_articles_api_rules_action_import'] = $defaults + array(
     'label' => t('Add/Update facebook instant article'),
@@ -30,13 +29,6 @@ function fb_instant_articles_api_rules_rules_action_info() {
     'base' => 'fb_instant_articles_api_rules_action_remove',
   );
   return $actions;
-}
-
-/**
- * Facebook Instant Articles API integration access callback.
- */
-function fb_instant_articles_api_rules_integration_access($type, $name) {
-  return user_access('administer site configuration');
 }
 
 /**
