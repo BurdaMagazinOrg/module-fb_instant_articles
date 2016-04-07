@@ -74,13 +74,13 @@ The Drupal Facebook Instant Articles modules have different dependencies, see
         - [Facebook Instant Articles PHP SDK](https://github.com/facebook/facebook-instant-articles-sdk-php) 
 provides necessary support for ensuring Drupal content is added to facebook in 
 the required format for Instant Articles. 
-    - Optionally (recommended) integrates with:
-        - [Composer Manager](https://www.drupal.org/project/composer_manager) for 
-autoloading classes needed for the Facebook Instant Articles SDK, and download 
-the SDK for you automatically when you enable the base module. Alternately, if 
-you do not wish to enable Composer Manager, you can choose to manually download 
-and mange the dependencies via Composer yourself. In this case you will also 
-need to include Composer's autoload file somewhere in your code. 
+    - Strongly recommended:
+        - [Composer Manager](https://www.drupal.org/project/composer_manager) 
+autoloads classes needed for the Facebook Instant Articles SDK, and downloads 
+the SDK automatically when you enable the base module. Composer manager is not 
+a literal dependency so that developers with custom Composer workflows can 
+choose to manage dependencies and autoloading themselves (if this is the case 
+you will need to include Composer's autoload file somewhere in your code).
 - Display (fb_instant_articles_display.module)
     - Depends on:
         - [CTools](https://drupal.org/project/ctools) for exporting 
