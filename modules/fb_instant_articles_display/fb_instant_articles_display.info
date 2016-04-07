@@ -5,3 +5,4 @@ core = 7.x
 configure = admin/config/services/fb-instant-articles/display
 dependencies[] = ctools
 dependencies[] = fb_instant_articles
+scripts[] = js/admin.js

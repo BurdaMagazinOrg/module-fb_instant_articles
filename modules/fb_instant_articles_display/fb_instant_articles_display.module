@@ -5,6 +5,33 @@
  * Hook implementations for Facebook Instant Articles Display module.
  */
 
+
+/**
+ * Implements hook_menu().
+ */
+function fb_instant_articles_display_menu() {
+  // Top level configuration page.
+  $items['admin/config/services/fb-instant-articles/display'] = array(
+    'title' => 'Facebook Instant Articles Display',
+    'description' => 'Display settings for Facebook Instant Articles.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('fb_instant_articles_display_admin_settings_form'),
+    'access arguments' => array('administer fb_instant_articles_display'),
+    'file' => 'includes/admin.inc',
+  );
+
+  // Callback to handle Facebook Login
+  $items['admin/config/services/fb-instant-articles/display/login'] = array(
+      'title' => 'Facebook Login',
+      'description' => 'Callback that executes right after login in with Facebook.',
+      'page callback' => 'fb_instant_articles_facebook_login',
+      'access arguments' => array('administer fb_instant_articles_display'),
+      'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
 /**
  * Implements hook_permission().
  */
@@ -571,4 +598,60 @@ function fb_instant_articles_display_time_element($timestamp, $class) {
   $element = '<time' . $class . $datetime . '>' . $text_time . '</time>';
 
   return $element;
+}
+
+/**
+ * Callback to handle Facebook Login for this module.
+ */
+function fb_instant_articles_facebook_login() {
+
+  $fb = new Facebook\Facebook([
+     'app_id' => variable_get('fb_instant_articles_app_id', ''),
+     'app_secret' => variable_get('fb_instant_articles_app_secret', ''),
+     'default_graph_version' => 'v2.5',
+  ]);
+  $helper = $fb->getRedirectLoginHelper();
+
+  // Grab the user access token based on callback response and report back an
+  // error if we weren't able to get one.
+  try {
+    $access_token = $helper->getAccessToken();
+  } catch(Facebook\Exceptions\FacebookResponseException $e) {
+   $error_msg = 'We received the following error while attempting to authenticate your Facebook account: '. $e->getMessage();
+   drupal_set_message($error_msg, 'error');
+   drupal_goto('admin/config/services/fb-instant-articles/display');
+   exit;
+  } catch(Facebook\Exceptions\FacebookSDKException $e) {
+   $error_msg = 'We received the following error while attempting to authenticate your Facebook account: '. $e->getMessage();
+   drupal_set_message($error_msg, 'error');
+   drupal_goto('admin/config/services/fb-instant-articles/display');
+   exit;
+  }
+  if ($access_token == NULL) {
+   $error_msg = 'We failed to authenticate your Facebook account with this module. Please try again.';
+   drupal_set_message($error_msg, 'error');
+   drupal_goto('admin/config/services/fb-instant-articles/display');
+   exit;
+  }
+
+  // Confirm that the person granted the necessary permissions before proceeding
+  $permissions = $fb->get('/me/permissions', $access_token)->getGraphEdge();
+//  $rejected_permissions = array();
+  $rejected_permissions = '';
+  foreach ($permissions as $permission) {
+    if ($permission['status'] != 'granted') {
+      $rejected_permissions = $rejected_permissions .' '. $permission['permission'];
+    }
+  }
+  if ($rejected_permissions != '') {
+    $error_msg = 'You did not grant the following required permissions in the Facebook authentication process: ' .$rejected_permissions. '. Please try again.';
+    drupal_set_message($error_msg, 'error');
+    drupal_goto('admin/config/services/fb-instant-articles/display');
+    exit;
+  }
+
+  // Store this user access token to the database
+  variable_set('fb_instant_articles_access_token', $access_token->getValue());
+
+  drupal_goto('admin/config/services/fb-instant-articles/display');
 }
