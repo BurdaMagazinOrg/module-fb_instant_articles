@@ -12,11 +12,11 @@ function fb_instant_articles_api_rules_default_rules_configuration() {
   // Handling add/update node article as published in FB Instant Articles library.
   $rule = rules_reaction_rule();
   $rule->label = t('Add/update as published in FB Instant Articles library ' .
-                   'when a published Article node is saved');
+    'when a published Article node is saved');
   $rule->active = FALSE;
   $rule->event('node_presave')
-    ->condition('data_is', array('data:select' => 'node:status', 'value' => TRUE))
-    ->condition('data_is', array('data:select' => 'node:type', 'value' => 'article'))
+    ->condition('node_is_published')
+    ->condition('fb_instant_articles_rules_is_article_type', array('data:select' => 'node'))
     ->action('fb_instant_articles_api_rules_action_import', array('data:select' => 'node'));
 
   $configs['fb_instant_articles_rules_default_published'] = $rule;
@@ -27,8 +27,8 @@ function fb_instant_articles_api_rules_default_rules_configuration() {
     'when a unpublished Article node is saved');
   $rule->active = FALSE;
   $rule->event('node_presave')
-    ->condition('data_is', array('data:select' => 'node:status', 'value' => FALSE))
-    ->condition('data_is', array('data:select' => 'node:type', 'value' => 'article'))
+    ->condition(rules_condition('node_is_published')->negate())
+    ->condition('fb_instant_articles_rules_is_article_type', array('data:select' => 'node'))
     ->action('fb_instant_articles_api_rules_action_import', array('data:select' => 'node'));
 
   $configs['fb_instant_articles_rules_default_unpublished'] = $rule;
@@ -36,10 +36,10 @@ function fb_instant_articles_api_rules_default_rules_configuration() {
   // Handling node article deletion.
   $rule = rules_reaction_rule();
   $rule->label = t('Remove from FB Instant Articles library when an Article ' .
-                   'node is deleted');
+    'node is deleted');
   $rule->active = FALSE;
   $rule->event('node_delete')
-    ->condition('data_is', array('data:select' => 'node:type', 'value' => 'article'))
+    ->condition('fb_instant_articles_rules_is_article_type', array('data:select' => 'node'))
     ->action('fb_instant_articles_api_rules_action_remove', array('data:select' => 'node'));
 
   $configs['fb_instant_articles_rules_default_deleted'] = $rule;

@@ -49,3 +49,28 @@ function fb_instant_articles_api_rules_action_import($node = NULL) {
 function fb_instant_articles_api_rules_action_remove($node = NULL) {
   fb_instant_articles_api_rules_remove_article($node);
 }
+
+/**
+ * Implements hook_rules_condition_info().
+ */
+function fb_instant_articles_api_rules_rules_condition_info() {
+  return array(
+    'fb_instant_articles_rules_is_article_type' => array(
+      'group' => t('Facebook Instant Articles Rules'),
+      'label' => t('Is an Instant Article type'),
+      'parameter' => array(
+        'node' => array(
+          'type' => 'node',
+          'label' => t('Node to verify'),
+        )
+      ),
+    ),
+  );
+}
+
+/**
+ * Callback for Rules condition.
+ */
+function fb_instant_articles_rules_is_article_type($node) {
+  return fb_instant_articles_display_is_article_type('node', $node->type);
+}
