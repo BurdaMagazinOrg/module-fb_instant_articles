@@ -11,27 +11,23 @@
 function fb_instant_articles_api_rules_rules_action_info() {
   $defaults = array(
     'parameter' => array(
-      'entity' => array(
-        'type' => 'entity',
-        'label' => t('Entity'),
-        'description' => t('The entity which needs to be added to facebook
+      'node' => array(
+        'type' => 'node',
+        'label' => t('Content'),
+        'description' => t('The content which needs to be managed as facebook
           instant article.'),
       ),
     ),
-    'group' => t('Entity'),
+    'group' => t('Node'),
     'access callback' => 'fb_instant_articles_api_rules_integration_access',
   );
-  $actions['fb_instant_articles_create'] = $defaults + array(
-    'label' => t('Add facebook instant article'),
-    'base' => 'rules_action_fb_instant_articles_create',
+  $actions['fb_instant_articles_api_rules_action_import'] = $defaults + array(
+    'label' => t('Add/Update facebook instant article'),
+    'base' => 'fb_instant_articles_api_rules_action_import',
   );
-  $actions['fb_instant_articles_update'] = $defaults + array(
-    'label' => t('Update facebook instant article'),
-    'base' => 'rules_action_fb_instant_articles_update',
-  );
-  $actions['fb_instant_articles_delete'] = $defaults + array(
-    'label' => t('Delete facebook instant article'),
-    'base' => 'rules_action_fb_instant_articles_update',
+  $actions['fb_instant_articles_api_rules_action_remove'] = $defaults + array(
+    'label' => t('Remove facebook instant article'),
+    'base' => 'fb_instant_articles_api_rules_action_remove',
   );
   return $actions;
 }
@@ -46,33 +42,18 @@ function fb_instant_articles_api_rules_integration_access($type, $name) {
 /**
  * Action: Add facebook instant article.
  *
- * @param object $entity
+ * @param object $node
  */
-function rules_action_fb_instant_articles_create($entity) {
-  if (isset($entity->entity_id)) {
-    // @todo Flesh out these calls when the API module is ready.
-  }
+function fb_instant_articles_api_rules_action_import($node = NULL) {
+  fb_instant_articles_api_rules_import_article($node);
 }
 
-/**
- * Action: Update facebook instant article.
- *
- * @param object $entity
- */
-function rules_action_fb_instant_articles_update($entity) {
-  if (isset($entity->entity_id)) {
-    // @todo Flesh out these calls when the API module is ready.
-  }
-}
 
 /**
  * Action: Delete facebook instant article.
  *
- * @param object $entity
+ * @param object $node
  */
-function rules_action_fb_instant_articles_delete($entity) {
-  if (isset($entity->id)) {
-    $url = entity_uri($entity->entity_type, $entity);
-    // @todo Flesh out these calls when the API module is ready.
-  }
+function fb_instant_articles_api_rules_action_remove($node = NULL) {
+  fb_instant_articles_api_rules_remove_article($node);
 }

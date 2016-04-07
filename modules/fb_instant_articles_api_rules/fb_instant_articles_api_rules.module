@@ -10,23 +10,15 @@
  */
 function fb_instant_articles_api_rules_action_info() {
   return array(
-    'facebook_instant_articles_insert_action' => array(
+    'facebook_instant_articles_api_import_action' => array(
       'type' => 'node',
       'label' => t('Add facebook instant article'),
       'configurable' => FALSE,
       'triggers' => array(
-        'node_presave', 'node_insert',
+        'node_presave', 'node_insert', 'node_update',
       ),
     ),
-    'facebook_instant_articles_update_action' => array(
-      'type' => 'node',
-      'label' => t('Update facebook instant article'),
-      'configurable' => FALSE,
-      'triggers' => array(
-        'node_presave', 'node_update',
-      ),
-    ),
-    'facebook_instant_articles_delete_action' => array(
+    'facebook_instant_articles_api_remove_action' => array(
       'type' => 'node',
       'label' => t('Delete facebook instant article'),
       'configurable' => FALSE,
@@ -39,32 +31,55 @@ function fb_instant_articles_api_rules_action_info() {
 
 
 /**
- * Implementation of a Facebook instant article node insert action.
+ * Implementation of a Facebook instant article node import action.
  *
  */
-function facebook_instant_articles_insert_action($node, $context = array()) {
-  if (isset($node->nid)) {
-    // @todo Flesh out these calls when the API module is ready.
-  }
+function facebook_instant_articles_api_import_action($node, $context = array()) {
+  fb_instant_articles_api_rules_import_article($node);
 }
 
-/**
- * Implementation of a Facebook instant article node update action.
- *
- */
-function facebook_instant_articles_update_action($node, $context = array()) {
-  if (isset($node->nid)) {
-    // @todo Flesh out these calls when the API module is ready.
-  }
-}
+
 
 /**
  * Implementation of a Facebook instant article node delete action.
  *
  */
-function facebook_instant_articles_delete_action($node, $context = array()) {
+function facebook_instant_articles_api_remove_action($node, $context = array()) {
+  fb_instant_articles_api_rules_remove_article($node);
+}
+
+/**
+ * Implementation of a Facebook instant article import.
+ *
+ *@param object $node
+ */
+function fb_instant_articles_api_rules_import_article($node) {
   if (isset($node->nid)) {
-    $url = url(drupal_get_path_alias("node/" . $node->nid), array('absolute' => TRUE));
-    // @todo Flesh out these calls when the API module is ready.
+    $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
+    $wrapper = InstantArticleNodeWrapper::create($node, $layout_settings);
+    $node->fb_instant_articles_display_wrapper = $wrapper;
+    $node_view = node_view($node, $view_mode = 'fb_instant_article');
+    $import_article = drupal_render($node_view);
+    try {
+      Drupal\FBInstantArticles\DrupalClient::importArticle($import_article, $node->status);
+    }
+    catch(Facebook\Exceptions\FacebookAuthorizationException $e) {
+      watchdog_exception('facebook_instant_article', $e);
+    }
   }
 }
+
+/**
+ * Implementation of a Facebook instant article remove.
+ *
+ *@param object $node
+ */
+function fb_instant_articles_api_rules_remove_article($node) {
+  if (isset($node->nid)) {
+    $url = url(drupal_get_path_alias("node/" . $node->nid), array('absolute' => TRUE));
+    Facebook\InstantArticles\Client::removeArticle($url);
+  }
+}
+
+// @todo
+// - Convert this entire module to support entity instead of only Node.

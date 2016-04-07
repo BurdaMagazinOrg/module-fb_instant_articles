@@ -17,7 +17,7 @@ function fb_instant_articles_api_rules_default_rules_configuration() {
   $rule->event('node_presave')
     ->condition('data_is', array('data:select' => 'node:status', 'value' => TRUE))
     ->condition('data_is', array('data:select' => 'node:type', 'value' => 'article'))
-    ->action('fb_instant_articles_update', array('entity:select' => 'node'));
+    ->action('fb_instant_articles_api_rules_action_import', array('data:select' => 'node'));
 
   $configs['fb_instant_articles_rules_default_published'] = $rule;
 
@@ -29,7 +29,7 @@ function fb_instant_articles_api_rules_default_rules_configuration() {
   $rule->event('node_presave')
     ->condition('data_is', array('data:select' => 'node:status', 'value' => FALSE))
     ->condition('data_is', array('data:select' => 'node:type', 'value' => 'article'))
-    ->action('fb_instant_articles_update', array('entity:select' => 'node'));
+    ->action('fb_instant_articles_api_rules_action_import', array('data:select' => 'node'));
 
   $configs['fb_instant_articles_rules_default_unpublished'] = $rule;
 
@@ -40,7 +40,7 @@ function fb_instant_articles_api_rules_default_rules_configuration() {
   $rule->active = FALSE;
   $rule->event('node_delete')
     ->condition('data_is', array('data:select' => 'node:type', 'value' => 'article'))
-    ->action('fb_instant_articles_delete', array('entity:select' => 'node'));
+    ->action('fb_instant_articles_api_rules_action_remove', array('data:select' => 'node'));
 
   $configs['fb_instant_articles_rules_default_deleted'] = $rule;
 
