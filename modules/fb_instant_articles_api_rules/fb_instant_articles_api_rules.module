@@ -79,7 +79,7 @@ function fb_instant_articles_api_rules_import_article($node) {
  */
 function fb_instant_articles_api_rules_remove_article($node) {
   if (isset($node->nid)) {
-    $url = url(drupal_get_path_alias("node/" . $node->nid), array('absolute' => TRUE));
+    $url = url("node/" . $node->nid, array('absolute' => TRUE, 'alias' => TRUE));
     Facebook\InstantArticles\Client::removeArticle($url);
   }
 }

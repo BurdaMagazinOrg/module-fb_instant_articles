@@ -33,7 +33,7 @@ function fb_instant_articles_rss_page() {
   foreach ($nodes as $node) {
     $item = $channel->addChild('item');
     $item->addChild('title', $node->title);
-    $item->addChild('link', url(drupal_get_path_alias("node/" . $node->nid), array('absolute' => TRUE)));
+    $item->addChild('link', url("node/" . $node->nid, array('absolute' => TRUE)));
 
     $node_view = node_view($node, 'fb_instant_article');
     $item->addChildCdata('content', drupal_render($node_view));
