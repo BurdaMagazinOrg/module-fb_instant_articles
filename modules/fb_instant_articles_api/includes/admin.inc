@@ -263,6 +263,8 @@ function fb_instant_articles_api_fb_page_submit($form, &$form_state) {
   variable_set('fb_instant_articles_page_id', $fb_page_id);
   $fb_page_name = $pages[$form_state['values']['fb_instant_articles_page_id']]['name'];
   variable_set('fb_instant_articles_page_name', $fb_page_name);
+  $fb_page_access_token = $pages[$form_state['values']['fb_instant_articles_page_id']]['access_token'];
+  variable_set('fb_instant_articles_api_access_token', $fb_page_access_token);
 
   drupal_set_message('Success! This Instant Articles module has been activated.', 'status');
   $form_state['redirect'] = 'admin/config/services/fb-instant-articles/api';
