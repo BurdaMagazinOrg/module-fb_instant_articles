@@ -15,7 +15,7 @@ function facebook_instant_articles_field_format_standard_element($items, $wrappe
   }
 
   foreach ($items as $delta => $item) {
-    $element[$delta]['#markup'] = '<' . $wrapper_tag . $class . '>' . $item['safe_value'] . '</' . $wrapper_tag . '>';
+    $element[0]['#markup'] = '<' . $wrapper_tag . $class . '>' . $item['safe_value'] . '</' . $wrapper_tag . '>';
   }
   return $element;
 }
@@ -37,12 +37,11 @@ function facebook_instant_articles_field_format_ad_element($items, $settings) {
     }
     switch ($settings['source']) {
       case 'embed':
-        $element[$delta]['#markup'] = '<figure class="op-ad"><iframe ' . $attributes . '>' . $item['safe_value'] . '</iframe></figure>';
-        break;
-
+        $element[0]['#markup'] = '<figure class="op-ad"><iframe ' . $attributes . '>' . $item['safe_value'] . '</iframe></figure>';
+      break;
       default:
-        $element[$delta]['#markup'] = '<figure class="op-ad"><iframe src="' . $item['safe_value'] . '"' . $attributes . ' /></figure>';
-        break;
+        $element[0]['#markup'] = '<figure class="op-ad"><iframe src="' . $item['safe_value'] . '"' . $attributes . ' /></figure>';
+      break;
     }
   }
   return $element;
@@ -56,11 +55,11 @@ function facebook_instant_articles_field_format_analytics_element($items, $setti
   foreach ($items as $delta => $item) {
     switch ($settings['source']) {
       case 'embed':
-        $element[$delta]['#markup'] = '<figure class="op-tracker"><iframe>' . $item['safe_value'] . '</iframe></figure>';
-        break;
+        $element[0]['#markup'] = '<figure class="op-tracker"><iframe>' . $item['safe_value'] . '</iframe></figure>';
+      break;
       default:
-        $element[$delta]['#markup'] = '<figure class="op-tracker"><iframe src="' . $item['safe_value'] . '" /></figure>';
-        break;
+        $element[0]['#markup'] = '<figure class="op-tracker"><iframe src="' . $item['safe_value'] . '" /></figure>';
+      break;
     }
   }
   return $element;
@@ -77,7 +76,7 @@ function facebook_instant_articles_field_format_image_element($items, $settings)
       'style_name' => $settings['style'],
       'path' => $item['uri'],
     );
-    $image = theme('image_style', $image_settings);
+    $image = theme_image_style($image_settings);
 
     $caption = "";
     if (!empty($settings['caption'])) {
@@ -102,7 +101,7 @@ function facebook_instant_articles_field_format_image_element($items, $settings)
     }
 
     $output = '<figure' . $data_feedback_attribute . $data_mode_fullscreen . '>' . $image . $caption . '</figure>';
-    $element[$delta]['#markup'] = $output;
+    $element[0]['#markup'] = $output;
   }
 
   return $element;
@@ -124,7 +123,7 @@ function facebook_instant_articles_field_format_interactive_element($items, $set
       $attributes .= ' class="' . $settings['width'] . '"';
     }
 
-    $element[$delta]['#markup'] = '<figure class="op-interactive"><iframe src="' . $item['safe_value'] . '"' . $attributes . ' /></figure>';
+    $element[0]['#markup'] = '<figure class="op-interactive"><iframe src="' . $item['safe_value'] . '"' . $attributes . ' /></figure>';
   }
   return $element;
 }
@@ -149,6 +148,6 @@ function facebook_instant_articles_field_format_list_element($items, $settings) 
 
   $list_markup .= '</' . $list_type . '>';
 
-  $element[$delta]['#markup'] = $list_markup;
+  $element[0]['#markup'] = $list_markup;
   return $element;
 }

@@ -15,12 +15,14 @@ function facebook_instant_articles_layout_form(&$form, &$form_state) {
   $view_mode = $form['#view_mode'];
   $form['#export_id'] = $entity_type . '|' . $bundle_name . '|' . $view_mode;
 
+  $layout_options = array();
+
   $layout = facebook_instant_articles_get_node_layout_settings($bundle_name);
   $form['#fbia_layout'] = $layout;
 
   facebook_instant_articles_field_ui_fields($entity_type, $bundle_name, $view_mode, $form, $form_state);
 
-  // Attach js.
+    // Attach js.
   $form['#attached']['js'][] = drupal_get_path('module', 'facebook_instant_articles') . '/js/admin.js';
 
   // Add process function to add the regions.
@@ -60,7 +62,7 @@ function facebook_instant_articles_add_regions(&$form, &$form_state) {
   $regions = array(
     'header' => t('Header'),
     'body' => t('Body'),
-    'footer' => t('Footer'),
+    'footer' => t('Footer')
   );
 
   $table['#regions'] = array();
@@ -76,7 +78,7 @@ function facebook_instant_articles_add_regions(&$form, &$form_state) {
   $context = array(
     'entity_type' => $entity_type,
     'bundle' => $bundle,
-    'view_mode' => $view_mode,
+    'view_mode' => $view_mode
   );
   $region_info = array(
     'region_options' => &$region_options,
@@ -87,7 +89,7 @@ function facebook_instant_articles_add_regions(&$form, &$form_state) {
   $region_options['hidden'] = $view_mode != 'form' ? t('Disabled') : t('Hidden');
   $table['#regions']['hidden'] = array(
     'title' => $view_mode != 'form' ? t('Disabled') : t('Hidden'),
-    'message' => t('No fields are hidden.'),
+    'message' => t('No fields are hidden.')
   );
 
   $region = array(
@@ -108,8 +110,8 @@ function facebook_instant_articles_add_regions(&$form, &$form_state) {
     '#prefix' => '<div class="limit-float">',
     '#suffix' => '</div><div class="clearfix"></div>',
     '#attributes' => array(
-      'alt' => t("Enter a number to limit the number of items or 'delta' to print a specific delta (usually configured in views or found in entity->delta). Leave empty to display them all. Note that depending on the formatter settings, this option might not always work."),
-      'title' => t("Enter a number to limit the number of items or 'delta' to print a specific delta (usually configured in views or found in entity->delta). Leave empty to display them all. Note that depending on the formatter settings, this option might not always work."),
+      'alt' => t('Enter a number to limit the number of items or \'delta\' to print a specific delta (usually configured in views or found in entity->delta). Leave empty to display them all. Note that depending on the formatter settings, this option might not always work.'),
+      'title' => t('Enter a number to limit the number of items or \'delta\' to print a specific delta (usually configured in views or found in entity->delta). Leave empty to display them all. Note that depending on the formatter settings, this option might not always work.'),
     ),
   );
 
@@ -160,7 +162,7 @@ function facebook_instant_articles_add_regions(&$form, &$form_state) {
 /**
  * Returns the region to which a row in the Field UI screen belongs.
  *
- * @param array $row
+ * @param $row
  *   The current row that is being rendered in the Field UI screen.
  */
 function facebook_instant_articles_field_ui_row_region($row) {
@@ -182,7 +184,7 @@ function facebook_instant_articles_field_ui_layouts_save($form, &$form_state) {
   $layout = 'facebook_instant_article';
 
   // Save layout and add regions if necessary.
-  $record = new stdClass();
+  $record = new stdClass;
   $record->id = $form['#export_id'];
   $record->entity_type = $entity_type;
   $record->bundle = $bundle;
@@ -318,6 +320,13 @@ function facebook_instant_articles_field_ui_fields($entity_type, $bundle, $view_
   // Get the fields and put them on the form.
   $fields = facebook_instant_articles_get_fields($entity_type, FALSE);
 
+  // Ultimate alter on Field UI fields, only used for edge cases.
+  $context = array(
+    'entity_type' => $entity_type,
+    'bundle' => $bundle,
+    'view_mode' => $view_mode,
+  );
+
   // Get field settings.
   $field_settings = facebook_instant_articles_get_field_settings($entity_type, $bundle, $view_mode, FALSE);
   $form['#field_settings'] = $field_settings;
@@ -354,6 +363,8 @@ function facebook_instant_articles_field_ui_fields($entity_type, $bundle, $view_
     if (!isset($field_settings[$key]['ft']) && isset($field_settings[$key]['ft'])) {
       $form_state['formatter_settings'][$key]['ft'] = $field_settings[$key]['ft'];
     }
+
+    $value = isset($form_state['formatter_settings']) ? $form_state['formatter_settings'] : array();
 
     $hidden = array('hidden' => t('<Hidden>'));
     $formatters = isset($field['properties']['formatters']) ? $hidden + $field['properties']['formatters'] : $hidden + array('default' => t('Default'));
@@ -402,6 +413,11 @@ function facebook_instant_articles_field_ui_fields($entity_type, $bundle, $view_
       'settings_summary' => array(),
       'settings_edit' => array(),
     );
+
+    // Don't show summary or cogwheel in hidden region.
+    if (facebook_instant_articles_field_ui_check_hidden_region($key, $form_state, $field_regions)) {
+      continue;
+    }
 
     $field['name'] = $key;
     $field['entity_type'] = $entity_type;
@@ -460,7 +476,7 @@ function facebook_instant_articles_get_field_settings($entity_type, $bundle, $vi
     else {
       ctools_include('export');
       $fbia_field_settings = ctools_export_crud_load_all('facebook_instant_articles_field_settings');
-      foreach ($fbia_field_settings as $layout_settings) {
+      foreach ($fbia_field_settings as $layout => $layout_settings) {
         // Do not store configuration when the field settings is disabled.
         if (!empty($layout_settings->disabled)) {
           continue;
@@ -478,6 +494,23 @@ function facebook_instant_articles_get_field_settings($entity_type, $bundle, $vi
   }
 
   return (isset($field_settings[$entity_type][$bundle][$view_mode])) ? $field_settings[$entity_type][$bundle][$view_mode] : (isset($field_settings[$entity_type][$bundle]['default']) && $default ? $field_settings[$entity_type][$bundle]['default'] : array());
+}
+
+/**
+ * Helper function to check if we are in a hidden region or not.
+ */
+function facebook_instant_articles_field_ui_check_hidden_region($key, $form_state, $field_regions) {
+  $continue = FALSE;
+  if (isset($form_state['input']['fields'][$key]['region'])) {
+    if ($form_state['input']['fields'][$key]['region'] == 'hidden') {
+      $continue = TRUE;
+    }
+  }
+  elseif (!isset($field_regions[$key]) || $field_regions[$key] == 'hidden') {
+    $continue = TRUE;
+  }
+
+  return $continue;
 }
 
 /**
