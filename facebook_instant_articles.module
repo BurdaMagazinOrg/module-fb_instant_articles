@@ -367,10 +367,6 @@ function facebook_instant_articles_field_formatter_info() {
     'label' => t('FBIA Pullquote'),
     'field types' => array('text', 'text_long', 'text_with_summary'),
   );
-  $formats['fbia_social_formatter'] = array(
-    'label' => t('FBIA Social Embed'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-  );
   $formats['fbia_credits_formatter'] = array(
     'label' => t('FBIA Credits'),
     'field types' => array('text', 'text_long', 'text_with_summary'),
@@ -382,10 +378,6 @@ function facebook_instant_articles_field_formatter_info() {
   $formats['fbia_author_formatter'] = array(
     'label' => t('FBIA Author'),
     'field types' => array('text', 'text_with_summary', 'list_text'),
-  );
-  $formats['fbia_video_formatter'] = array(
-    'label' => t('FBIA Video'),
-    'field types' => array('file'),
   );
   $formats['fbia_ad_formatter'] = array(
     'label' => t('FBIA Ad'),
@@ -642,10 +634,6 @@ function facebook_instant_articles_field_formatter_view($entity_type, $entity, $
       $element = facebook_instant_articles_field_format_analytics_element($items, $settings);
       break;
 
-    case 'fbia_video_formatter':
-      $element = facebook_instant_articles_field_format_video_element($items, $settings);
-      break;
-
     case 'fbia_image_formatter':
       $element = facebook_instant_articles_field_format_image_element($items, $settings);
       break;
@@ -656,10 +644,6 @@ function facebook_instant_articles_field_formatter_view($entity_type, $entity, $
 
     case 'fbia_list_formatter':
       $element = facebook_instant_articles_field_format_list_element($items, $settings);
-      break;
-
-    case 'fbia_social_formatter':
-      $element = facebook_instant_articles_field_format_social_element($items, $settings);
       break;
   }
 
