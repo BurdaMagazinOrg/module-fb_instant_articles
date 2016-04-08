@@ -6,7 +6,9 @@
 (function ($) {
   'use strict';
 
-  // Row handlers for the 'Manage display' screen.
+  /**
+   * Row handlers for the 'Manage display' screen.
+   */
   Drupal.fieldUIDisplayOverview = Drupal.fieldUIDisplayOverview || {};
 
   Drupal.fieldUIDisplayOverview.facebookInstantArticles = function (row, data) {
