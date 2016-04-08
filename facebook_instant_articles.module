@@ -21,7 +21,7 @@ function facebook_instant_articles_menu() {
     'description' => 'Facebook Instant Articles',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('facebook_instant_articles_admin_settings_form'),
-    'access arguments' => array('administer facebook_instant_articles'),
+    'access arguments' => array('access content'),
     'file' => 'includes/admin.inc',
   );
 
@@ -33,18 +33,6 @@ function facebook_instant_articles_menu() {
   );
 
   return $items;
-}
-
-/**
- * Implements hook_permission().
- */
-function facebook_instant_articles_permission() {
-  $permissions = array();
-
-  $permissions['administer facebook_instant_articles'] = array(
-    'title' => t('Administer Facebook Instant Articles'),
-  );
-  return $permissions;
 }
 
 /**
@@ -73,7 +61,7 @@ function facebook_instant_articles_help($path, $arg) {
 function facebook_instant_articles_form_node_type_form_alter(&$form, &$form_state) {
 
   // Add a vertical tab to the node type form.
-  if (user_access('administer facebook_instant_articles')) {
+  if (user_access('administer facebook instant articles')) {
     // Build fieldset for vertical tab section.
     $fieldset = array(
       '#type' => 'fieldset',
