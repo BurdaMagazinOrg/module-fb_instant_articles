@@ -18,7 +18,29 @@ function fb_instant_articles_display_uninstall() {
 function fb_instant_articles_display_schema() {
   $schema['fb_instant_articles_display_entity_types'] = array(
     'description' => 'Mappings between Facebook Instant Articles and entities',
+
+    // CTools export definitions.
+    'export' => array(
+      'key' => 'id',
+      'identifier' => 'fb_instant_articles_display_entity_type',
+      'default hook' => 'fb_instant_articles_display_entity_types_info',
+      'can disable' => FALSE,
+      'api' => array(
+        'owner' => 'fb_instant_articles_display',
+        'api' => 'fb_instant_articles_display',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+
     'fields' => array(
+      'id' => array(
+        'description' => 'The unique id of this entity type mapping.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
       'entity_type' => array(
         'description' => 'The entity type name.',
         'type' => 'varchar',
@@ -34,6 +56,7 @@ function fb_instant_articles_display_schema() {
         'default' => '',
       ),
     ),
+    'primary key' => array('id'),
     'unique keys' => array(
       'type_bundle' => array(
         'entity_type',
@@ -102,7 +125,7 @@ function fb_instant_articles_display_schema() {
     // CTools export definitions.
     'export' => array(
       'key' => 'id',
-      'identifier' => 'fb_instant_articles_display_fieldsetting',
+      'identifier' => 'fb_instant_articles_display_field_setting',
       'default hook' => 'fb_instant_articles_display_field_settings_info',
       'can disable' => FALSE,
       'api' => array(

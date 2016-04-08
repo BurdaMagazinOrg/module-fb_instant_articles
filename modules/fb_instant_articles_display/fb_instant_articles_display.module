@@ -155,22 +155,18 @@ function fb_instant_articles_display_is_article_type($entity_type, $bundle) {
  *   Array of entity types and bundles.
  */
 function fb_instant_articles_display_get_article_entity_types() {
-  $entity_types = &drupal_static(__FUNCTION__);
-  // Entity types not retrieved yet?
-  if (!isset($entity_types)) {
-    $results = db_select('fb_instant_articles_display_entity_types', 'fbaet')
-      ->fields('fbaet')
-      ->execute();
-    // Loop through each of the retrieved entity types.
-    foreach ($results as $result) {
-      $entity_types[$result->entity_type][$result->entity_bundle] = array(
-        'type' => $result->entity_type,
-        'bundle' => $result->entity_bundle,
-      );
-    }
-    // Allow other modules to alter.
-    drupal_alter('fb_instant_articles_display_entity_types', $entity_types);
+  ctools_include('export');
+  $fia_entity_types = ctools_export_crud_load_all('fb_instant_articles_display_entity_types');
+  $entity_types = array();
+  foreach ($fia_entity_types as $fia_entity_type) {
+    $entity_types[$fia_entity_type->entity_type][$fia_entity_type->entity_bundle] = array(
+      'type' => $fia_entity_type->entity_type,
+      'bundle' => $fia_entity_type->entity_bundle,
+    );
   }
+ 
+  // Allow other modules to alter.
+  drupal_alter('fb_instant_articles_display_entity_types', $entity_types);
   return $entity_types;
 }
 
