@@ -1,0 +1,162 @@
+<?php
+
+/**
+ * @file
+ * Install and update functions for Facebook Instant Articles Display module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function fb_instant_articles_display_uninstall() {
+  variable_del('fb_instant_articles_display_enable_transformer_logging');
+}
+
+/**
+ * Implements hook_schema().
+ */
+function fb_instant_articles_display_schema() {
+  $schema['fb_instant_articles_display_entity_types'] = array(
+    'description' => 'Mappings between Facebook Instant Articles and entities',
+    'fields' => array(
+      'entity_type' => array(
+        'description' => 'The entity type name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'entity_bundle' => array(
+        'description' => 'The entity bundle name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'unique keys' => array(
+      'type_bundle' => array(
+        'entity_type',
+        'entity_bundle',
+      ),
+    ),
+  );
+
+  $schema['fb_instant_articles_display_layout_settings'] = array(
+    'description' => 'The table that holds the Facebook Instant Articles layout configuration.',
+
+    // CTools export definitions.
+    'export' => array(
+      'key' => 'id',
+      'identifier' => 'fb_instant_articles_display_layout',
+      'default hook' => 'fb_instant_articles_display_layout_settings_info',
+      'can disable' => FALSE,
+      'api' => array(
+        'owner' => 'fb_instant_articles',
+        'api' => 'fb_instant_articles',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+
+    'fields' => array(
+      'id' => array(
+        'description' => 'The unique id the layout.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'entity_type' => array(
+        'description' => 'The name of the entity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'bundle' => array(
+        'description' => 'The name of the entity.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'settings' => array(
+        'description' => 'The settings for this layout.',
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+    'indexes' => array(
+      'fbia_entity'       => array('entity_type'),
+      'fbia_bundle'       => array('bundle'),
+    ),
+  );
+
+  $schema['fb_instant_articles_display_field_settings'] = array(
+    'description' => 'The table that holds Facebook Instant Articles field settings per display.',
+
+    // CTools export definitions.
+    'export' => array(
+      'key' => 'id',
+      'identifier' => 'fb_instant_articles_display_fieldsetting',
+      'default hook' => 'fb_instant_articles_display_field_settings_info',
+      'can disable' => FALSE,
+      'api' => array(
+        'owner' => 'fb_instant_articles',
+        'api' => 'fb_instant_articles',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+
+    'fields' => array(
+      'id' => array(
+        'description' => 'The unique id this setting.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'entity_type' => array(
+        'description' => 'The name of the entity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'bundle' => array(
+        'description' => 'The name of the entity.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'view_mode' => array(
+        'description' => 'The name of the view_mode.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'settings' => array(
+        'description' => 'The Facebook Instant Articles field settings for this layout.',
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+    'indexes' => array(
+      'fbia_entity'       => array('entity_type'),
+      'fbia_bundle'       => array('bundle'),
+      'fbia_view_mode'    => array('view_mode'),
+    ),
+  );
+
+  return $schema;
+}

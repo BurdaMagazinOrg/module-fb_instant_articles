@@ -1,0 +1,6 @@
+name = Facebook Instant Articles
+description = Base module for Facebook Instant Articles.
+package = Facebook Instant Articles
+core = 7.x
+php = 5.4
+configure = admin/config/services/fb-instant-articles

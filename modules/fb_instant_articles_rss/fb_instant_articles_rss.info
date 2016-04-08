@@ -1,0 +1,6 @@
+name = Facebook Instant Articles RSS
+description = RSS module for Facebook Instant Articles.
+package = Facebook Instant Articles
+core = 7.x
+configure = admin/config/services/fb-instant-articles/rss
+dependencies[] = fb_instant_articles_display
