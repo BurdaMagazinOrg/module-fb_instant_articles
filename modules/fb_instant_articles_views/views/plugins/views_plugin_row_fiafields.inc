@@ -100,7 +100,7 @@ class views_plugin_row_fiafields extends views_plugin_row {
     $options['time_created'] = date("F jS, g:i A", $node->created);
     $options['modified'] = date("Y-d-m\TH:i:s\Z", $node->changed);
     $options['time_modified'] = date("F jS, g:i A", $node->changed);
-    $options['link'] = url($uri['path'], $uri['options'] + array('absolute' => TRUE));
+    $options['link'] = url($uri['path'], $uri['options'] + array('absolute' => TRUE, 'alias' => TRUE));
     $options['guid'] = $node->nid . ' at ' . $base_url;
 
     return theme($this->theme_functions(),
