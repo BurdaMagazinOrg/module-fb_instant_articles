@@ -250,28 +250,6 @@ function facebook_instant_articles_entity_info_alter(&$entity_info) {
 }
 
 /**
- * Implements hook_html_head_alter().
- */
-function facebook_instant_articles_html_head_alter(&$head_elements) {
-  if (drupal_is_front_page()) {
-    $tag_content = variable_get('facebook_instant_articles_page_id', NULL);
-
-    if (!empty($tag_content)) {
-      $head_elements['facebook_instant_articles_page'] = array(
-        '#type' => 'html_tag',
-        '#tag' => 'meta',
-        '#attributes' => array(
-          'property' => 'fb:pages',
-          'content' => $tag_content,
-        ),
-      );
-      drupal_add_html_head($head_elements, 'facebook_instant_articles_page');
-    }
-  }
-}
-
-
-/**
  * Implements hook_preprocess_node().
  */
 function facebook_instant_articles_preprocess_node(&$vars) {

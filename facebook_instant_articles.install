@@ -161,5 +161,4 @@ function facebook_instant_articles_uninstall() {
   variable_del('facebook_instant_articles_channel_description');
   variable_del('facebook_instant_articles_channel_language');
   variable_del('facebook_instant_articles_style');
-  variable_del('facebook_instant_articles_page_id');
 }
