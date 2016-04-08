@@ -41,14 +41,8 @@ function facebook_instant_articles_menu() {
 function facebook_instant_articles_help($path, $arg) {
   switch ($path) {
     // Main module help for the block module
-    case 'admin/help#facebook_instant_articles':
-      $filepath = dirname(__FILE__) . '/README.txt';
-      if (file_exists($filepath)) {
-        $readme = file_get_contents($filepath);
-      }
-      $output = '<pre>' . $readme . '</pre>';
-      return $output;
-    break;
+    case 'admin/help#facebook-instant-articles':
+      return t('This is the Facebook Instant Articles module, welcome!', array('@blocks' => url('admin/config/services/facebook-instant-articles'))) . '</p>';
   }
 }
 
