@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * Facebook instant articles theme file.
+ * Facebook Instant Articles theme hooks.
  */
 
 /**
@@ -14,10 +15,26 @@ function fb_instant_articles_views_theme($existing, $type, $theme, $path) {
         'view' => NULL,
         'options' => array(),
         'row' => NULL,
-        'field_alias' => '',
       ),
       'path' => $path . '/theme',
       'template' => 'views-view-row-fia',
     ),
   );
+}
+
+/**
+ * Templete preprocessor for FBIA views row theme hook.
+ */
+function template_preprocess_views_view_row_fia(&$vars) {
+  $view = &$vars['view'];
+  $options = &$vars['options'];
+  $item = &$vars['row'];
+
+  $vars['title'] = check_plain($item->title);
+  $vars['link'] = check_url($item->link);
+  $vars['guid'] = $item->guid;
+  $vars['content'] = $item->content;
+  $vars['author'] = $item->author;
+  $vars['created'] = $item->created;
+  $vars['modified'] = $item->modified;
 }
