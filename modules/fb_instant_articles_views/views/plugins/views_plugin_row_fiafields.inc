@@ -114,6 +114,7 @@ class views_plugin_row_fiafields extends views_plugin_row {
     $item->author = format_username($node);
     $item->created = format_date($node->created, 'custom', 'c');
     $item->modified = format_date($node->changed, 'custom', 'c');
+    $item->node = $node;
 
     return theme($this->theme_functions(),
       array(
