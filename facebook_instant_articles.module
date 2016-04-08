@@ -103,6 +103,13 @@ function facebook_instant_articles_form_node_type_form_alter(&$form, &$form_stat
 }
 
 /**
+ * Validation callback for node type form.
+ */
+function facebook_instant_articles_node_type_form_validate($form, &$form_state) {
+
+}
+
+/**
  * Submit callback for node type form.
  */
 function facebook_instant_articles_node_type_form_submit($form, &$form_state) {
@@ -239,7 +246,6 @@ function facebook_instant_articles_entity_info_alter(&$entity_info) {
  * Implements hook_preprocess_node().
  */
 function facebook_instant_articles_preprocess_node(&$vars) {
-
   if ($vars['view_mode'] == 'facebook_instant_article') {
 
     $layout_settings = facebook_instant_articles_get_node_layout_settings($vars['type']);
@@ -259,10 +265,6 @@ function facebook_instant_articles_preprocess_node(&$vars) {
         $vars['facebook_instant_article_' . $region][$field] = $field_array;
       }
     }
-
-    // Set the style of the article from configuration.
-    $vars['facebook_instant_article_style'] = variable_get('facebook_instant_articles_style', 'default');
-
     $vars['theme_hook_suggestions'][] = 'node__facebook_instant_article';
   }
 }
