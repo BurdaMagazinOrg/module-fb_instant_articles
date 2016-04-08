@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Field template for Facebook Instant Article fields.
- */
 
 /**
  * @file field.tpl.php

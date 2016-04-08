@@ -58,11 +58,9 @@ function facebook_instant_articles_field_format_analytics_element($items, $setti
       case 'embed':
         $element[$delta]['#markup'] = '<figure class="op-tracker"><iframe>' . $item['safe_value'] . '</iframe></figure>';
         break;
-
       default:
         $element[$delta]['#markup'] = '<figure class="op-tracker"><iframe src="' . $item['safe_value'] . '" /></figure>';
         break;
-
     }
   }
   return $element;
