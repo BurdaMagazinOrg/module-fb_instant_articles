@@ -7,26 +7,26 @@
 /**
  * Implements hook_menu().
  */
-function fb_instant_articles_menu() {
+function facebook_instant_articles_menu() {
   // RSS Endpoint.
   $items['fbinstant.rss'] = array(
-    'page callback' => 'fb_instant_articles_rss_page',
+    'page callback' => 'facebook_instant_articles_rss_page',
     'file' => 'includes/rss.inc',
     'access arguments' => array('access content'),
   );
 
   // Top level configuration page.
-  $items['admin/config/services/fb-instant-articles'] = array(
+  $items['admin/config/services/facebook-instant-articles'] = array(
     'title' => 'Facebook Instant Articles Settings',
     'description' => 'Facebook Instant Articles',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('fb_instant_articles_admin_settings_form'),
-    'access arguments' => array('administer fb_instant_articles'),
+    'page arguments' => array('facebook_instant_articles_admin_settings_form'),
+    'access arguments' => array('administer facebook_instant_articles'),
     'file' => 'includes/admin.inc',
   );
 
   // Configure Facebook Instant Article settings.
-  $items['admin/config/services/fb-instant-articles/settings'] = array(
+  $items['admin/config/services/facebook-instant-articles/settings'] = array(
     'title' => 'Settings',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -1,
@@ -38,10 +38,10 @@ function fb_instant_articles_menu() {
 /**
  * Implements hook_permission().
  */
-function fb_instant_articles_permission() {
+function facebook_instant_articles_permission() {
   $permissions = array();
 
-  $permissions['administer fb_instant_articles'] = array(
+  $permissions['administer facebook_instant_articles'] = array(
     'title' => t('Administer Facebook Instant Articles'),
   );
   return $permissions;
@@ -50,12 +50,12 @@ function fb_instant_articles_permission() {
 /**
  * Implements hook_help().
  */
-function fb_instant_articles_help($path, $arg) {
+function facebook_instant_articles_help($path, $arg) {
   $output = '';
 
   switch ($path) {
     // Main module help for the block module.
-    case 'admin/help#fb_instant_articles':
+    case 'admin/help#facebook_instant_articles':
       $filepath = dirname(__FILE__) . '/README.txt';
       if (file_exists($filepath)) {
         $readme = file_get_contents($filepath);
@@ -70,10 +70,10 @@ function fb_instant_articles_help($path, $arg) {
 /**
  * Implements hook_form_alter().
  */
-function fb_instant_articles_form_node_type_form_alter(&$form, &$form_state) {
+function facebook_instant_articles_form_node_type_form_alter(&$form, &$form_state) {
 
   // Add a vertical tab to the node type form.
-  if (user_access('administer fb_instant_articles')) {
+  if (user_access('administer facebook_instant_articles')) {
     // Build fieldset for vertical tab section.
     $fieldset = array(
       '#type' => 'fieldset',
@@ -85,23 +85,23 @@ function fb_instant_articles_form_node_type_form_alter(&$form, &$form_state) {
     );
 
     // Has the section already been created (perhaps by a sub module)?
-    if (isset($form['fb_instant_articles'])) {
+    if (isset($form['facebook_instant_articles'])) {
       // Add additional fieldset data.
-      $form['fb_instant_articles'] += $fieldset;
+      $form['facebook_instant_articles'] += $fieldset;
     }
     // Else, create the fieldset.
     else {
-      $form['fb_instant_articles'] = $fieldset;
+      $form['facebook_instant_articles'] = $fieldset;
     }
 
     // Is a Article type?
-    $fb_instant_enabled = fb_instant_articles_is_article_type('node', $form['#node_type']->type);
+    $fb_instant_enabled = facebook_instant_articles_is_article_type('node', $form['#node_type']->type);
 
     // Previously checked the product checkbox?
-    $previously_checked = (isset($form_state['values']) && $form_state['values']['fb_instant_articles']['fb_instant_enabled']);
+    $previously_checked = (isset($form_state['values']) && $form_state['values']['facebook_instant_articles']['fb_instant_enabled']);
 
     // Build the product checkbox.
-    $form['fb_instant_articles']['fb_instant_enabled'] = array(
+    $form['facebook_instant_articles']['fb_instant_enabled'] = array(
       '#type' => 'checkbox',
       '#title' => t('Include Content Type in Facebook Instant Articles feed.'),
       '#description' => t('Enable content of this type to be included in the Facebook Instant Articles feed.'),
@@ -110,27 +110,27 @@ function fb_instant_articles_form_node_type_form_alter(&$form, &$form_state) {
     );
 
     // Add custom submit.
-    $form['#submit'][] = 'fb_instant_articles_node_type_form_submit';
+    $form['#submit'][] = 'facebook_instant_articles_node_type_form_submit';
   }
 }
 
 /**
  * Submit callback for node type form.
  */
-function fb_instant_articles_node_type_form_submit($form, &$form_state) {
+function facebook_instant_articles_node_type_form_submit($form, &$form_state) {
 
-  $fb_instant_enabled = fb_instant_articles_is_article_type('node', $form['#node_type']->type);
+  $fb_instant_enabled = facebook_instant_articles_is_article_type('node', $form['#node_type']->type);
 
   if (!$fb_instant_enabled && $form_state['values']['fb_instant_enabled']) {
     // Save the new article type.
-    fb_instant_articles_set_entity_type('node', $form['#node_type']->type);
+    facebook_instant_articles_set_entity_type('node', $form['#node_type']->type);
 
     ctools_include('export');
-    ctools_export_crud_enable('fb_instant_articles_layout_settings', 'node|article|fb_instant_article');
+    ctools_export_crud_enable('facebook_instant_articles_layout_settings', 'node|article|facebook_instant_article');
   }
   // Delete existing settings.
   elseif (!$form_state['values']['fb_instant_enabled']) {
-    fb_instant_articles_delete_entity_type('node', $form['#node_type']->type);
+    facebook_instant_articles_delete_entity_type('node', $form['#node_type']->type);
   }
 }
 
@@ -145,17 +145,17 @@ function fb_instant_articles_node_type_form_submit($form, &$form_state) {
  * @return bool
  *   Boolean TRUE or FALSE.
  */
-function fb_instant_articles_is_article_type($entity_type, $bundle) {
+function facebook_instant_articles_is_article_type($entity_type, $bundle) {
   $is_type = FALSE;
   // Get array of entity types and bundles that are product types.
-  if ($types = fb_instant_articles_get_article_entity_types()) {
+  if ($types = facebook_instant_articles_get_article_entity_types()) {
     // See if this entity type and bundle exists.
     if (isset($types[$entity_type]) && isset($types[$entity_type][$bundle])) {
       $is_type = TRUE;
     }
   }
   // Allow other modules to alter.
-  drupal_alter('fb_instant_articles_is_article_type', $is_type, $entity_type, $bundle);
+  drupal_alter('facebook_instant_articles_is_article_type', $is_type, $entity_type, $bundle);
 
   return $is_type;
 }
@@ -166,11 +166,11 @@ function fb_instant_articles_is_article_type($entity_type, $bundle) {
  * @return mixed
  *   Array of entity types and bundles.
  */
-function fb_instant_articles_get_article_entity_types() {
+function facebook_instant_articles_get_article_entity_types() {
   $entity_types = &drupal_static(__FUNCTION__);
   // Entity types not retrieved yet?
   if (!isset($entity_types)) {
-    $results = db_select('fb_instant_articles_entity_types', 'fbaet')
+    $results = db_select('facebook_instant_articles_entity_types', 'fbaet')
       ->fields('fbaet')
       ->execute();
     // Loop through each of the retrieved entity types.
@@ -181,7 +181,7 @@ function fb_instant_articles_get_article_entity_types() {
       );
     }
     // Allow other modules to alter.
-    drupal_alter('fb_instant_articles_entity_types', $entity_types);
+    drupal_alter('facebook_instant_articles_entity_types', $entity_types);
   }
   return $entity_types;
 }
@@ -194,15 +194,15 @@ function fb_instant_articles_get_article_entity_types() {
  * @param string $bundle
  *   The entity bundle.
  */
-function fb_instant_articles_set_entity_type($type, $bundle) {
-  db_insert('fb_instant_articles_entity_types')
+function facebook_instant_articles_set_entity_type($type, $bundle) {
+  db_insert('facebook_instant_articles_entity_types')
     ->fields(array(
       'entity_type' => $type,
       'entity_bundle' => $bundle,
     ))
     ->execute();
   // Allow other modules to perform actions.
-  module_invoke_all('fb_instant_articles_set_type', $type, $bundle);
+  module_invoke_all('facebook_instant_articles_set_type', $type, $bundle);
 }
 
 /**
@@ -213,13 +213,13 @@ function fb_instant_articles_set_entity_type($type, $bundle) {
  * @param string $bundle
  *   The entity bundle.
  */
-function fb_instant_articles_delete_entity_type($type, $bundle) {
-  db_delete('fb_instant_articles_entity_types')
+function facebook_instant_articles_delete_entity_type($type, $bundle) {
+  db_delete('facebook_instant_articles_entity_types')
     ->condition('entity_type', $type)
     ->condition('entity_bundle', $bundle)
     ->execute();
   // Allow other modules to perform actions.
-  module_invoke_all('fb_instant_articles_delete_type', $type, $bundle);
+  module_invoke_all('facebook_instant_articles_delete_type', $type, $bundle);
 }
 
 /**
@@ -228,9 +228,9 @@ function fb_instant_articles_delete_entity_type($type, $bundle) {
  * @return array
  *   Array of nodes.
  */
-function fb_instant_articles_get_article_nodes() {
+function facebook_instant_articles_get_article_nodes() {
   $nodes = array();
-  $entity_types = fb_instant_articles_get_article_entity_types();
+  $entity_types = facebook_instant_articles_get_article_entity_types();
   if (isset($entity_types['node'])) {
     foreach ($entity_types['node'] as $content_type => $entity_information) {
       $nodes += node_load_multiple(array(), array('type' => $content_type, 'status' => 1));
@@ -242,8 +242,8 @@ function fb_instant_articles_get_article_nodes() {
 /**
  * Implements hook_entity_info_alter().
  */
-function fb_instant_articles_entity_info_alter(&$entity_info) {
-  $entity_info['node']['view modes']['fb_instant_article'] = array(
+function facebook_instant_articles_entity_info_alter(&$entity_info) {
+  $entity_info['node']['view modes']['facebook_instant_article'] = array(
     'label' => t('Facebook Instant Articles'),
     'custom settings' => TRUE,
   );
@@ -252,12 +252,12 @@ function fb_instant_articles_entity_info_alter(&$entity_info) {
 /**
  * Implements hook_html_head_alter().
  */
-function fb_instant_articles_html_head_alter(&$head_elements) {
+function facebook_instant_articles_html_head_alter(&$head_elements) {
   if (drupal_is_front_page()) {
-    $tag_content = variable_get('fb_instant_articles_page_id', NULL);
+    $tag_content = variable_get('facebook_instant_articles_page_id', NULL);
 
     if (!empty($tag_content)) {
-      $head_elements['fb_instant_articles_page'] = array(
+      $head_elements['facebook_instant_articles_page'] = array(
         '#type' => 'html_tag',
         '#tag' => 'meta',
         '#attributes' => array(
@@ -265,7 +265,7 @@ function fb_instant_articles_html_head_alter(&$head_elements) {
           'content' => $tag_content,
         ),
       );
-      drupal_add_html_head($head_elements, 'fb_instant_articles_page');
+      drupal_add_html_head($head_elements, 'facebook_instant_articles_page');
     }
   }
 }
@@ -274,11 +274,11 @@ function fb_instant_articles_html_head_alter(&$head_elements) {
 /**
  * Implements hook_preprocess_node().
  */
-function fb_instant_articles_preprocess_node(&$vars) {
+function facebook_instant_articles_preprocess_node(&$vars) {
 
-  if ($vars['view_mode'] == 'fb_instant_article') {
+  if ($vars['view_mode'] == 'facebook_instant_article') {
 
-    $layout_settings = fb_instant_articles_get_node_layout_settings($vars['type']);
+    $layout_settings = facebook_instant_articles_get_node_layout_settings($vars['type']);
     $regions = $layout_settings->settings['regions'];
 
     foreach ($regions as $region => $fields) {
@@ -297,44 +297,49 @@ function fb_instant_articles_preprocess_node(&$vars) {
           );
         }
 
-        $vars['fb_instant_article_' . $region][$field] = $field_array;
+        $vars['facebook_instant_article_' . $region][$field] = $field_array;
       }
     }
 
     // Set the style of the article from configuration.
-    $vars['fb_instant_article_style'] = variable_get('fb_instant_articles_style', 'default');
+    $vars['facebook_instant_article_style'] = variable_get('facebook_instant_articles_style', 'default');
 
     $vars['canonical_url'] = url('node/' . $vars['nid'], array('absolute' => TRUE));
-    $vars['published'] = fb_instant_articles_time_element($vars['created'], 'op-published');
-    $vars['modified'] = fb_instant_articles_time_element($vars['changed'], 'op-modified');
+    $vars['published'] = facebook_instant_articles_time_element($vars['created'], 'op-published');
+    $vars['modified'] = facebook_instant_articles_time_element($vars['changed'], 'op-modified');
 
-    $vars['theme_hook_suggestions'][] = 'node__fb_instant_article';
+    $vars['theme_hook_suggestions'][] = 'node__facebook_instant_article';
   }
 }
 
 /**
  * Implements hook_preprocess_node().
  */
-function fb_instant_articles_preprocess_field(&$vars) {
+function facebook_instant_articles_preprocess_field(&$vars) {
   $element = $vars['element'];
-  if ($element['#view_mode'] == 'fb_instant_article') {
-    $vars['theme_hook_suggestions'][] = 'field__fb_instant_article';
+  if ($element['#view_mode'] == 'facebook_instant_article') {
+    $vars['theme_hook_suggestions'][] = 'field__facebook_instant_article';
   }
 }
 
 /**
  * Implements hook_theme().
  */
-function fb_instant_articles_theme() {
-  $theme_path = drupal_get_path('module', 'fb_instant_articles') . '/theme';
+function facebook_instant_articles_theme() {
+  $theme_path = drupal_get_path('module', 'facebook_instant_articles') . '/theme';
   return array(
-    'node__fb_instant_article' => array(
-      'template' => 'node--fb-instant-article',
+    'node__facebook_instant_article' => array(
+      'template' => 'node--facebook-instant-article',
       'path' => $theme_path,
       'render element' => 'elements',
     ),
-    'field__fb_instant_article' => array(
-      'template' => 'field--fb-instant-article',
+    'field__facebook_instant_article' => array(
+      'template' => 'field--facebook-instant-article',
+      'path' => $theme_path,
+      'render element' => 'element',
+    ),
+    'field__figure_facebook_instant_article' => array(
+      'template' => 'field--figure-facebook-instant-article',
       'path' => $theme_path,
       'render element' => 'element',
     ),
@@ -344,16 +349,16 @@ function fb_instant_articles_theme() {
 /**
  * Implements hook_form_alter().
  */
-function fb_instant_articles_form_alter(&$form, &$form_state, $form_id) {
+function facebook_instant_articles_form_alter(&$form, &$form_state, $form_id) {
 
   if ($form_id == 'field_ui_display_overview_form') {
-    if ($form['#view_mode'] == 'fb_instant_article') {
-      form_load_include($form_state, 'inc', 'fb_instant_articles', 'includes/view_mode_layout');
+    if ($form['#view_mode'] == 'facebook_instant_article') {
+      form_load_include($form_state, 'inc', 'facebook_instant_articles', 'includes/view_mode_layout');
 
-      fb_instant_articles_layout_form($form, $form_state);
+      facebook_instant_articles_layout_form($form, $form_state);
     }
     else {
-      fb_instant_articles_cleanup_view_mode_formatters($form);
+      facebook_instant_articles_cleanup_view_mode_formatters($form);
     }
   }
 }
@@ -361,11 +366,11 @@ function fb_instant_articles_form_alter(&$form, &$form_state, $form_id) {
 /**
  * Get the layout settings for a specific bundle.
  */
-function fb_instant_articles_get_node_layout_settings($bundle_name) {
+function facebook_instant_articles_get_node_layout_settings($bundle_name) {
   ctools_include('export');
-  $export_id = 'node|' . $bundle_name . '|fb_instant_article';
+  $export_id = 'node|' . $bundle_name . '|facebook_instant_article';
 
-  $layout_settings = ctools_export_crud_load_all('fb_instant_articles_layout_settings');
+  $layout_settings = ctools_export_crud_load_all('facebook_instant_articles_layout_settings');
 
   $layout = new stdClass();
   if (isset($layout_settings[$export_id])) {
@@ -377,7 +382,7 @@ function fb_instant_articles_get_node_layout_settings($bundle_name) {
 /**
  * Implements hook_field_formatter_info().
  */
-function fb_instant_articles_field_formatter_info() {
+function facebook_instant_articles_field_formatter_info() {
   $formats = array();
   $formats['fbia_subtitle_formatter'] = array(
     'label' => t('FBIA Subtitle'),
@@ -463,7 +468,7 @@ function fb_instant_articles_field_formatter_info() {
 /**
  * Implements hook_field_formatter_settings_form().
  */
-function fb_instant_articles_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+function facebook_instant_articles_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
 
   $display = $instance['display'][$view_mode];
   $settings = $display['settings'];
@@ -586,7 +591,7 @@ function fb_instant_articles_field_formatter_settings_form($field, $instance, $v
 /**
  * Implements hook_field_formatter_settings_summary().
  */
-function fb_instant_articles_field_formatter_settings_summary($field, $instance, $view_mode) {
+function facebook_instant_articles_field_formatter_settings_summary($field, $instance, $view_mode) {
   $display = $instance['display'][$view_mode];
   $settings = $display['settings'];
   $summary = '';
@@ -629,65 +634,65 @@ function fb_instant_articles_field_formatter_settings_summary($field, $instance,
 /**
  * Implements hook_field_formatter_view().
  */
-function fb_instant_articles_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+function facebook_instant_articles_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
 
-  module_load_include('inc', 'fb_instant_articles', 'includes/elements');
+  module_load_include('inc', 'facebook_instant_articles', 'includes/elements');
   $element = array();
   $settings = $display['settings'];
 
   switch ($display['type']) {
 
     case 'fbia_subtitle_formatter':
-      $element = fb_instant_articles_field_format_standard_element($items, 'h2');
+      $element = facebook_instant_articles_field_format_standard_element($items, 'h2');
       break;
 
     case 'fbia_kicker_formatter':
-      $element = fb_instant_articles_field_format_standard_element($items, 'h3', 'op-kicker');
+      $element = facebook_instant_articles_field_format_standard_element($items, 'h3', 'op-kicker');
       break;
 
     case 'fbia_blockquote_formatter':
-      $element = fb_instant_articles_field_format_standard_element($items, 'blockquote');
+      $element = facebook_instant_articles_field_format_standard_element($items, 'blockquote');
       break;
 
     case 'fbia_author_formatter':
-      $element = fb_instant_articles_field_format_standard_element($items, 'address');
+      $element = facebook_instant_articles_field_format_standard_element($items, 'address');
       break;
 
     case 'fbia_credits_formatter':
     case 'fbia_pullquote_formatter':
-      $element = fb_instant_articles_field_format_standard_element($items, 'aside');
+      $element = facebook_instant_articles_field_format_standard_element($items, 'aside');
       break;
 
     case 'fbia_copyright_formatter':
-      $element = fb_instant_articles_field_format_standard_element($items, 'small');
+      $element = facebook_instant_articles_field_format_standard_element($items, 'small');
       break;
 
     case 'fbia_ad_formatter':
-      $element = fb_instant_articles_field_format_ad_element($items, $settings);
+      $element = facebook_instant_articles_field_format_ad_element($items, $settings);
       break;
 
     case 'fbia_analytics_formatter':
-      $element = fb_instant_articles_field_format_analytics_element($items, $settings);
+      $element = facebook_instant_articles_field_format_analytics_element($items, $settings);
       break;
 
     case 'fbia_video_formatter':
-      $element = fb_instant_articles_field_format_video_element($items, $settings);
+      $element = facebook_instant_articles_field_format_video_element($items, $settings);
       break;
 
     case 'fbia_image_formatter':
-      $element = fb_instant_articles_field_format_image_element($items, $settings);
+      $element = facebook_instant_articles_field_format_image_element($items, $settings);
       break;
 
     case 'fbia_interactive_formatter':
-      $element = fb_instant_articles_field_format_interactive_element($items, $settings);
+      $element = facebook_instant_articles_field_format_interactive_element($items, $settings);
       break;
 
     case 'fbia_list_formatter':
-      $element = fb_instant_articles_field_format_list_element($items, $settings);
+      $element = facebook_instant_articles_field_format_list_element($items, $settings);
       break;
 
     case 'fbia_social_formatter':
-      $element = fb_instant_articles_field_format_social_element($items, $settings);
+      $element = facebook_instant_articles_field_format_social_element($items, $settings);
       break;
   }
 
@@ -697,7 +702,7 @@ function fb_instant_articles_field_formatter_view($entity_type, $entity, $field,
 /**
  * Remove formatters from view modes which are not Facebook Instant Articles.
  */
-function fb_instant_articles_cleanup_view_mode_formatters(&$form) {
+function facebook_instant_articles_cleanup_view_mode_formatters(&$form) {
   foreach ($form['fields'] as $field_key => $field) {
     if (strpos($field_key, '#') === FALSE) {
       foreach ($field['format']['type']['#options'] as $format_key => $format) {
@@ -712,7 +717,7 @@ function fb_instant_articles_cleanup_view_mode_formatters(&$form) {
 /**
  * Format time elements.
  */
-function fb_instant_articles_time_element($timestamp, $class) {
+function facebook_instant_articles_time_element($timestamp, $class) {
   $class = ' class="' . $class . '"';
 
   $date = new DateTime("@$timestamp");

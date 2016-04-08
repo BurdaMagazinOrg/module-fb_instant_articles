@@ -7,8 +7,8 @@
 /**
  * Implements hook_schema().
  */
-function fb_instant_articles_schema() {
-  $schema['fb_instant_articles_entity_types'] = array(
+function facebook_instant_articles_schema() {
+  $schema['facebook_instant_articles_entity_types'] = array(
     'description' => 'Mappings between Facebook Instant Articles and entities',
     'fields' => array(
       'entity_type' => array(
@@ -34,18 +34,18 @@ function fb_instant_articles_schema() {
     ),
   );
 
-  $schema['fb_instant_articles_layout_settings'] = array(
+  $schema['facebook_instant_articles_layout_settings'] = array(
     'description' => 'The table that holds the Facebook Instant Articles layout configuration.',
 
     // CTools export definitions.
     'export' => array(
       'key' => 'id',
-      'identifier' => 'fb_instant_articles_layout',
-      'default hook' => 'fb_instant_articles_layout_settings_info',
+      'identifier' => 'facebook_instant_articles_layout',
+      'default hook' => 'facebook_instant_articles_layout_settings_info',
       'can disable' => FALSE,
       'api' => array(
-        'owner' => 'fb_instant_articles',
-        'api' => 'fb_instant_articles',
+        'owner' => 'facebook_instant_articles',
+        'api' => 'facebook_instant_articles',
         'minimum_version' => 1,
         'current_version' => 1,
       ),
@@ -88,18 +88,18 @@ function fb_instant_articles_schema() {
     ),
   );
 
-  $schema['fb_instant_articles_field_settings'] = array(
+  $schema['facebook_instant_articles_field_settings'] = array(
     'description' => 'The table that holds Facebook Instant Articles field settings per display.',
 
     // CTools export definitions.
     'export' => array(
       'key' => 'id',
-      'identifier' => 'fb_instant_articles_fieldsetting',
-      'default hook' => 'fb_instant_articles_field_settings_info',
+      'identifier' => 'facebook_instant_articles_fieldsetting',
+      'default hook' => 'facebook_instant_articles_field_settings_info',
       'can disable' => FALSE,
       'api' => array(
-        'owner' => 'fb_instant_articles',
-        'api' => 'fb_instant_articles',
+        'owner' => 'facebook_instant_articles',
+        'api' => 'facebook_instant_articles',
         'minimum_version' => 1,
         'current_version' => 1,
       ),
@@ -156,10 +156,10 @@ function fb_instant_articles_schema() {
 /**
  * Implements hook_uninstall().
  */
-function fb_instant_articles_uninstall() {
-  variable_del('fb_instant_articles_channel_title');
-  variable_del('fb_instant_articles_channel_description');
-  variable_del('fb_instant_articles_channel_language');
-  variable_del('fb_instant_articles_style');
-  variable_del('fb_instant_articles_page_id');
+function facebook_instant_articles_uninstall() {
+  variable_del('facebook_instant_articles_channel_title');
+  variable_del('facebook_instant_articles_channel_description');
+  variable_del('facebook_instant_articles_channel_language');
+  variable_del('facebook_instant_articles_style');
+  variable_del('facebook_instant_articles_page_id');
 }
