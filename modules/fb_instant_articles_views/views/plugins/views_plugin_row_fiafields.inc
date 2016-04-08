@@ -107,14 +107,18 @@ class views_plugin_row_fiafields extends views_plugin_row {
     $node_view = node_view($node, $view_mode);
 
     $item = new stdClass();
+    // Required elements
+    $item->node = $node;
     $item->title = $node->title;
     $item->link = $node->link;
-    $item->guid = $node->nid . ' at ' . $base_url;
     $item->content = drupal_render($node_view);
-    $item->author = format_username($node);
-    $item->created = format_date($node->created, 'custom', 'c');
-    $item->modified = format_date($node->changed, 'custom', 'c');
-    $item->node = $node;
+    // Optional elements, modules and themes will have the chance to alter
+    // these.
+    $item->elements = array(
+      'guid' => $node->nid . ' at ' . $base_url,
+      'pubDate' => format_date($node->created, 'custom', 'c'),
+      'author' => format_username($node),
+    );
 
     return theme($this->theme_functions(),
       array(

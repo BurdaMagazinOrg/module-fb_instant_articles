@@ -37,4 +37,5 @@ function template_preprocess_views_view_row_fia(&$vars) {
   $vars['author'] = $item->author;
   $vars['created'] = $item->created;
   $vars['modified'] = $item->modified;
+  $vars['item_elements'] = empty($item->elements) ? '' : format_xml_elements($item->elements);
 }
