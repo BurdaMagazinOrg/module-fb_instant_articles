@@ -38,9 +38,9 @@ function facebook_instant_articles_rss_page() {
     $item->addChildCdata('content', drupal_render(node_view($node, 'facebook_instant_article')));
 
     // Add published date.
-    $ts = $node->created;
-    $date = new DateTime("@$ts");
-    $item->addChild('pubDate', $date->format(DateTime::ATOM));
+    $date_time = new DateTime();
+    $date_time->setTimestamp($node->created);
+    $item->addChild('pubDate', $date_time->format(DateTime::ATOM));
   }
 
   echo $rss->asXML();
