@@ -275,8 +275,6 @@ function facebook_instant_articles_preprocess_node(&$vars) {
     // Set the style of the article from configuration.
     $vars['facebook_instant_article_style'] = variable_get('facebook_instant_articles_style', 'default');
 
-    $vars['canonical_url'] = url('node/' . $vars['nid'], array('absolute' => TRUE));
-
     $vars['theme_hook_suggestions'][] = 'node__facebook_instant_article';
   }
 }
