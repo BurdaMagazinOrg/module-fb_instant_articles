@@ -2,19 +2,34 @@
 
 /**
  * @file
- * LoggerAppenderDrupal
+ * Contains \Drupal\fb_instant_articles_display\DrupalLoggerAppender.
  */
 
+namespace Drupal\fb_instant_articles_display;
+
 /**
- * LoggerAppenderDrupal logs to the Drupal log using the watchdog() function
+ * Adds Drupal logging functionality to existing SDK logging.
+ *
+ * Class DrupalLoggerAppender
+ * @package Drupal\fb_instant_articles_display
+ *
+ * @see fb_instant_articles_display_init()
  */
-class LoggerAppenderDrupal extends LoggerAppender {
-  public function append(LoggerLoggingEvent $event) {
+class DrupalLoggerAppender extends \LoggerAppender {
+
+  /**
+   * {@inheritdoc}
+   *
+   * Additionally sends logging event to Drupal watchdog.
+   */
+  public function append(\LoggerLoggingEvent $event) {
     watchdog(
       $event->getLoggerName(),
       $event->getRenderedMessage(),
       null,
-      $event->getLevel()->getSyslogEquivalent() // watchdog levels follow RFC 3164
+      // Watchdog levels follow RFC 3164.
+      $event->getLevel()->getSyslogEquivalent()
     );
   }
+
 }
