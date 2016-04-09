@@ -1,0 +1,7 @@
+{
+  "autoload": {
+    "psr-4": {
+      "Drupal\\fb_instant_articles_api\\": "src/"
+    }
+  }
+}
