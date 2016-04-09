@@ -2,8 +2,10 @@
 
 /**
  * @file
- * Defines the InstantArticleNodeWrapper class.
+ * Contains \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay.
  */
+
+namespace Drupal\fb_instant_articles_display;
 
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
@@ -28,8 +30,11 @@ use Facebook\InstantArticles\Transformer\Transformer;
 /**
  * Facebook Instant Article node wrapper class.  Builds up an InstantArticle
  * object using field formatters.
+ *
+ * Class DrupalInstantArticleDisplay
+ * @package Drupal\fb_instant_articles_display
  */
-class InstantArticleNodeWrapper {
+class DrupalInstantArticleDisplay {
 
   /**
    * Facebook Instant Articles version number.
@@ -71,7 +76,7 @@ class InstantArticleNodeWrapper {
 
   /**
    * @param stdClass $node
-   * @return InstantArticleNodeWrapper
+   * @return \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay
    */
   public static function create($node, $layoutSettings) {
     // InstantArticle object for the node.  This will be built up by any field
@@ -108,7 +113,7 @@ class InstantArticleNodeWrapper {
     }
     $instantArticle->withHeader($header);
 
-    return new InstantArticleNodeWrapper($node, $layoutSettings, $instantArticle);
+    return new DrupalInstantArticleDisplay($node, $layoutSettings, $instantArticle);
   }
 
   /**

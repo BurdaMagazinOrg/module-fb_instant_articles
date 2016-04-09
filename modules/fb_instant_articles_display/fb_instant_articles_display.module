@@ -13,7 +13,7 @@
 */
 function fb_instant_articles_display_init() {
  // Configure Instant Articles Transformer logger to append to Drupal log if enabled
- $enable_transformer_logging = variable_get('fb_instant_articles_display_enable_transformer_logging', FALSE);
+ $enable_transformer_logging = variable_get('fb_instant_articles_display_enable_transformer_logging');
  \Logger::configure(
    array(
      'rootLogger' => array(
@@ -21,7 +21,7 @@ function fb_instant_articles_display_init() {
      ),
      'appenders' => array(
        'facebook-instantarticles-transformer' => array(
-         'class' => $enable_transformer_logging ? 'LoggerAppenderDrupal' : 'LoggerAppenderNull',
+         'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles_display\DrupalLoggerAppender' : 'LoggerAppenderNull',
          'layout' => array(
            'class' => 'LoggerLayoutSimple'
          )
@@ -226,7 +226,7 @@ function fb_instant_articles_display_node_load($nodes, $types) {
     if (!empty($enabled_bundles) && count(array_intersect($enabled_bundles, $types))) {
       foreach ($nodes as $node) {
         $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
-        $wrapper = InstantArticleNodeWrapper::create($node, $layout_settings);
+        $wrapper = \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay::create($node, $layout_settings);
         // Store the InstantArticle wrapper object on the node entity to allow
         // field formatters and others to make changes/additions to it until it's
         // finally rendered out in hook_preprocess_node().
@@ -279,7 +279,7 @@ function fb_instant_articles_display_theme() {
 function theme_node__fb_instant_article($vars) {
   $node = $vars['node'];
   if (isset($node->fb_instant_articles_display_wrapper)) {
-    /** @var InstantArticleNodeWrapper $wrapper */
+    /** @var \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay $wrapper */
     $wrapper = $node->fb_instant_articles_display_wrapper;
     return $wrapper->render();
   }
@@ -581,7 +581,7 @@ function fb_instant_articles_display_field_formatter_view($entity_type, $entity,
   // present, it means that a site admin selected an FB IA field formatter for
   // a non-FB IA content type.
   if (isset($entity->fb_instant_articles_display_wrapper)) {
-    /** @var InstantArticleNodeWrapper $wrapper */
+    /** @var \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay $wrapper */
     $wrapper = $entity->fb_instant_articles_display_wrapper;
     $wrapper->fieldFormatterView($field, $instance, $langcode, $items, $display);
   }
