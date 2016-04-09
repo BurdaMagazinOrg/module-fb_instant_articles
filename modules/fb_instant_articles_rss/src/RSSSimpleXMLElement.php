@@ -2,13 +2,18 @@
 
 /**
  * @file
- * Contains FacebookInstantArticlesRSSSimpleXMLElement.
+ * Contains \Drupal\fb_instant_articles_rss\RSSSimpleXMLElement.
  */
+
+namespace Drupal\fb_instant_articles_rss;
 
 /**
  * Extension for SimpleXMLElement.
+ *
+ * Class RSSSimpleXMLElement
+ * @package Drupal\fb_instant_articles_rss
  */
-class FacebookInstantArticlesRSSSimpleXMLElement extends SimpleXMLElement {
+class RSSSimpleXMLElement extends \SimpleXMLElement {
 
   /**
    * Adds CDATA text in a node.
@@ -43,10 +48,10 @@ class FacebookInstantArticlesRSSSimpleXMLElement extends SimpleXMLElement {
   /**
    * Adds SimpleXMLElement code into a SimpleXMLElement.
    *
-   * @param SimpleXMLElement $append
+   * @param \SimpleXMLElement $append
    *   XMLElement to append to.
    */
-  public function appendXml(SimpleXMLElement $append) {
+  public function appendXml(\SimpleXMLElement $append) {
     if ($append) {
       if (strlen(trim((string) $append)) == 0) {
         $xml = $this->addChild($append->getName());

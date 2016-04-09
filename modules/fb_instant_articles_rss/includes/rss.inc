@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Functions to generate the RSS feed.
@@ -8,11 +9,9 @@
  * Callback for the RSS page menu item.
  */
 function fb_instant_articles_rss_page() {
-  module_load_include('inc', 'fb_instant_articles_rss', 'includes/FacebookInstantArticlesRSSSimpleXMLElement');
-
   header('Content-Type: text/xml; charset=utf-8', TRUE);
 
-  $rss = new FacebookInstantArticlesRSSSimpleXMLElement('<rss xmlns:content="http://purl.org/rss/1.0/modules/content/"></rss>');
+  $rss = new \Drupal\fb_instant_articles_rss\RSSSimpleXMLElement('<rss xmlns:content="http://purl.org/rss/1.0/modules/content/"></rss>');
 
   $rss->addAttribute('version', '2.0');
   $channel = $rss->addChild('channel');
@@ -25,8 +24,8 @@ function fb_instant_articles_rss_page() {
   $channel->addChild('language', variable_get('fb_instant_articles_rss_channel_language', 'en-gb'));
 
   // Create ISO 8601 formatted date.
-  $date_time = new DateTime('NOW');
-  $channel->addChild('lastBuildDate', $date_time->format(DateTime::ATOM));
+  $date_time = new \DateTime('NOW');
+  $channel->addChild('lastBuildDate', $date_time->format(\DateTime::ATOM));
 
   // Create RSS items.
   $nodes = fb_instant_articles_rss_get_article_nodes();
@@ -40,8 +39,8 @@ function fb_instant_articles_rss_page() {
 
     // Add published date.
     $ts = $node->created;
-    $date = new DateTime("@$ts");
-    $item->addChild('pubDate', $date->format(DateTime::ATOM));
+    $date = new \DateTime("@$ts");
+    $item->addChild('pubDate', $date->format(\DateTime::ATOM));
   }
 
   echo $rss->asXML();
