@@ -22,5 +22,12 @@ function fb_instant_articles_settings() {
       of your HTML page. See <a href="@claim_url">Claiming your URL</a>.', $args),
   );
 
+  $form['fb_instant_articles_enable_logging'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable FB Instant Articles SDK logging?'),
+    '#default_value' => variable_get('fb_instant_articles_enable_logging'),
+    '#description' => t('Sends Facebook Instant Articles SDK logging messages to Drupal watchdog.'),
+  );
+
   return system_settings_form($form);
 }
