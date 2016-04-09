@@ -7,23 +7,6 @@
 
 
 /**
- * Implements hook_menu().
- */
-function fb_instant_articles_display_menu() {
-  // Top level configuration page.
-  $items['admin/config/services/fb-instant-articles/display'] = array(
-    'title' => 'Facebook Instant Articles Display',
-    'description' => 'Display settings for Facebook Instant Articles.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('fb_instant_articles_display_admin_settings_form'),
-    'access arguments' => array('administer fb_instant_articles_display'),
-    'file' => 'includes/admin.inc',
-  );
-
-  return $items;
-}
-
-/**
  * Implements hook_permission().
  */
 function fb_instant_articles_display_permission() {
