@@ -6,9 +6,8 @@
  */
 
 /**
- * The views_plugin_row_fiafields row plugin
- *
- * Renders an RSS item based on fields.
+ * Plugin which performs a node_view on the resulting object and formats is as
+ * an RSS item as per the Facebook Instant Article specification.
  */
 class views_plugin_row_fiafields extends views_plugin_row {
   // Basic properties that let the row style follow relationships.
@@ -18,12 +17,21 @@ class views_plugin_row_fiafields extends views_plugin_row {
   // Stores the nodes loaded with pre_render.
   var $nodes = array();
 
+  /**
+   * Add to the base class' options for the row.
+   */
   function option_definition() {
     $options = parent::option_definition();
     $options['view_mode'] = array('fb_instant_article' => 'fb_instant_article');
     return $options;
   }
 
+  /**
+   * Alter the options form for the row to add our options.
+   *
+   * @param array $form
+   * @param array $form_state
+   */
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
 
@@ -36,7 +44,8 @@ class views_plugin_row_fiafields extends views_plugin_row {
   }
 
   /**
-   * Return the main options, which are shown in the summary title.
+   * Helper function to return a list of available view modes for use in the
+   * row settings.
    */
   function options_form_summary_options() {
     $entity_info = entity_get_info('node');
@@ -49,12 +58,17 @@ class views_plugin_row_fiafields extends views_plugin_row {
     return $options;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   function summary_title() {
     $options = $this->options_form_summary_options();
     return check_plain($options[$this->options['view_mode']]);
   }
 
-
+  /**
+   * {@inheritdoc}
+   */
   function pre_render($values) {
     $nids = array();
     foreach ($values as $row) {
@@ -72,9 +86,7 @@ class views_plugin_row_fiafields extends views_plugin_row {
    *   The rendered output of a single row, used by the style plugin.
    */
   function render($row) {
-
     global $base_url;
-    global $language;
 
     $nid = $row->{$this->field_alias};
     if (!is_numeric($nid)) {
@@ -87,28 +99,32 @@ class views_plugin_row_fiafields extends views_plugin_row {
       return;
     }
 
-    $options['langcode'] = $language->language;
     $uri = entity_uri('node', $node);
+    $node->link = url($uri['path'], $uri['options'] + array('absolute' => TRUE));
 
     // Build output for node.
-    $display_mode = $this->options['view_mode'];
-    $node_view = node_view($node, $display_mode);
+    $view_mode = $this->options['view_mode'];
+    $node_view = node_view($node, $view_mode);
 
-    $options['title'] = $node->title;
-    $options['author'] = format_username($node);
-    $options['created'] = date("Y-d-m\TH:i:s\Z", $node->created);
-    $options['time_created'] = date("F jS, g:i A", $node->created);
-    $options['modified'] = date("Y-d-m\TH:i:s\Z", $node->changed);
-    $options['time_modified'] = date("F jS, g:i A", $node->changed);
-    $options['link'] = url($uri['path'], $uri['options'] + array('absolute' => TRUE));
-    $options['guid'] = $node->nid . ' at ' . $base_url;
+    $item = new stdClass();
+    // Required elements
+    $item->node = $node;
+    $item->title = $node->title;
+    $item->link = $node->link;
+    $item->content = drupal_render($node_view);
+    // Optional elements, modules and themes will have the chance to alter
+    // these.
+    $item->elements = array(
+      'guid' => $node->nid . ' at ' . $base_url,
+      'pubDate' => format_date($node->created, 'custom', 'c'),
+      'author' => format_username($node),
+    );
 
     return theme($this->theme_functions(),
       array(
         'view' => $this->view,
-        'options' => $options,
-        'row' => drupal_render($node_view),
-        'field_alias' => isset($this->field_alias) ? $this->field_alias : '',
+        'options' => $this->options,
+        'row' => $item,
       ));
   }
 }
