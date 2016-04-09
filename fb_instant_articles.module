@@ -83,3 +83,28 @@ function fb_instant_articles_html_head_alter(&$head_elements) {
     }
   }
 }
+
+/**
+ * Implements hook_init().
+ *
+ * @todo Update to use a custom DrupalFBInstantArticlesLogger once
+ *   @link https://github.com/facebook/facebook-instant-articles-sdk-php/issues/14 this SDK issue @endlink is in resolved.
+ */
+function fb_instant_articles_init() {
+  $enable_transformer_logging = variable_get('fb_instant_articles_display_enable_transformer_logging');
+  \Logger::configure(
+    array(
+      'rootLogger' => array(
+        'appenders' => array('facebook-instantarticles-transformer')
+      ),
+      'appenders' => array(
+        'facebook-instantarticles-transformer' => array(
+          'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
+          'layout' => array(
+            'class' => 'LoggerLayoutSimple'
+          )
+        )
+      )
+    )
+  );
+}
