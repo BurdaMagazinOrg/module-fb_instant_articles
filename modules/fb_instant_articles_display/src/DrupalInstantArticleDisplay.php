@@ -62,7 +62,7 @@ class DrupalInstantArticleDisplay {
    *
    * @var InstantArticle
    */
-  private $instantArticle;
+  public $instantArticle;
 
   /**
    * @param stdClass $node
