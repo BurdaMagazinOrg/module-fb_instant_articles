@@ -86,9 +86,6 @@ function fb_instant_articles_display_module_config($form){
   // Add the Analytics sub-section
   $form = fb_instant_articles_display_module_config_analytics($form);
 
-  // Add the Publishing Settings sub-section
-  $form = fb_instant_articles_display_module_config_publishing($form);
-
   // Add the Debug Configuration sub-section
   $form = fb_instant_articles_display_module_config_debug($form);
 
@@ -234,40 +231,6 @@ function fb_instant_articles_display_module_config_analytics($form){
     '#size' => 30,
   );
   $form['fb_instant_articles_display']['module_config']['analytics']['analytics_footer'] = array(
-    '#markup' => '
-      <div style="height:20px">
-        <hr>
-      </div>
-    ',
-  );
-
-  return $form;
-}
-
-/**
- * Generates Publishing Settings sub-section of Module Configuration section
- */
-function fb_instant_articles_display_module_config_publishing($form) {
-
-  $form['fb_instant_articles_display']['module_config']['publishing'] = array(
-    '#type' => 'container',
-    '#attributes' => array('class' => array('publishing')),
-  );
-
-  $form['fb_instant_articles_display']['module_config']['publishing']['publishing_header'] = array(
-    '#markup' => '
-      <div>
-        <h4>' .t('Publishing Settings') . '</h4>
-      </div>
-      ',
-  );
-  $form['fb_instant_articles_display']['module_config']['publishing']['fb_instant_articles_development_mode'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Development Mode'),
-    '#default_value' => variable_get('fb_instant_articles_development_mode', FALSE),
-    '#description' => '<div>' .t('When publishing in development, none of your articles will be made live, and they will be saved as drafts you can edit in the Instant Articles library on your Facebook Page. Whether in development mode or not, articles will not be published live until you have submitted a sample batch to Facebook and passed a one-time review.')  . '</div>',
-  );
-  $form['fb_instant_articles_display']['module_config']['publishing']['publishing_footer'] = array(
     '#markup' => '
       <div style="height:20px">
         <hr>

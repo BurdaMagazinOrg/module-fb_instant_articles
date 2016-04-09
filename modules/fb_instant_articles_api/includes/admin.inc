@@ -15,7 +15,8 @@ function fb_instant_articles_api_settings() {
   // Generate the Module Activation section of the settings form
   $form = fb_instant_articles_api_module_activation($form);
 
-  //TODO development_mode
+  // Add the Publishing Settings sub-section
+  $form = fb_instant_articles_display_module_config_publishing($form);
 
   return system_settings_form($form);
 }
@@ -284,4 +285,38 @@ function fb_instant_articles_api_validate_fb_app_id($element, &$form_state, $for
     form_error($element, t('The App ID that you entered is invalid.'));
   }
 
+}
+
+/**
+ * Generates Publishing Settings sub-section of Module Configuration section
+ */
+function fb_instant_articles_display_module_config_publishing($form) {
+
+  $form['fb_instant_articles_api']['module_config']['publishing'] = array(
+    '#type' => 'container',
+    '#attributes' => array('class' => array('publishing')),
+  );
+
+  $form['fb_instant_articles_api']['module_config']['publishing']['publishing_header'] = array(
+    '#markup' => '
+      <div>
+        <h4>' .t('Publishing Settings') . '</h4>
+      </div>
+      ',
+  );
+  $form['fb_instant_articles_api']['module_config']['publishing']['fb_instant_articles_api_development_mode'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Development Mode'),
+    '#default_value' => variable_get('fb_instant_articles_api_development_mode', FALSE),
+    '#description' => '<div>' .t('When publishing in development, none of your articles will be made live, and they will be saved as drafts you can edit in the Instant Articles library on your Facebook Page. Whether in development mode or not, articles will not be published live until you have submitted a sample batch to Facebook and passed a one-time review.')  . '</div>',
+  );
+  $form['fb_instant_articles_api']['module_config']['publishing']['publishing_footer'] = array(
+    '#markup' => '
+      <div style="height:20px">
+        <hr>
+      </div>
+    ',
+  );
+
+  return $form;
 }
