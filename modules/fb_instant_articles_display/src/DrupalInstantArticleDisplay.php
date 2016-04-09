@@ -94,13 +94,13 @@ class DrupalInstantArticleDisplay {
       ->withPublishTime(
         Time::create(Time::PUBLISHED)
           ->withDatetime(
-            DateTime::createFromFormat('U', $node->created)
+            \DateTime::createFromFormat('U', $node->created)
           )
       )
       ->withModifyTime(
         Time::create(Time::MODIFIED)
           ->withDatetime(
-            DateTime::createFromFormat('U', $node->changed)
+            \DateTime::createFromFormat('U', $node->changed)
           )
       );
     // Default the article autor to the username.

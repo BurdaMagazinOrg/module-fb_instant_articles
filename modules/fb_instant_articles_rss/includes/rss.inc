@@ -24,8 +24,8 @@ function fb_instant_articles_rss_page() {
   $channel->addChild('language', variable_get('fb_instant_articles_rss_channel_language', 'en-gb'));
 
   // Create ISO 8601 formatted date.
-  $date_time = new DateTime('NOW');
-  $channel->addChild('lastBuildDate', $date_time->format(DateTime::ATOM));
+  $date_time = new \DateTime('NOW');
+  $channel->addChild('lastBuildDate', $date_time->format(\DateTime::ATOM));
 
   // Create RSS items.
   $nodes = fb_instant_articles_rss_get_article_nodes();
@@ -39,8 +39,8 @@ function fb_instant_articles_rss_page() {
 
     // Add published date.
     $ts = $node->created;
-    $date = new DateTime("@$ts");
-    $item->addChild('pubDate', $date->format(DateTime::ATOM));
+    $date = new \DateTime("@$ts");
+    $item->addChild('pubDate', $date->format(\DateTime::ATOM));
   }
 
   echo $rss->asXML();

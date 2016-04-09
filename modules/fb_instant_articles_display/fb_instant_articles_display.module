@@ -608,8 +608,8 @@ function fb_instant_articles_display_cleanup_view_mode_formatters(&$form) {
 function fb_instant_articles_display_time_element($timestamp, $class) {
   $class = ' class="' . $class . '"';
 
-  $date = new DateTime("@$timestamp");
-  $datetime = ' datetime="' . $date->format(DateTime::ATOM) . '"';
+  $date = new \DateTime("@$timestamp");
+  $datetime = ' datetime="' . $date->format(\DateTime::ATOM) . '"';
   $text_time = $date->format('F jS, g:i A');
   $element = '<time' . $class . $datetime . '>' . $text_time . '</time>';
 
