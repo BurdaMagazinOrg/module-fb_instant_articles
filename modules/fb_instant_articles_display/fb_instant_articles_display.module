@@ -6,49 +6,6 @@
  */
 
 /**
-* Implements hook_init().
- *
- * @todo Update to use a custom DrupalFBInstantArticlesLogger once
- *   @link https://github.com/facebook/facebook-instant-articles-sdk-php/issues/14 this SDK issue @endlink is in resolved.
-*/
-function fb_instant_articles_display_init() {
- // Configure Instant Articles Transformer logger to append to Drupal log if enabled
- $enable_transformer_logging = variable_get('fb_instant_articles_display_enable_transformer_logging');
- \Logger::configure(
-   array(
-     'rootLogger' => array(
-       'appenders' => array('facebook-instantarticles-transformer')
-     ),
-     'appenders' => array(
-       'facebook-instantarticles-transformer' => array(
-         'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles_display\DrupalLoggerAppender' : 'LoggerAppenderNull',
-         'layout' => array(
-           'class' => 'LoggerLayoutSimple'
-         )
-       )
-     )
-   )
- );
-}
-
-/**
- * Implements hook_menu().
- */
-function fb_instant_articles_display_menu() {
-  // Top level configuration page.
-  $items['admin/config/services/fb-instant-articles/display'] = array(
-    'title' => 'Facebook Instant Articles Display',
-    'description' => 'Display settings for Facebook Instant Articles.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('fb_instant_articles_display_admin_settings_form'),
-    'access arguments' => array('administer fb_instant_articles_display'),
-    'file' => 'includes/admin.inc',
-  );
-
-  return $items;
-}
-
-/**
  * Implements hook_permission().
  */
 function fb_instant_articles_display_permission() {

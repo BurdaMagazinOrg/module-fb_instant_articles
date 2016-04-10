@@ -2,16 +2,16 @@
 
 /**
  * @file
- * Contains \Drupal\fb_instant_articles_display\DrupalLoggerAppender.
+ * Contains \Drupal\fb_instant_articles\DrupalLoggerAppender.
  */
 
-namespace Drupal\fb_instant_articles_display;
+namespace Drupal\fb_instant_articles;
 
 /**
  * Adds Drupal logging functionality to existing SDK logging.
  *
  * Class DrupalLoggerAppender
- * @package Drupal\fb_instant_articles_display
+ * @package Drupal\fb_instant_articles
  *
  * @see fb_instant_articles_display_init()
  */
