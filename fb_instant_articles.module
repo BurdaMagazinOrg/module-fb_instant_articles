@@ -91,7 +91,7 @@ function fb_instant_articles_html_head_alter(&$head_elements) {
  *   @link https://github.com/facebook/facebook-instant-articles-sdk-php/issues/14 this SDK issue @endlink is in resolved.
  */
 function fb_instant_articles_init() {
-  $enable_transformer_logging = variable_get('fb_instant_articles_enable_transformer_logging');
+  $enable_transformer_logging = variable_get('fb_instant_articles_enable_logging');
   \Logger::configure(
     array(
       'rootLogger' => array(
