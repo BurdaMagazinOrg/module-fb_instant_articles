@@ -21,11 +21,11 @@ class InstantArticle extends \Facebook\InstantArticles\Elements\InstantArticle {
    * Adds Drupal hook to allow DOM element manipulation before rendering.
    *
    * @see \Facebook\InstantArticles\Elements\Element::render()
-   * @see hook_fb_instant_articles_to_dom_element()
+   * @see hook_fb_instant_articles_render_alter()
    */
-  public function toDOMElement($document = null) {
-    $html = parent::toDOMElement();
-    drupal_alter('fb_instant_articles_to_dom_element', $html, $this);
+  public function render($doctype = '<!doctype html>', $format = false) {
+    drupal_alter('fb_instant_articles_render', $this);
+    return parent::render($doctype, $format);
   }
 
 }
