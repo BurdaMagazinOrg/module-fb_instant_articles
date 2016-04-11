@@ -560,17 +560,17 @@ class DrupalInstantArticleDisplay {
     $analytics_embed_code = variable_get('fb_instant_articles_analytics_embed_code');
     if ($analytics_embed_code) {
       $document = new \DOMDocument();
-			$fragment = $document->createDocumentFragment();
-			$valid_html = @$fragment->appendXML($analytics_embed_code);
-			if ($valid_html) {
-				$this->instantArticle
-					->addChild(
-						Analytics::create()
-							->withHTML(
-								$fragment
-							)
-					);
-			}
+      $fragment = $document->createDocumentFragment();
+      $valid_html = @$fragment->appendXML($analytics_embed_code);
+      if ($valid_html) {
+        $this->instantArticle
+          ->addChild(
+            Analytics::create()
+              ->withHTML(
+                $fragment
+              )
+          );
+      }
     }
   }
 }
