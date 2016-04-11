@@ -58,7 +58,24 @@ function fb_instant_articles_help($path, $arg) {
       }
       $output = '<pre>' . $readme . '</pre>';
       break;
-
+    case 'admin/config/services/fb-instant-articles/settings':
+      $output .= '<p>' . t('Once you\'ve activated this Drupal module, set up your Instant Articles and submit them to Facebook for a one-time review. The review is required before you can begin publishing. Follow these steps to get started:') . '</p>';
+      $output .= '<ol>';
+      $output .= '  <li>' . t('Sign up for Instant Articles, if you haven\'t already, and enabled the same Facebook Page you selected in the step above.') . '</li>';
+      $output .= '  <li>' . t('Claim the URL you will use to publish articles.</b> Right now, we think the URL for this page is: %url. <a href="@claim_url" target="_blank">Claim your URL here.</a>', array('%url' => $_SERVER['HTTP_HOST'], '@claim_url' => 'https://developers.facebook.com/docs/instant-articles/claim-url')) . '</li>';
+      $output .= '  <li>' . t('Install the Pages Manager App to preview your articles and styles on <a href="@ios_url" target="_blank">iOS</a> or <a href="@android_url" target="_blank">Android</a>.', array('@ios_url' => 'http://itunes.apple.com/app/facebook-pages-manager/id514643583?ls=1&mt=8&ign-mscache=1', '@android_url' => 'https://play.google.com/store/apps/details?id=com.facebook.pages.app')) . '</li>';
+      $output .= '  <li>' . t('Create a style template for your articles using the <a href="@style_url" target="_blank">Style Editor</a>. Be sure to provide the name of the template you want to use in the Module Configuration settings below.', array('@style_url' => 'https://developers.facebook.com/docs/instant-articles/guides/design#style')) . '</li>';
+      $output .= '  <li>' . t('[Optional] Enable Audience Network, if you choose. Learn more about <a href="@audience_url" target="_blank">Audience Network</a> for Instant Articles and <a href="@sign_up_url" target="_blank">sign up here</a>.', array('@audience_url' => 'https://fbinstantarticles.files.wordpress.com/2016/03/audience-network_wp_instant-articles-2-2-web_self-serve.pdf', '@sign_up_url' => '')) . '</li>';
+      $output .= '  <li>' . t('[Optional] Set up your ads and analytics, including Audience Network, in the Configuration area, below.') . '</li>';
+      $output .= '  <li>' . t('<a href="@article_review_url" target="_blank">Submit your articles</a> for review.', array('@article_review_url' => '')) . '</li>';
+      $output .= '</ol>';
+      $output .= '<p>' . t('Other Resources:') . '</p>';
+      $output .= '<ol>';
+      $output .= '  <li>' . t('Read the <a href="@docs_url" target="_blank">documentation</a> to answer additional questions you might have about Instant Articles.', array('@docs_url' => 'https://developers.facebook.com/docs/instant-articles')) . '</li>';
+      $output .= '  <li>' . t('Check out the <a href="@blog_url" target="_blank">Instant Articles blog</a> and <a href="@sign_up_url" target="_blank">sign up</a> to receive notifications of important updates.', array('@blog_url' => 'https://developers.facebook.com/ia/blog/', '@sign_up_url' => '')) . '</li>';
+      $output .= '  <li>' . t('To give other members of your team access to the <a href="@tools_url" target="_blank">Instant Articles tools</a>, assign them <a href="@roles_url" target="_blank">page roles here</a>.', array('@tools_url' => '', '@roles_url' => '')) . '</li>';
+      $output .= '</ol>';
+      break;
   }
   return $output;
 }
