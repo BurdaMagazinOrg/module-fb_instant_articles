@@ -59,6 +59,7 @@ function fb_instant_articles_help($path, $arg) {
       $output = '<pre>' . $readme . '</pre>';
       break;
     case 'admin/config/services/fb-instant-articles/settings':
+      $output .= '<h2>' . t('Setup') . '</h2>';
       $output .= '<p>' . t('Once you\'ve activated this Drupal module, set up your Instant Articles and submit them to Facebook for a one-time review. The review is required before you can begin publishing. Follow these steps to get started:') . '</p>';
       $output .= '<ol>';
       $output .= '  <li>' . t('Sign up for Instant Articles, if you haven\'t already, and enabled the same Facebook Page you selected in the step above.') . '</li>';
