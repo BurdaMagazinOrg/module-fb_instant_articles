@@ -65,6 +65,7 @@ function fb_instant_articles_module_config_ads($form) {
   $form['ads'] = array(
     '#type' => 'fieldset',
     '#title' => t('Ads'),
+    '#collapsible' => TRUE,
     '#description' => t('Choose your preferred method for displaying ads in your Instant Articles and input the code in the boxes below. Learn more about your options for <a href="@ads_url">advertising in Instant Articles</a>', array('@ads_url' => 'https://developers.facebook.com/docs/instant-articles/ads-analytics')),
   );
 
@@ -148,6 +149,7 @@ function fb_instant_articles_module_config_analytics($form) {
   $form['analytics'] = array(
     '#type' => 'fieldset',
     '#title' => t('Analytics'),
+    '#collapsible' => TRUE,
     '#description' => t('Enable 3rd-party analytics to be used with Instant Articles. You can embed code to insert your own trackers and analytics. Learn more about <a href="@analytics_url">analytics in Instant Articles</a>.', array('@analytics_url' => 'https://developers.facebook.com/docs/instant-articles/ads-analytics#analytics')),
   );
 
