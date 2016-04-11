@@ -27,7 +27,9 @@ function fb_instant_articles_settings() {
     '#default_value' => variable_get('fb_instant_articles_page_id'),
     '#description' => t('In order to designate the domain that will host your
       articles you must add your Facebook page ID to a metatag in the HEAD tag
-      of your HTML page. See <a href="@claim_url">Claiming your URL</a>.', $args),
+      of your HTML page. Entering your Facebook Page ID here will add the
+      metatag automatically. See <a href="@claim_url">Claiming your URL
+      </a>.', $args),
   );
 
   // Add the style configuration.
