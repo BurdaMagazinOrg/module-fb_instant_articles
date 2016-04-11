@@ -29,7 +29,24 @@ class Transformer extends \Facebook\InstantArticles\Transformer\Transformer {
    */
   public function __construct() {
     $rules = module_invoke_all('fb_instant_articles_transformer_rules');
-    $this->setRules($rules);
+    $this->addRules($rules);
+  }
+
+  public function addRules(array $rules) {
+    foreach ($rules as $rules) {
+      $clazz = $rules['class'];
+      try {
+        $factory_method = new \ReflectionMethod($clazz, 'createFrom');
+      }
+      catch (\ReflectionException $e) {
+        $factory_method =
+          new \ReflectionMethod(
+            'Facebook\\InstantArticles\\Transformer\\Rules\\'.$clazz,
+            'createFrom'
+          );
+      }
+      $this->addRule($factory_method->invoke(null, $rules));
+    }
   }
 
 }
