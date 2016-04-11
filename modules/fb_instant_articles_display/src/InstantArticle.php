@@ -117,18 +117,16 @@ class InstantArticle extends \Drupal\fb_instant_articles\InstantArticle {
   }
 
   /**
-   * @return InstantArticle
+   * Gets the Drupal entity associated with this InstantArticle object.
+   *
+   * @return \stdClass
+   *   The Drupal entity for this InstantArticle.
    */
-  public function render() {
-    // Give anyone a chance to alter the InstantArticle object prior to
-    // rendering.
-    drupal_alter('fb_instant_articles_display_instant_article', $this->instantArticle, $this->node);
-    return $this->instantArticle->render('<!doctype html>', TRUE);
+  public function getEntity() {
+    return $this->node;
   }
 
   /**
-   * @param $entity_type
-   * @param $entity
    * @param $field
    * @param $instance
    * @param $langcode
