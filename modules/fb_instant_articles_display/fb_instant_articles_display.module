@@ -5,6 +5,7 @@
  * Hook implementations for Facebook Instant Articles Display module.
  */
 
+
 /**
  * Implements hook_permission().
  */
