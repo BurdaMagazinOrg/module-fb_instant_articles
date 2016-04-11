@@ -92,19 +92,23 @@ function fb_instant_articles_html_head_alter(&$head_elements) {
  */
 function fb_instant_articles_init() {
   $enable_transformer_logging = variable_get('fb_instant_articles_enable_logging');
-  \Logger::configure(
-    array(
-      'rootLogger' => array(
-        'appenders' => array('facebook-instantarticles-transformer')
-      ),
-      'appenders' => array(
-        'facebook-instantarticles-transformer' => array(
-          'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
-          'layout' => array(
-            'class' => 'LoggerLayoutSimple'
-          )
-        )
-      )
-    )
+  $appender = array(
+    'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
+    'layout' => array(
+      'class' => 'LoggerLayoutSimple'
+    ),
   );
+  $configuration = array(
+    'rootLogger' => array(
+      'appenders' => array(
+        'facebook-instantarticles-transformer',
+        'facebook-instantarticles-client',
+      ),
+    ),
+    'appenders' => array(
+      'facebook-instantarticles-transformer' => $appender,
+      'facebook-instantarticles-client' => $appender,
+    ),
+  );
+  \Logger::configure($configuration);
 }
