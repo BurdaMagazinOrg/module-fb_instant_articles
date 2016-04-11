@@ -113,7 +113,9 @@ class DrupalInstantArticleDisplay {
     }
     $instantArticle->withHeader($header);
 
-    return new DrupalInstantArticleDisplay($node, $layoutSettings, $instantArticle);
+    $display = new DrupalInstantArticleDisplay($node, $layoutSettings, $instantArticle);
+    $display->addAnalyticsFromSettings();
+    return $display;
   }
 
   /**
@@ -548,6 +550,27 @@ class DrupalInstantArticleDisplay {
       $social = SocialEmbed::create()
         ->withHTML($item['value']);
       $body->addChild($social);
+    }
+  }
+
+  /**
+   * Add analytics tracking code if configured in settings
+   */
+  private function addAnalyticsFromSettings() {
+    $analytics_embed_code = variable_get('fb_instant_articles_analytics_embed_code');
+    if ($analytics_embed_code) {
+      $document = new \DOMDocument();
+			$fragment = $document->createDocumentFragment();
+			$valid_html = @$fragment->appendXML($analytics_embed_code);
+			if ($valid_html) {
+				$this->instantArticle
+					->addChild(
+						Analytics::create()
+							->withHTML(
+								$fragment
+							)
+					);
+			}
     }
   }
 }
