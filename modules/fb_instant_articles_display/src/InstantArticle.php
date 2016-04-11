@@ -68,7 +68,6 @@ class InstantArticle extends \Drupal\fb_instant_articles\InstantArticle {
    * @param $instantArticle
    */
   private function __construct($node, $layoutSettings, $instantArticle) {
-    parent::__construct();
     $this->node = $node;
     $this->layoutSettings = $layoutSettings;
     $this->instantArticle = $instantArticle;
