@@ -64,7 +64,7 @@ function facebook_instant_articles_api_remove_action($node, $context = array()) 
 function fb_instant_articles_api_rules_import_article($node) {
   if (isset($node->nid)) {
     $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
-    $wrapper = \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay::create($node, $layout_settings);
+    $wrapper = \Drupal\fb_instant_articles_display\InstantArticle::create($node, $layout_settings);
     $node->fb_instant_articles_display_wrapper = $wrapper;
     $node_view = node_view($node, $view_mode = 'fb_instant_article');
     $import_article = drupal_render($node_view);

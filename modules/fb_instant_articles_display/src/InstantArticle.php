@@ -2,11 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay.
+ * Contains \Drupal\fb_instant_articles_display\InstantArticle.
  */
 
 namespace Drupal\fb_instant_articles_display;
 
+use Drupal\fb_instant_articles\Transformer;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
 use Facebook\InstantArticles\Elements\Author;
@@ -16,7 +17,6 @@ use Facebook\InstantArticles\Elements\Element;
 use Facebook\InstantArticles\Elements\Footer;
 use Facebook\InstantArticles\Elements\Header;
 use Facebook\InstantArticles\Elements\Image;
-use Facebook\InstantArticles\Elements\InstantArticle;
 use Facebook\InstantArticles\Elements\Interactive;
 use Facebook\InstantArticles\Elements\ListElement;
 use Facebook\InstantArticles\Elements\ListItem;
@@ -25,16 +25,15 @@ use Facebook\InstantArticles\Elements\SocialEmbed;
 use Facebook\InstantArticles\Elements\TextContainer;
 use Facebook\InstantArticles\Elements\Time;
 use Facebook\InstantArticles\Elements\Video;
-use Facebook\InstantArticles\Transformer\Transformer;
 
 /**
  * Facebook Instant Article node wrapper class.  Builds up an InstantArticle
  * object using field formatters.
  *
- * Class DrupalInstantArticleDisplay
+ * Class InstantArticle
  * @package Drupal\fb_instant_articles_display
  */
-class DrupalInstantArticleDisplay {
+class InstantArticle extends \Drupal\fb_instant_articles\InstantArticle {
 
   /**
    * Facebook Instant Articles version number.
@@ -69,6 +68,7 @@ class DrupalInstantArticleDisplay {
    * @param $instantArticle
    */
   private function __construct($node, $layoutSettings, $instantArticle) {
+    parent::__construct();
     $this->node = $node;
     $this->layoutSettings = $layoutSettings;
     $this->instantArticle = $instantArticle;
@@ -76,12 +76,12 @@ class DrupalInstantArticleDisplay {
 
   /**
    * @param stdClass $node
-   * @return \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay
+   * @return \Drupal\fb_instant_articles_display\InstantArticle
    */
   public static function create($node, $layoutSettings) {
     // InstantArticle object for the node.  This will be built up by any field
     // formatters and rendered out in hook_preprocess_node().
-    $instantArticle = InstantArticle::create()
+    $instantArticle = parent::create()
       ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
       ->addMetaProperty('op:generator:application:version', self::FB_INSTANT_ARTICLES_VERSION)
       ->withCanonicalUrl(url('node/' . $node->nid, array('absolute' => TRUE)))
@@ -113,7 +113,7 @@ class DrupalInstantArticleDisplay {
     }
     $instantArticle->withHeader($header);
 
-    return new DrupalInstantArticleDisplay($node, $layoutSettings, $instantArticle);
+    return new InstantArticle($node, $layoutSettings, $instantArticle);
   }
 
   /**
@@ -440,8 +440,6 @@ class DrupalInstantArticleDisplay {
    */
   private function fieldFormatTransfomer($items, $body, $instance, $langcode) {
     $transformer = new Transformer();
-    $transformer->loadRules(file_get_contents(__DIR__ . '/../transformer_config.json'));
-    drupal_alter('fb_instant_articles_display_transformer', $transformer);
     foreach($items as $delta => $item) {
       // @see _text_sanitize().
       if (isset($item['safe_value'])) {
