@@ -5,10 +5,7 @@
  * Settings for Facebook Instant Articles Base module.
  */
 
-define('FB_INSTANT_ARTICLES_AD_TYPE_NONE', 'None');
-define('FB_INSTANT_ARTICLES_AD_TYPE_FBAN', 'Facebook Audience Network');
-define('FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL', 'Source URL');
-define('FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE', 'Embed Code');
+ use Drupal\fb_instant_articles\AdTypes;
 
 /**
  * Form constructor for Facebook Instant Articles Base settings form.
@@ -74,12 +71,12 @@ function fb_instant_articles_module_config_ads($form) {
   $form['ads']['fb_instant_articles_ad_type'] = array(
     '#type' => 'select',
     '#title' => t('Ad Type'),
-    '#default_value' => variable_get('fb_instant_articles_ad_type', FB_INSTANT_ARTICLES_AD_TYPE_NONE),
+    '#default_value' => variable_get('fb_instant_articles_ad_type', AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_NONE),
     '#options' => array(
-      FB_INSTANT_ARTICLES_AD_TYPE_NONE => FB_INSTANT_ARTICLES_AD_TYPE_NONE,
-      FB_INSTANT_ARTICLES_AD_TYPE_FBAN => FB_INSTANT_ARTICLES_AD_TYPE_FBAN,
-      FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL => FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL,
-      FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE => FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE,
+      AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_NONE => AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_NONE,
+      AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_FBAN => AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_FBAN,
+      AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL => AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL,
+      AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE => AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE,
     ),
     '#description' => t('<strong>Note:</strong> this module will automatically place the ads within your articles.'),
     '#attributes' => array('class' => array('ad-type')),
@@ -94,7 +91,7 @@ function fb_instant_articles_module_config_ads($form) {
     '#element_validate' => array('fb_instant_articles_validate_ad_source_url'),
     '#states' => array(
       'visible' => array(
-        '[name=fb_instant_articles_ad_type]' => array('value' => FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL),
+        '[name=fb_instant_articles_ad_type]' => array('value' => AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL),
       ),
     ),
   );
@@ -108,7 +105,7 @@ function fb_instant_articles_module_config_ads($form) {
     '#element_validate' => array('fb_instant_articles_validate_an_placement_id'),
     '#states' => array(
       'visible' => array(
-        '[name=fb_instant_articles_ad_type]' => array('value' => FB_INSTANT_ARTICLES_AD_TYPE_FBAN),
+        '[name=fb_instant_articles_ad_type]' => array('value' => AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_FBAN),
       ),
     ),
   );
@@ -122,7 +119,7 @@ function fb_instant_articles_module_config_ads($form) {
     '#default_value' => variable_get('fb_instant_articles_ads_dimensions'),
     '#states' => array(
       'visible' => array(
-        '[name=fb_instant_articles_ad_type]' => array('value' => FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE),
+        '[name=fb_instant_articles_ad_type]' => array('value' => AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE),
       ),
     ),
   );
@@ -136,7 +133,7 @@ function fb_instant_articles_module_config_ads($form) {
     '#element_validate' => array('fb_instant_articles_validate_ad_embed_code'),
     '#states' => array(
       'visible' => array(
-        '[name=fb_instant_articles_ad_type]' => array('value' => FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE),
+        '[name=fb_instant_articles_ad_type]' => array('value' => AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE),
       ),
     ),
   );
@@ -180,7 +177,7 @@ function fb_instant_articles_validate_style($element, &$form_state, $form) {
  */
 function fb_instant_articles_validate_an_placement_id($element, &$form_state, $form) {
   // Only validate if Audience Network is selected as ad type
-  if ($form_state['values']['fb_instant_articles_ad_type'] != FB_INSTANT_ARTICLES_AD_TYPE_FBAN) {
+  if ($form_state['values']['fb_instant_articles_ad_type'] != AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_FBAN) {
     return;
   }
 
@@ -198,7 +195,7 @@ function fb_instant_articles_validate_an_placement_id($element, &$form_state, $f
  */
 function fb_instant_articles_validate_ad_source_url($element, &$form_state, $form) {
   // Only validate if Source URL is selected as ad type
-  if ($form_state['values']['fb_instant_articles_ad_type'] != FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL) {
+  if ($form_state['values']['fb_instant_articles_ad_type'] != AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL) {
     return;
   }
 
@@ -216,7 +213,7 @@ function fb_instant_articles_validate_ad_source_url($element, &$form_state, $for
  */
 function fb_instant_articles_validate_ad_embed_code($element, &$form_state, $form) {
   // Only validate if Embed Code is selected as ad type
-  if ($form_state['values']['fb_instant_articles_ad_type'] != FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE) {
+  if ($form_state['values']['fb_instant_articles_ad_type'] != AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE) {
     return;
   }
 
