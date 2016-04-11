@@ -2,21 +2,20 @@
 
 /**
  * @file
- * Contains \Drupal\fb_instant_articles_api\DrupalClient.
+ * Contains \Drupal\fb_instant_articles_api\Client.
  */
 
 namespace Drupal\fb_instant_articles_api;
 
-use Facebook\InstantArticles\Client\Client;
 use Facebook\Exceptions\FacebookAuthorizationException;
 
 /**
  * Encapsulates any Drupal-specific logic when using the Client.
  *
- * Class DrupalClient
+ * Class Client
  * @package Drupal\fb_instant_articles_api
  */
-class DrupalClient extends Client {
+class Client extends \Facebook\InstantArticles\Client\Client {
 
   /**
    * {@inheritdoc}

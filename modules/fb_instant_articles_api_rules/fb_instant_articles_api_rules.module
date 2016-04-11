@@ -63,12 +63,8 @@ function facebook_instant_articles_api_remove_action($node, $context = array()) 
  */
 function fb_instant_articles_api_rules_import_article($node) {
   if (isset($node->nid)) {
-    $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
-    $wrapper = \Drupal\fb_instant_articles_display\InstantArticle::create($node, $layout_settings);
-    $node->fb_instant_articles_display_wrapper = $wrapper;
-    $node_view = node_view($node, $view_mode = 'fb_instant_article');
-    $import_article = drupal_render($node_view);
-    \Drupal\fb_instant_articles_api\DrupalClient::create()->importArticle($import_article, $node->status);
+    $article = $node->fb_instant_articles_display_wrapper;
+    \Drupal\fb_instant_articles_api\Client::create()->importArticle($article, $node->status);
   }
 }
 
@@ -80,6 +76,6 @@ function fb_instant_articles_api_rules_import_article($node) {
 function fb_instant_articles_api_rules_remove_article($node) {
   if (isset($node->nid)) {
     $url = url(drupal_get_path_alias("node/" . $node->nid), array('absolute' => TRUE));
-    \Drupal\fb_instant_articles_api\DrupalClient::create()->removeArticle($url);
+    \Drupal\fb_instant_articles_api\Client::create()->removeArticle($url);
   }
 }
