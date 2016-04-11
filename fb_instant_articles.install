@@ -10,5 +10,12 @@
  */
 function fb_instant_articles_uninstall() {
   variable_del('fb_instant_articles_page_id');
+  variable_del('fb_instant_articles_style');
+  variable_del('fb_instant_articles_ad_type');
+  variable_del('fb_instant_articles_ads_iframe_url');
+  variable_del('fb_instant_articles_ads_an_placement_id');
+  variable_del('fb_instant_articles_ads_dimension');
+  variable_del('fb_instant_articles_ads_embed_code');
+  variable_del('fb_instant_articles_analytics_embed_code');
   variable_del('fb_instant_articles_enable_logging');
 }
