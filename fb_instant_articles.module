@@ -102,7 +102,6 @@ function fb_instant_articles_help_markdown($string) {
       return $info['process callback']($string, NULL);
     }
     return FALSE;
->>>>>>> Add markdown readme support
   }
 }
 
