@@ -67,35 +67,21 @@ be easier to find and fix.
 ## Dependencies
 
 The Drupal Facebook Instant Articles modules have different dependencies, see 
-"About Drupal integration" above to help choose which modules are right for you.
+"About Drupal integration" above to help choose which modules are right for you 
+(see each module's README for it's dependencies).
 
-- Base (fb_instant_articles.module)
-    - Depends on:
-        - [Facebook Instant Articles PHP SDK](https://github.com/facebook/facebook-instant-articles-sdk-php) 
+ - [Facebook Instant Articles PHP SDK](https://github.com/facebook/facebook-instant-articles-sdk-php) 
 provides necessary support for ensuring Drupal content is added to facebook in 
-the required format for Instant Articles. 
-    - Strongly recommended:
-        - [Composer Manager](https://www.drupal.org/project/composer_manager) 
-autoloads classes needed for the Facebook Instant Articles SDK, and downloads 
-the SDK automatically when you enable the base module. Composer manager is not 
-a literal dependency so that developers with custom Composer workflows can 
-choose to manage dependencies and autoloading themselves (if this is the case 
-you will need to include Composer's autoload file somewhere in your code).
-- Display (fb_instant_articles_display.module)
-    - Depends on:
-        - [CTools](https://drupal.org/project/ctools) for exporting 
-        configurations.
-- RSS feed (fb_instant_articles_rss.module)
-    - No external dependencies.
-- API (fb_instant_articles_api.module)
-    - No external dependencies.
-- API Rules integration (fb_instant_articles_api_rules.module)
-    - No external dependencies.
-    - Optionally integrates with:
-        - [Rules](https://drupal.org/project/rules)
-- API Report (fb_instant_articles_api_report.module)
-    - No external dependencies.
+the required format for Instant Articles.
 
+## Strongly recommended:
+
+- [Composer Manager](https://www.drupal.org/project/composer_manager) autoloads 
+classes needed for the Facebook Instant Articles SDK, and downloads the SDK 
+automatically when you enable the base module. Composer manager is not a literal 
+dependency so that developers with custom Composer workflows can choose to 
+manage dependencies and autoloading themselves (if this is the case you will 
+need to include Composer's autoload file somewhere in your code).
 
 ## Installation
 
