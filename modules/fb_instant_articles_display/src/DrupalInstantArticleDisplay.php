@@ -7,7 +7,6 @@
 
 namespace Drupal\fb_instant_articles_display;
 
-use Drupal\fb_instant_articles\AdTypes;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
 use Facebook\InstantArticles\Elements\Author;
@@ -558,11 +557,11 @@ class DrupalInstantArticleDisplay {
    * Add ads if configured in settings
    */
   public function addAdsFromSettings() {
-    $ad_type = variable_get('fb_instant_articles_ad_type', AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_NONE);
-    if ($ad_type === AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_NONE) {
+    $ad_type = variable_get('fb_instant_articles_ad_type', FB_INSTANT_ARTICLES_AD_TYPE_NONE);
+    if ($ad_type === FB_INSTANT_ARTICLES_AD_TYPE_NONE) {
       return;
     }
-    $dimensions = variable_get('fb_instant_articles_ads_dimension', AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_NONE);
+    $dimensions = variable_get('fb_instant_articles_ads_dimension', FB_INSTANT_ARTICLES_AD_TYPE_NONE);
     $width = 300;
     $height = 250;
     switch ($dimensions) {
@@ -579,7 +578,7 @@ class DrupalInstantArticleDisplay {
       ->withHeight($height);
     $header = $this->instantArticle->getHeader();
     switch ($ad_type) {
-      case AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_FBAN:
+      case FB_INSTANT_ARTICLES_AD_TYPE_FBAN:
         $an_placement_id = variable_get('fb_instant_articles_ads_an_placement_id');
         if ($an_placement_id) {
           $ad->withSource(
@@ -594,7 +593,7 @@ class DrupalInstantArticleDisplay {
           $header->addAd($ad);
         }
         break;
-      case AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL:
+      case FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL:
         $iframe_url = variable_get('fb_instant_articles_ads_iframe_url');
         if ($iframe_url) {
           $ad->withSource(
@@ -603,7 +602,7 @@ class DrupalInstantArticleDisplay {
           $header->addAd($ad);
         }
         break;
-      case AdTypes::FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE:
+      case FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE:
         $embed_code = variable_get('fb_instant_articles_ads_embed_code');
         if ($embed_code) {
           $document = new \DOMDocument();
