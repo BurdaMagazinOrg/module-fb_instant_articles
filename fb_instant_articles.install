@@ -18,6 +18,7 @@ function fb_instant_articles_uninstall() {
   variable_del('fb_instant_articles_ads_embed_code');
   variable_del('fb_instant_articles_analytics_embed_code');
   variable_del('fb_instant_articles_enable_logging');
+  variable_del('fb_instant_articles_bypass_composer_manager');
 }
 
 /**
@@ -27,7 +28,10 @@ function fb_instant_articles_requirements() {
   $requirements = array();
   $t = get_t();
 
-  if (!class_exists('\Facebook\InstantArticles\Client\Client')) {
+  $bypass_composer_manager = variable_get('fb_instant_articles_bypass_composer_manager');
+  $composer_manager_enabled = module_exists('composer_manager');
+
+  if (!($bypass_composer_manager || $composer_manager_enabled)) {
     $string = 'The Facebook Instant Articles module requires the
  facebook-instant-articles-sdk-php library, and Composer autoloading. The
  easiest way to set this up is to enable the <a href="@composer-manager">
