@@ -12,3 +12,7 @@ Then make sure to configure the module as described below.
 ## To configure
 
 To configure the View, go to admin/structure/views/view/fb_instant_articles/edit
+
+## Requirements
+
+- [Views](https://drupal.org/project/views)

@@ -47,19 +47,20 @@ function fb_instant_articles_permission() {
  * Implements hook_help().
  */
 function fb_instant_articles_help($path, $arg) {
-  $output = '';
-
   switch ($path) {
-    // Main module help for the block module.
     case 'admin/help#fb_instant_articles':
-      $filepath = dirname(__FILE__) . '/README.txt';
+      $filepath = dirname(__FILE__) . '/README.md';
       if (file_exists($filepath)) {
-        $readme = file_get_contents($filepath);
+        $string = file_get_contents($filepath);
+        if ($processed = fb_instant_articles_help_markdown($string)) {
+          return $processed;
+        }
+        return '<pre>' . $string . '</pre>';
       }
-      $output = '<pre>' . $readme . '</pre>';
       break;
     case 'admin/config/services/fb-instant-articles':
     case 'admin/config/services/fb-instant-articles/settings':
+      $output = '';
       $output .= '<h2>' . t('Setup') . '</h2>';
       $output .= '<p>' . t('Once you\'ve activated this Drupal module, set up your Instant Articles and submit them to Facebook for a one-time review. The review is required before you can begin publishing. Follow these steps to get started:') . '</p>';
       $output .= '<ol>';
@@ -77,9 +78,31 @@ function fb_instant_articles_help($path, $arg) {
       $output .= '  <li>' . t('Check out the <a href="@blog_url" target="_blank">Instant Articles blog</a> and <a href="@sign_up_url" target="_blank">sign up</a> to receive notifications of important updates.', array('@blog_url' => 'https://developers.facebook.com/ia/blog/', '@sign_up_url' => '')) . '</li>';
       $output .= '  <li>' . t('To give other members of your team access to the <a href="@tools_url" target="_blank">Instant Articles tools</a>, assign them <a href="@roles_url" target="_blank">page roles here</a>.', array('@tools_url' => '', '@roles_url' => '')) . '</li>';
       $output .= '</ol>';
+      return $output;
       break;
   }
-  return $output;
+}
+
+/**
+ * Adds markdown module support for displaying README files as Drupal help text.
+ *
+ * @param string $string
+ *   The unprocessed README file contents string.
+ *
+ * @return string|false
+ *   A string containing the markdown filtered text, or FALSE.
+ *
+ * @see fb_instant_articles_help()
+ */
+function fb_instant_articles_help_markdown($string) {
+  if (module_exists('markdown')) {
+    $filters = module_invoke('markdown', 'filter_info');
+    $info = $filters['filter_markdown'];
+    if (function_exists($info['process callback'])) {
+      return $info['process callback']($string, NULL);
+    }
+    return FALSE;
+  }
 }
 
 /**
