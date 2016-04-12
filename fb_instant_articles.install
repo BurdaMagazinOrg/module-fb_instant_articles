@@ -23,7 +23,7 @@ function fb_instant_articles_uninstall() {
 /**
  * Implements hook_requirements().
  */
-function fb_instant_articles__requirements() {
+function fb_instant_articles_requirements() {
   $requirements = array();
   $t = get_t();
 
