@@ -110,11 +110,6 @@ function fb_instant_articles_module_config_ads($form) {
       '300x250' => t('Large (300 x 250)'),
     ),
     '#default_value' => variable_get('fb_instant_articles_ads_dimensions'),
-    '#states' => array(
-      'visible' => array(
-        '[name=fb_instant_articles_ad_type]' => array('value' => FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE),
-      ),
-    ),
   );
 
   $form['ads']['fb_instant_articles_ads_embed_code'] = array(
