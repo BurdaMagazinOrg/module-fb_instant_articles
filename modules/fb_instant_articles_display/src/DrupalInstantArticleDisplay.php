@@ -579,13 +579,12 @@ class DrupalInstantArticleDisplay {
         $an_placement_id = variable_get('fb_instant_articles_ads_an_placement_id');
         if ($an_placement_id) {
           $ad->withSource(
-            'https://www.facebook.com/adnw_request?' .
-            drupal_http_build_query(
-              array(
-                'placement' => $an_placement_id,
+            url('https://www.facebook.com/adnw_request', array(
+              'query' => array(
+                'placement' => $ad_placement_id,
                 'adtype' => 'banner' . $width . 'x' . $height,
-              )
-            )
+              ),
+            ))
           );
           $header->addAd($ad);
         }
