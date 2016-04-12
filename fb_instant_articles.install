@@ -19,3 +19,28 @@ function fb_instant_articles_uninstall() {
   variable_del('fb_instant_articles_analytics_embed_code');
   variable_del('fb_instant_articles_enable_logging');
 }
+
+/**
+ * Implements hook_requirements().
+ */
+function fb_instant_articles__requirements() {
+  $requirements = array();
+  $t = get_t();
+
+  if (!class_exists('\Facebook\InstantArticles\Client\Client')) {
+    $string = 'The Facebook Instant Articles module requires the
+ facebook-instant-articles-sdk-php library, and Composer autoloading. The
+ easiest way to set this up is to enable the <a href="@composer-manager">
+ Composer manager</a> module, which autoloads classes needed for the Facebook
+ Instant Articles SDK, and downloads the SDK automatically when you enable the
+ base module. Composer manager is not a literal dependency so that developers
+ with custom Composer workflows can choose to manage dependencies and
+ autoloading themselves (if this is the case you will need to include
+ Composer\'s autoload file somewhere in your code).';
+    $args = array('@composer-manager' => 'https://drupal.org/project/composer_manager');
+    $requirements['autoload']['description'] = $t($string, $args);
+    $requirements['autoload']['severity'] = REQUIREMENT_ERROR;
+  }
+
+  return $requirements;
+}
