@@ -58,7 +58,7 @@ class views_handler_filter_valid_fia extends views_handler_filter {
     // Get entity_info for nodes.
     $field = 'node.' . $this->real_field;
 
-    $entity_types = fb_instant_articles_get_article_entity_types();
+    $entity_types = fb_instant_articles_display_get_article_entity_types();
     $node_types = array_keys($entity_types['node']);
 
     if (count($node_types) > 0) {
