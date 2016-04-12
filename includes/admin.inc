@@ -107,7 +107,7 @@ function fb_instant_articles_module_config_ads($form) {
     '#type' => 'select',
     '#title' => t('Ad Dimensions'),
     '#options' => array(
-      0 => t('Large (300 x 250)'),
+      '300x250' => t('Large (300 x 250)'),
     ),
     '#default_value' => variable_get('fb_instant_articles_ads_dimensions'),
     '#states' => array(

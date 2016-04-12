@@ -561,16 +561,13 @@ class DrupalInstantArticleDisplay {
     if ($ad_type === FB_INSTANT_ARTICLES_AD_TYPE_NONE) {
       return;
     }
-    $dimensions = variable_get('fb_instant_articles_ads_dimension', FB_INSTANT_ARTICLES_AD_TYPE_NONE);
     $width = 300;
     $height = 250;
-    switch ($dimensions) {
-      case 0:
-        $width = 300;
-        $height = 250;
-        break;
-      default:
-        throw new Exception('Configured ad dimensions are not supported');
+    $dimensions_match = array();
+    $dimensions_raw = variable_get('fb_instant_articles_ads_dimensions');
+    if (preg_match('/^(?:\s)*(\d+)x(\d+)(?:\s)*$/', $dimensions_raw, $dimensions_match)) {
+      $width = intval($dimensions_match[1]);
+      $height = intval($dimensions_match[2]);
     }
     $ad = Ad::create()
       ->enableDefaultForReuse()
