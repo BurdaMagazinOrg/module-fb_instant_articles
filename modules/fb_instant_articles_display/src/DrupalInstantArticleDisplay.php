@@ -39,7 +39,7 @@ class DrupalInstantArticleDisplay {
   /**
    * Facebook Instant Articles version number.
    */
-  const FB_INSTANT_ARTICLES_VERSION = '0.1.0';
+  const FB_INSTANT_ARTICLES_VERSION = '7.x-1.0-rc1';
 
   /**
    * Node object for which we are building an InstantArticle object.
