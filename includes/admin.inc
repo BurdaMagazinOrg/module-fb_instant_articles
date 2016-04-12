@@ -5,11 +5,6 @@
  * Settings for Facebook Instant Articles Base module.
  */
 
-define('FB_INSTANT_ARTICLES_AD_TYPE_NONE', 'None');
-define('FB_INSTANT_ARTICLES_AD_TYPE_FBAN', 'Facebook Audience Network');
-define('FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL', 'Source URL');
-define('FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE', 'Embed Code');
-
 /**
  * Form constructor for Facebook Instant Articles Base settings form.
  */
@@ -75,12 +70,7 @@ function fb_instant_articles_module_config_ads($form) {
     '#type' => 'select',
     '#title' => t('Ad Type'),
     '#default_value' => variable_get('fb_instant_articles_ad_type', FB_INSTANT_ARTICLES_AD_TYPE_NONE),
-    '#options' => array(
-      FB_INSTANT_ARTICLES_AD_TYPE_NONE => FB_INSTANT_ARTICLES_AD_TYPE_NONE,
-      FB_INSTANT_ARTICLES_AD_TYPE_FBAN => FB_INSTANT_ARTICLES_AD_TYPE_FBAN,
-      FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL => FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL,
-      FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE => FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE,
-    ),
+    '#options' => fb_instant_articles_get_ad_types(),
     '#description' => t('<strong>Note:</strong> this module will automatically place the ads within your articles.'),
     '#attributes' => array('class' => array('ad-type')),
   );
@@ -113,20 +103,6 @@ function fb_instant_articles_module_config_ads($form) {
     ),
   );
 
-  $form['ads']['fb_instant_articles_ads_dimension'] = array(
-    '#type' => 'select',
-    '#title' => t('Ad Dimensions'),
-    '#options' => array(
-      0 => t('Large (300 x 250)'),
-    ),
-    '#default_value' => variable_get('fb_instant_articles_ads_dimension'),
-    '#states' => array(
-      'visible' => array(
-        '[name=fb_instant_articles_ad_type]' => array('value' => FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE),
-      ),
-    ),
-  );
-
   $form['ads']['fb_instant_articles_ads_embed_code'] = array(
     '#type' => 'textarea',
     '#title' => t('Ad Embed Code'),
@@ -139,6 +115,15 @@ function fb_instant_articles_module_config_ads($form) {
         '[name=fb_instant_articles_ad_type]' => array('value' => FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE),
       ),
     ),
+  );
+
+  $form['ads']['fb_instant_articles_ads_dimensions'] = array(
+    '#type' => 'select',
+    '#title' => t('Ad Dimensions'),
+    '#options' => array(
+      '300x250' => t('Large (300 x 250)'),
+    ),
+    '#default_value' => variable_get('fb_instant_articles_ads_dimensions'),
   );
 
   return $form;

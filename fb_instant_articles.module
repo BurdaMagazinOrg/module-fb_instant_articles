@@ -5,6 +5,23 @@
  * Hook implementations for Facebook Instant Articles Base module.
  */
 
+define('FB_INSTANT_ARTICLES_AD_TYPE_NONE', 'none');
+define('FB_INSTANT_ARTICLES_AD_TYPE_FBAN', 'fban');
+define('FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL', 'source_url');
+define('FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE', 'embed_code');
+
+/**
+ * Get an array of possible ad types and their descriptive names
+ **/
+function fb_instant_articles_get_ad_types() {
+  return array(
+    FB_INSTANT_ARTICLES_AD_TYPE_NONE => t('None'),
+    FB_INSTANT_ARTICLES_AD_TYPE_FBAN => t('Facebook Audience Network'),
+    FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL => t('Source URL'),
+    FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE => t('Embed Code'),
+  );
+}
+
 /**
  * Implements hook_menu().
  */

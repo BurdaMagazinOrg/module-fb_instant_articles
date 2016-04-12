@@ -39,7 +39,7 @@ class DrupalInstantArticleDisplay {
   /**
    * Facebook Instant Articles version number.
    */
-  const FB_INSTANT_ARTICLES_VERSION = '0.1.0';
+  const FB_INSTANT_ARTICLES_VERSION = '7.x-1.0-rc1';
 
   /**
    * Node object for which we are building an InstantArticle object.
@@ -113,7 +113,10 @@ class DrupalInstantArticleDisplay {
     }
     $instantArticle->withHeader($header);
 
-    return new DrupalInstantArticleDisplay($node, $layoutSettings, $instantArticle);
+    $display = new DrupalInstantArticleDisplay($node, $layoutSettings, $instantArticle);
+    $display->addAnalyticsFromSettings();
+    $display->addAdsFromSettings();
+    return $display;
   }
 
   /**
@@ -549,5 +552,89 @@ class DrupalInstantArticleDisplay {
         ->withHTML($item['value']);
       $body->addChild($social);
     }
+  }
+
+  /**
+   * Add analytics tracking code if configured in settings
+   */
+  private function addAnalyticsFromSettings() {
+    $analytics_embed_code = variable_get('fb_instant_articles_analytics_embed_code');
+    if ($analytics_embed_code) {
+      $document = new \DOMDocument();
+      $fragment = $document->createDocumentFragment();
+      $valid_html = @$fragment->appendXML($analytics_embed_code);
+      if ($valid_html) {
+        $this->instantArticle
+          ->addChild(
+            Analytics::create()
+              ->withHTML(
+                $fragment
+              )
+          );
+      }
+    }
+  }
+
+  /**
+   * Add ads if configured in settings
+   */
+  public function addAdsFromSettings() {
+    $ad_type = variable_get('fb_instant_articles_ad_type', FB_INSTANT_ARTICLES_AD_TYPE_NONE);
+    if ($ad_type === FB_INSTANT_ARTICLES_AD_TYPE_NONE) {
+      return;
+    }
+    $width = 300;
+    $height = 250;
+    $dimensions_match = array();
+    $dimensions_raw = variable_get('fb_instant_articles_ads_dimensions');
+    if (preg_match('/^(?:\s)*(\d+)x(\d+)(?:\s)*$/', $dimensions_raw, $dimensions_match)) {
+      $width = intval($dimensions_match[1]);
+      $height = intval($dimensions_match[2]);
+    }
+    $ad = Ad::create()
+      ->enableDefaultForReuse()
+      ->withWidth($width)
+      ->withHeight($height);
+    $header = $this->instantArticle->getHeader();
+    switch ($ad_type) {
+      case FB_INSTANT_ARTICLES_AD_TYPE_FBAN:
+        $an_placement_id = variable_get('fb_instant_articles_ads_an_placement_id');
+        if ($an_placement_id) {
+          $ad->withSource(
+            url('https://www.facebook.com/adnw_request', array(
+              'query' => array(
+                'placement' => $ad_placement_id,
+                'adtype' => 'banner' . $width . 'x' . $height,
+              ),
+            ))
+          );
+          $header->addAd($ad);
+        }
+        break;
+      case FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL:
+        $iframe_url = variable_get('fb_instant_articles_ads_iframe_url');
+        if ($iframe_url) {
+          $ad->withSource(
+            $iframe_url
+          );
+          $header->addAd($ad);
+        }
+        break;
+      case FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE:
+        $embed_code = variable_get('fb_instant_articles_ads_embed_code');
+        if ($embed_code) {
+          $document = new \DOMDocument();
+          $fragment = $document->createDocumentFragment();
+          $valid_html = @$fragment->appendXML($embed_code);
+          if ($valid_html) {
+            $ad->withHTML(
+              $fragment
+            );
+            $header->addAd($ad);
+          }
+        }
+        break;
+    }
+    $this->instantArticle->enableAutomaticAdPlacement();
   }
 }
