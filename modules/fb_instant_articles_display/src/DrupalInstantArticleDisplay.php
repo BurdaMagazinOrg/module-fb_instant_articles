@@ -603,7 +603,7 @@ class DrupalInstantArticleDisplay {
           $ad->withSource(
             url('https://www.facebook.com/adnw_request', array(
               'query' => array(
-                'placement' => $ad_placement_id,
+                'placement' => $an_placement_id,
                 'adtype' => 'banner' . $width . 'x' . $height,
               ),
             ))
