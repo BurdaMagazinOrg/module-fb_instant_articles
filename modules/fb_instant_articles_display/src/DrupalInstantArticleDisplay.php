@@ -266,7 +266,9 @@ class DrupalInstantArticleDisplay {
     // We can only have a single subtitle, so just take the first delta to
     // be the subtitle.
     // @todo do we have to sanitize first, or will FB IA SDK take care of it?
-    $header->withSubTitle(strip_tags($items[0]['value']));
+    if (!empty($items[0]['value'])) {
+      $header->withSubTitle(strip_tags($items[0]['value']));
+    }
   }
 
   /**
@@ -279,7 +281,9 @@ class DrupalInstantArticleDisplay {
   private function fieldFormatKicker($items, $header) {
     // We can only have a single kicker, so just take the first delta to
     // be the kicker.
-    $header->withKicker($items[0]['value']);
+    if (!empty($items[0]['value'])) {
+      $header->withKicker($items[0]['value']);
+    }
   }
 
   /**
@@ -324,7 +328,9 @@ class DrupalInstantArticleDisplay {
   private function fieldFormatCredits($items, $footer) {
     // We can only have a single credits group.
     // @todo sanitize text before sending off to FB IA SDK?
-    $footer->withCredits($items[0]['value']);
+    if (!empty($items[0]['value'])) {
+      $footer->withCredits($items[0]['value']);
+    }
   }
 
   /**
@@ -336,7 +342,9 @@ class DrupalInstantArticleDisplay {
   private function fieldFormatCopyright($items, $footer) {
     // We can only have a single copyright line.
     // @todo sanitize text before sending off to FB IA SDK?
-    $footer->withCopyright($items[0]['value']);
+    if (!empty($items[0]['value'])) {
+      $footer->withCopyright($items[0]['value']);
+    }
   }
 
   /**
