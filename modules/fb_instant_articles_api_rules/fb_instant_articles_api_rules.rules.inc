@@ -37,6 +37,9 @@ function fb_instant_articles_api_rules_rules_action_info() {
  * @param object $node
  */
 function fb_instant_articles_api_rules_action_import($node = NULL) {
+  // Loading this again as we are missing some field values and resetting cache
+  // to get the updated node object.
+  $node = node_load($node->nid, NULL, TRUE);
   fb_instant_articles_api_rules_import_article($node);
 }
 

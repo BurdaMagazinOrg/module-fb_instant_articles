@@ -18,7 +18,7 @@ function fb_instant_articles_api_rules_action_info() {
       'label' => t('Add facebook instant article'),
       'configurable' => FALSE,
       'triggers' => array(
-        'node_presave', 'node_insert', 'node_update',
+        'node_insert', 'node_update',
       ),
     ),
     'facebook_instant_articles_api_remove_action' => array(

@@ -14,7 +14,8 @@ function fb_instant_articles_api_rules_default_rules_configuration() {
   $rule->label = t('Add/update in FB Instant Articles library when a node of ' .
     'a supported type is saved');
   $rule->active = FALSE;
-  $rule->event('node_presave')
+  $rule->event('node_insert')
+    ->event('node_update')
     ->condition('fb_instant_articles_rules_is_article_type', array('data:select' => 'node'))
     ->action('fb_instant_articles_api_rules_action_import', array('data:select' => 'node'));
 
