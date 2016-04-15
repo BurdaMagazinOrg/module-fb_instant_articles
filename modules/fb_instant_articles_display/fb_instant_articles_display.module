@@ -436,17 +436,13 @@ function fb_instant_articles_display_field_formatter_settings_form($field, $inst
       break;
 
     case 'fbia_image_formatter':
-      $styles = image_styles();
-      $options = array();
-      foreach ($styles as $style_key => $style) {
-        $options[$style_key] = $style['label'];
-      }
+      $image_styles = image_style_options(FALSE, PASS_THROUGH);
       $element['style'] = array(
+        '#title' => t('Image style'),
         '#type' => 'select',
-        '#title' => t('Style'),
-        '#description' => t('The style of the image.'),
         '#default_value' => $settings['style'],
-        '#options' => $options,
+        '#empty_option' => t('None (original image)'),
+        '#options' => $image_styles,
       );
       $element['caption'] = array(
         '#type' => 'checkbox',
@@ -518,9 +514,17 @@ function fb_instant_articles_display_field_formatter_settings_summary($field, $i
       break;
 
     case 'fbia_image_formatter':
-      $summary = t('Image field - Style:(@style)', array(
-        '@style' => $settings['style'],
-      ));
+      $image_styles = image_style_options(FALSE, PASS_THROUGH);
+      // Unset possible 'No defined styles' option.
+      unset($image_styles['']);
+      // Styles could be lost because of enabled/disabled modules that defines
+      // their styles in code.
+      if (isset($image_styles[$settings['style']])) {
+        $summary = t('Image style: @style', array('@style' => $image_styles[$settings['style']]));
+      }
+      else {
+        $summary = t('Original image');
+      }
       break;
 
     case 'fbia_list_formatter':

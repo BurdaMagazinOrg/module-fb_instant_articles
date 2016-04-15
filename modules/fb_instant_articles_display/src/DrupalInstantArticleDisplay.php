@@ -407,7 +407,12 @@ class DrupalInstantArticleDisplay {
    */
   private function fieldFormatImageElement($items, $region, $settings) {
     foreach ($items as $delta => $item) {
-      $image_url = image_style_url($settings['style'], $item['uri']);
+      if (!empty($settings['style'])) {
+        $image_url = image_style_url($settings['style'], $item['uri']);
+      }
+      else {
+        $image_url = file_create_url($item['uri']);
+      }
       $image = Image::create()
         ->withURL($image_url);
 
