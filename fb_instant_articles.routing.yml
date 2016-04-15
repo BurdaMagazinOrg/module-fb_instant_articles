@@ -1,0 +1,11 @@
+
+fb_instant_articles.fia_admin_config:
+  path: '/admin/config/fb_instant_articles/adminconfig'
+  defaults:
+    _form: '\Drupal\fb_instant_articles\Form\AdminConfig'
+    _title: 'AdminConfig'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+

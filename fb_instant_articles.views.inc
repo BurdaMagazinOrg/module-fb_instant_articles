@@ -3,9 +3,9 @@
 /**
  * Implements hook_views_data_alter().
  */
-function facebook_instant_articles_views_data_alter(array &$data) {
+function fb_instant_articles_views_data_alter(array &$data) {
 
-  $data['node_field_data']['facebook_instant_articles'] = array(
+  $data['node_field_data']['fb_instant_articles'] = array(
     'title' => t('Valid Facebook instant articles filter'),
     'filter' => array(
       'title' => t('Valid Facebook instant articles filter'),

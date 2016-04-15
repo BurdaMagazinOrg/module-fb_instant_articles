@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains facebook_instant_articles.module..
+ * Contains fb_instant_articles.module..
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -11,10 +11,10 @@ use Drupal\Core\Template\Attribute;
 /**
  * Implements hook_help().
  */
-function facebook_instant_articles_help($route_name, RouteMatchInterface $route_match) {
+function fb_instant_articles_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
-    // Main module help for the facebook_instant_articles module.
-    case 'help.page.facebook_instant_articles':
+    // Main module help for the fb_instant_articles module.
+    case 'help.page.fb_instant_articles':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('FB Instant articles RSS feed generator for integration into the FB IA program') . '</p>';
@@ -30,13 +30,13 @@ function facebook_instant_articles_help($route_name, RouteMatchInterface $route_
  * @param array $page
  *   page render array
  */
-function facebook_instant_articles_page_attachments_alter(array &$page) {
+function fb_instant_articles_page_attachments_alter(array &$page) {
 
   /**
    * @var Drupal\Core\Config\ImmutableConfig $config
-   *   The config entity for facebook_instant_articles
+   *   The config entity for fb_instant_articles
    */
-  $config = \Drupal::config('facebook_instant_articles.adminconfig');
+  $config = \Drupal::config('fb_instant_articles.adminconfig');
 
   if ($config instanceof Drupal\Core\Config\ImmutableConfig) {
 
@@ -71,7 +71,7 @@ function facebook_instant_articles_page_attachments_alter(array &$page) {
  *   An associative array containing:
  *   - row: The raw results rows.
  */
-function facebook_instant_articles_preprocess_views_view_row_fia(&$variables) {
+function fb_instant_articles_preprocess_views_view_row_fia(&$variables) {
   $item = $variables['row'];
 
   $variables['attributes'] = new Attribute($item);
