@@ -100,20 +100,6 @@ function fb_instant_articles_display_add_regions(&$form, &$form_state) {
     ),
   );
 
-  $limit_items = array(
-    '#type' => 'textfield',
-    '#size' => 2,
-    '#default_value' => '',
-    '#weight' => 10,
-    '#default_value' => '#',
-    '#prefix' => '<div class="limit-float">',
-    '#suffix' => '</div><div class="clearfix"></div>',
-    '#attributes' => array(
-      'alt' => t("Enter a number to limit the number of items or 'delta' to print a specific delta (usually configured in views or found in entity->delta). Leave empty to display them all. Note that depending on the formatter settings, this option might not always work."),
-      'title' => t("Enter a number to limit the number of items or 'delta' to print a specific delta (usually configured in views or found in entity->delta). Leave empty to display them all. Note that depending on the formatter settings, this option might not always work."),
-    ),
-  );
-
   // Update existing rows by changing rowHandler and adding regions.
   foreach (element_children($table) as $name) {
     $row = &$table[$name];
@@ -132,15 +118,6 @@ function fb_instant_articles_display_add_regions(&$form, &$form_state) {
           $row['human_name']['#markup'] = check_plain($form_state['formatter_settings'][$name]['ft']['lb']) . ' ' . t('(Original: !orig)', array('!orig' => $row['human_name']['#markup']));
         }
       }
-    }
-
-    // Limit items.
-    $field_info = field_info_field($name);
-    if (isset($field_info['cardinality']) && $field_info['cardinality'] != 1 && $view_mode != 'form') {
-      $row['format']['type']['#prefix'] = '<div class="limit-float">';
-      $row['format']['type']['#suffix'] = '</div>';
-      $row['format']['limit'] = $limit_items;
-      $row['format']['limit']['#default_value'] = (isset($layout->settings['limit']) && isset($layout->settings['limit'][$name])) ? $layout->settings['limit'][$name] : '#';
     }
 
     // Add region.
@@ -176,9 +153,6 @@ function fb_instant_articles_display_field_ui_layouts_save($form, &$form_state) 
   $bundle = $form['#bundle'];
   $view_mode = $form['#view_mode'];
 
-  // Determine layout variables.
-  $layout = 'fb_instant_articles_display';
-
   // Save layout and add regions if necessary.
   $record = new stdClass();
   $record->id = $form['#export_id'];
@@ -202,12 +176,6 @@ function fb_instant_articles_display_field_ui_layouts_save($form, &$form_state) 
     }
     $record->settings['regions'][$field['region']][$weight++] = $key;
     $record->settings['fields'][$key] = $field['region'];
-
-    // Save limit.
-    $limit = isset($field['format']['limit']) ? trim($field['format']['limit']) : '';
-    if (is_numeric($limit) || $limit === 'delta') {
-      $record->settings['limit'][$key] = $limit;
-    }
   }
 
   // Let other modules alter the layout settings.
