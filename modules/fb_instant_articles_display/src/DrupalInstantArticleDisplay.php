@@ -103,7 +103,7 @@ class DrupalInstantArticleDisplay {
             \DateTime::createFromFormat('U', $node->changed)
           )
       );
-    // Default the article autor to the username.
+    // Default the article author to the username.
     $author = user_load($node->uid);
     if ($author) {
       $header->addAuthor(
