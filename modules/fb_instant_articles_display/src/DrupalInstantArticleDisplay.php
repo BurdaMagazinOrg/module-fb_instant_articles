@@ -85,8 +85,7 @@ class DrupalInstantArticleDisplay {
       ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
       ->addMetaProperty('op:generator:application:version', self::FB_INSTANT_ARTICLES_VERSION)
       ->withCanonicalUrl(url('node/' . $node->nid, array('absolute' => TRUE)))
-      // @todo where best to store this for alter?
-      ->withStyle('default');
+      ->withStyle(variable_get('fb_instant_articles_style', 'default'));
     // InstantArticles header, at this point, only have publish an modify
     // times to add.
     $header = Header::create()
