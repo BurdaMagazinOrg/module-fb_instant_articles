@@ -38,7 +38,7 @@ function fb_instant_articles_api_rules_action_info() {
  *
  */
 function facebook_instant_articles_api_import_action($node, $context = array()) {
-  $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $node);
+  $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $node->type);
   if($fb_instant_enabled) {
     fb_instant_articles_api_rules_import_article($node);
   }
@@ -50,7 +50,7 @@ function facebook_instant_articles_api_import_action($node, $context = array()) 
  *
  */
 function facebook_instant_articles_api_remove_action($node, $context = array()) {
-  $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $node);
+  $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $node->type);
   if($fb_instant_enabled) {
     fb_instant_articles_api_rules_remove_article($node);
   }
