@@ -240,7 +240,7 @@ function theme_node__fb_instant_article($vars) {
   if (isset($node->fb_instant_articles_display_wrapper)) {
     /** @var \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay $wrapper */
     $wrapper = $node->fb_instant_articles_display_wrapper;
-    return $wrapper->render();
+    return $wrapper->getArticle()->render();
   }
 }
 

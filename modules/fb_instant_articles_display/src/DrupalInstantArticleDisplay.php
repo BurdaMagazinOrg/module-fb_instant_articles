@@ -60,13 +60,13 @@ class DrupalInstantArticleDisplay {
    * Facebook Instant Articles object that encapsulates the structure and
    * content of the node object we are wrapping.
    *
-   * @var InstantArticle
+   * @var \Facebook\InstantArticles\Elements\InstantArticle
    */
-  public $instantArticle;
+  private $instantArticle;
 
   /**
-   * @param stdClass $node
-   * @param $instantArticle
+   * @param \stdClass $node
+   * @param \Facebook\InstantArticles\Elements\InstantArticle $instantArticle
    */
   private function __construct($node, $layoutSettings, $instantArticle) {
     $this->node = $node;
@@ -75,7 +75,7 @@ class DrupalInstantArticleDisplay {
   }
 
   /**
-   * @param stdClass $node
+   * @param \stdClass $node
    * @return \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay
    */
   public static function create($node, $layoutSettings) {
@@ -119,13 +119,27 @@ class DrupalInstantArticleDisplay {
   }
 
   /**
-   * @return InstantArticle
+   * Gets the wrapped InstantArticle object.
+   *
+   * Also invokes a hook to allow other modules to alter the InstantArticle
+   * object before render or any other operation.
+   *
+   * @see hook_fb_instant_articles_display_instant_article_alter()
+   *
+   * @return \Facebook\InstantArticles\Elements\InstantArticle
+   */
+  public function getArticle() {
+    drupal_alter('fb_instant_articles_display_instant_article', $this->instantArticle, $this->node);
+    return $this->instantArticle;
+  }
+
+  /**
+   * @deprecated
+   *
+   * Instead use DrupalInstantArticleDisplay->getArticle()->render().
    */
   public function render() {
-    // Give anyone a chance to alter the InstantArticle object prior to
-    // rendering.
-    drupal_alter('fb_instant_articles_display_instant_article', $this->instantArticle, $this->node);
-    return $this->instantArticle->render('<!doctype html>', TRUE);
+    return $this->getArticle()->render('<!doctype html>', TRUE);
   }
 
   /**
