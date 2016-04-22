@@ -486,7 +486,7 @@ class DrupalInstantArticleDisplay {
       // encoding issues.  Since we're dealing with HTML snippets, it will
       // always be missing a <meta charset="utf-8" /> or equivalent.
       $output = '<!doctype html><html><head><meta charset="utf-8" /></head><body>' . $output . '</body></html>';
-      @$document->loadHTML($output);
+      @$document->loadHTML(decode_entities($output));
       $transformer->transform($body, $document);
 
       // @todo store entity warnings so we can display them in the admin
