@@ -421,6 +421,10 @@ class DrupalInstantArticleDisplay {
   private function fieldFormatImageElement($items, $region, $settings) {
     foreach ($items as $delta => $item) {
       if (!empty($settings['style'])) {
+        if (empty($item['uri']) && !empty($item['fid'])) {
+          // Ensure images work, without requiring a full node load.
+          $item['uri'] = file_load($item['fid'])->uri;
+        }
         $image_url = image_style_url($settings['style'], $item['uri']);
       }
       else {
