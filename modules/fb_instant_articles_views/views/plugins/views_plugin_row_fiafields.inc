@@ -6,7 +6,7 @@
  */
 
 /**
- * Plugin which performs a node_view on the resulting object and formats is as
+ * Plugin which performs a node_view on the resulting object and formats it as
  * an RSS item as per the Facebook Instant Article specification.
  */
 class views_plugin_row_fiafields extends views_plugin_row {
@@ -119,6 +119,9 @@ class views_plugin_row_fiafields extends views_plugin_row {
       'pubDate' => format_date($node->created, 'custom', 'c'),
       'author' => format_username($node),
     );
+
+    // Add necessary namespace
+    $this->view->style_plugin->namespaces['xmlns:content'] = 'http://purl.org/rss/1.0/modules/content/';
 
     return theme($this->theme_functions(),
       array(
