@@ -9,9 +9,9 @@
  * Allows modules to alter if an entity type and bundle are treated as Facebook
  * Instant Articles.
  *
- * @param $is_type
- *   A boolean for if this is a node type that should be served as a Facebook
- *   Instant Article.
+ * @param bool $is_type
+ *   Whether this Entity type and Bundle should be recognized as a Facebook
+ *   Instant Article type.
  * @param $entity_type
  *   The entity type name.
  * @param $bundle

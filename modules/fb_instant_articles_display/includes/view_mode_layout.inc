@@ -387,6 +387,8 @@ function fb_instant_articles_display_field_ui_fields($entity_type, $bundle, $vie
  *
  * @return array
  *   Collection of fields.
+ *
+ * @todo Support other Entity types.
  */
 function fb_instant_articles_display_get_fields($entity_type, $cache = TRUE) {
   $fields = array(
