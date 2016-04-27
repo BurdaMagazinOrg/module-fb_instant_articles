@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay.
+ * Contains \Drupal\fb_instant_articles_display\EntityWrapper.
  */
 
 namespace Drupal\fb_instant_articles_display;
@@ -31,14 +31,10 @@ use Facebook\InstantArticles\Transformer\Transformer;
  * Facebook Instant Article Entity wrapper class. Builds up an InstantArticle
  * object using field formatters.
  *
- * Class DrupalInstantArticleDisplay
+ * Class EntityWrapper
  * @package Drupal\fb_instant_articles_display
- *
- * @todo Rename Class to to EntityFormatter, and formatFields() (was
- *   fieldFormatterView()), formatProperties() (was create()/__construct()). Or
- *   else move all these to procedural functions within a formatter.inc file.
  */
-class DrupalInstantArticleDisplay {
+class EntityWrapper {
 
   /**
    * Entity object for which we are building an InstantArticle object.
@@ -76,13 +72,13 @@ class DrupalInstantArticleDisplay {
   private $instantArticle;
 
   /**
-   * DrupalInstantArticleDisplay constructor.
+   * EntityWrapper constructor.
    *
    * @param string $entity_type
    * @param \stdClass $entity
    * @param \stdClass $layoutSettings
    * @param InstantArticle $instantArticle
-   * @return DrupalInstantArticleDisplay
+   * @return EntityWrapper
    */
   private function __construct($entity_type, $entity, \stdClass $layoutSettings, InstantArticle $instantArticle) {
     $this->entity = $entity;
@@ -96,7 +92,7 @@ class DrupalInstantArticleDisplay {
    * @param \stdClass $entity
    * @param \stdClass $layoutSettings
    * @param InstantArticle $instantArticle
-   * @return DrupalInstantArticleDisplay
+   * @return EntityWrapper
    */
   public static function create($entity_type, $entity, \stdClass $layoutSettings, InstantArticle $instantArticle) {
     // The InstantArticle object for the Entity will be built up by any field
@@ -141,7 +137,7 @@ class DrupalInstantArticleDisplay {
 
     $instantArticle->withHeader($header);
 
-    $display = new DrupalInstantArticleDisplay($entity_type, $entity, $layoutSettings, $instantArticle);
+    $display = new EntityWrapper($entity_type, $entity, $layoutSettings, $instantArticle);
     $display->addAnalyticsFromSettings();
     $display->addAdsFromSettings();
     return $display;
