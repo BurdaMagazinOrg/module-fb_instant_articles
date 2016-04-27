@@ -176,21 +176,14 @@ function fb_instant_articles_display_entity_info_alter(&$entity_info) {
 }
 
 /**
- * Implements hook_node_load().
+ * Implements hook_node_view().
  */
-function fb_instant_articles_display_node_load($nodes, $types) {
-  if ($enabled_entity_types = fb_instant_articles_display_get_article_entity_types()) {
+function fb_instant_articles_display_node_view($node, $view_mode, $langcode) {
+  if ($view_mode == 'fb_instant_article' && $enabled_entity_types = fb_instant_articles_display_get_article_entity_types()) {
     $enabled_bundles = array_keys($enabled_entity_types['node']);
-
-    if (!empty($enabled_bundles) && count(array_intersect($enabled_bundles, $types))) {
-      foreach ($nodes as $node) {
-        $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
-        $wrapper = \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay::create($node, $layout_settings);
-        // Store the InstantArticle wrapper object on the node entity to allow
-        // field formatters and others to make changes/additions to it until it's
-        // finally rendered out in hook_preprocess_node().
-        $node->fb_instant_articles_display_wrapper = $wrapper;
-      }
+    if(in_array($node->type, $enabled_bundles)) {
+      $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
+      $node->fb_instant_articles_display_wrapper = \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay::create($node, $layout_settings);
     }
   }
 }
