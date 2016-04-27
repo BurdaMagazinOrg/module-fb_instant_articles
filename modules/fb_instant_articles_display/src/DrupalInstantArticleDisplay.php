@@ -119,30 +119,6 @@ class DrupalInstantArticleDisplay {
   }
 
   /**
-   * Gets the wrapped InstantArticle object.
-   *
-   * Also invokes a hook to allow other modules to alter the InstantArticle
-   * object before render or any other operation.
-   *
-   * @see hook_fb_instant_articles_display_instant_article_alter()
-   *
-   * @return \Facebook\InstantArticles\Elements\InstantArticle
-   */
-  public function getArticle() {
-    drupal_alter('fb_instant_articles_display_instant_article', $this->instantArticle, $this->node);
-    return $this->instantArticle;
-  }
-
-  /**
-   * @deprecated
-   *
-   * Instead use DrupalInstantArticleDisplay->getArticle()->render().
-   */
-  public function render() {
-    return $this->getArticle()->render('<!doctype html>', TRUE);
-  }
-
-  /**
    * @param $entity_type
    * @param $entity
    * @param $field

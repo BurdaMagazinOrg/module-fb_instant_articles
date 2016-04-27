@@ -68,7 +68,7 @@ class ArticleWrapper {
    * @return \Facebook\InstantArticles\Elements\InstantArticle
    */
   public function getArticle() {
-    drupal_alter('fb_instant_articles_instant_article', $this->instantArticle);
+    drupal_alter('fb_instant_articles_article', $this->instantArticle);
     return $this->instantArticle;
   }
 
