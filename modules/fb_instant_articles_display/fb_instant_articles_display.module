@@ -18,12 +18,17 @@ function fb_instant_articles_display_entity_load($entities, $type) {
       return FALSE;
     }
 
-    // We add Entity-specific information to the InstantArticle object, and
-    // attach it to the Entity for use in later hooks.
-    // @see fb_instant_articles_display_module_implements_alter()
+    // We add Entity-specific information to the ArticleWrapper object, and
+    // attach it to the Entity for use in later hooks. Note that we don't store
+    // the InstantArticle object on the node directly, because our Singleton
+    // wrapper + Drupal hook class pattern relies on invoking
+    // hook_fb_instant_articles_article_alter() in ArticleWrapper->getArticle(),
+    // to allow other modules to alter the InstantArticle object whenever it is
+    // requested. If we request that now, it will not have the Entity-specific
+    // information on it this module needs for later altering.
     $wrapper = \Drupal\fb_instant_articles\ArticleWrapper::create();
-    $wrapper->entity_type = $type;
-    $wrapper->entity = $entity;
+    $wrapper->setContext('entity_type', $type);
+    $wrapper->setContext('entity', $entity);
 
     $entity->fb_instant_article_wrapper = $wrapper;
   }
