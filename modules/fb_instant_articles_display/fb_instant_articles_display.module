@@ -46,9 +46,8 @@ function fb_instant_articles_display_field_formatter_view($entity_type, $entity,
   }
 
   $article = $entity->fb_instant_article_wrapper->getArticle();
-  $entity_info = entity_get_info($entity_type);
-  $bundle_key = !empty($entity_info['entity keys']['bundle']) ? $entity_info['entity keys']['bundle'] : $entity_type;
-  $layout_settings = fb_instant_articles_display_get_layout_settings($entity_type, $entity->{$bundle_key});
+  list(, , $bundle) = entity_extract_ids($entity_type, $entity);
+  $layout_settings = fb_instant_articles_display_get_layout_settings($entity_type, $bundle);
   $display_wrapper = \Drupal\fb_instant_articles_display\EntityWrapper::create($entity_type, $entity, $layout_settings, $article);
   $display_wrapper->fieldFormatterView($field, $instance, $langcode, $items, $display);
 }
