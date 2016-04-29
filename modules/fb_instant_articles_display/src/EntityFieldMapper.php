@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\fb_instant_articles_display\EntityWrapper.
+ * Contains \Drupal\fb_instant_articles_display\EntityFieldMapper.
  */
 
 namespace Drupal\fb_instant_articles_display;
@@ -23,37 +23,14 @@ use Facebook\InstantArticles\Elements\ListItem;
 use Facebook\InstantArticles\Elements\Pullquote;
 use Facebook\InstantArticles\Elements\SocialEmbed;
 use Facebook\InstantArticles\Elements\TextContainer;
-use Facebook\InstantArticles\Elements\Time;
 use Facebook\InstantArticles\Elements\Video;
 use Facebook\InstantArticles\Transformer\Transformer;
 
 /**
- * Facebook Instant Article Entity wrapper class. Builds up an InstantArticle
- * object using field formatters.
- *
- * Class EntityWrapper
+ * Class EntityFieldMapper
  * @package Drupal\fb_instant_articles_display
  */
-class EntityWrapper {
-
-  /**
-   * Entity object for which we are building an InstantArticle object.
-   *
-   * @var \stdClass
-   */
-  private $entity;
-
-  /**
-   * The Entity type.
-   *
-   * We store this because there is no core $entity->entity_type property.
-   * See @link https://www.drupal.org/node/1042822 this d.o issue for status. @endlink
-   *
-   * @see $entity
-   *
-   * @var string
-   */
-  private $entity_type;
+class EntityFieldMapper {
 
   /**
    * Layout settings which map fields to the Facebook Instant Article region
@@ -72,85 +49,39 @@ class EntityWrapper {
   private $instantArticle;
 
   /**
-   * EntityWrapper constructor.
+   * EntityFieldMapper constructor.
    *
-   * @param string $entity_type
-   * @param \stdClass $entity
    * @param \stdClass $layoutSettings
    * @param InstantArticle $instantArticle
-   * @return EntityWrapper
+   * @return EntityFieldMapper
    */
-  private function __construct($entity_type, $entity, \stdClass $layoutSettings, InstantArticle $instantArticle) {
-    $this->entity = $entity;
-    $this->entity_type = $entity_type;
+  private function __construct(\stdClass $layoutSettings, InstantArticle $instantArticle) {
     $this->layoutSettings = $layoutSettings;
     $this->instantArticle = $instantArticle;
   }
 
   /**
-   * @param string $entity_type
-   * @param \stdClass $entity
    * @param \stdClass $layoutSettings
    * @param InstantArticle $instantArticle
-   * @return EntityWrapper
+   * @return EntityFieldMapper
    */
-  public static function create($entity_type, $entity, \stdClass $layoutSettings, InstantArticle $instantArticle) {
-    // The InstantArticle object for the Entity will be built up by any field
-    // formatters and rendered via hook_preprocess_ENTITY().
-    $path = entity_uri($entity_type, $entity);
-    $instantArticle->withCanonicalUrl(url($path['path'], array('absolute' => TRUE)));
-
-    $header = Header::create();
-    if ($label = entity_label($entity_type, $entity)) {
-      $header->withTitle($entity->title);
-    }
-
-    // Support specific Drupal Entity keys to map to the Instant SDK PUBLISHED
-    // and MODIFIED concepts.
-    if (isset($entity->created)) {
-      $header->withPublishTime(
-        Time::create(Time::PUBLISHED)
-          ->withDatetime(
-            \DateTime::createFromFormat('U', $entity->created)
-          )
-      );
-    }
-    if (isset($entity->changed)) {
-      $header->withModifyTime(
-        Time::create(Time::MODIFIED)
-          ->withDatetime(
-            \DateTime::createFromFormat('U', $entity->changed)
-          )
-      );
-    }
-
-    // Default the article author to the username.
-    if (isset($entity->uid)) {
-      $author = user_load($entity->uid);
-      if ($author) {
-        $header->addAuthor(
-          Author::create()
-            ->withName($author->name)
-        );
-      }
-    }
-
-    $instantArticle->withHeader($header);
-
-    $display = new EntityWrapper($entity_type, $entity, $layoutSettings, $instantArticle);
-    $display->addAnalyticsFromSettings();
-    $display->addAdsFromSettings();
-    return $display;
+  public static function create(\stdClass $layoutSettings, InstantArticle $instantArticle) {
+    return new EntityFieldMapper($layoutSettings, $instantArticle);
   }
 
   /**
+   * Builds up an InstantArticle object using field formatters.
+   *
    * @param array $field
    * @param array $instance
    * @param string $langcode
    * @param array $items
    * @param array $display
+   *
+   * @see fb_instant_articles_display_field_formatter_view()
+   * @see fb_instant_articles_display_declare_entity_preprocess_hooks()
    */
-  public function fieldFormatterView($field, $instance, $langcode, $items, $display) {
+  public function map($field, $instance, $langcode, $items, $display) {
     $settings = $display['settings'];
     $active_region = 'none';
     $header = $this->instantArticle->getHeader();

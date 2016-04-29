@@ -35,6 +35,28 @@ function fb_instant_articles_display_entity_load($entities, $type) {
 }
 
 /**
+ * Implements hook_fb_instant_articles_article_alter().
+ */
+function fb_instant_articles_display_fb_instant_articles_article_alter($instantArticle, $context) {
+  // We cache the EntityPropertyMapper object for this Entity, so we don't
+  // re-map the InstantArticle properties here over and over. Note that we can
+  // not cache this inside hook_field_formatter_view() because our strategy for
+  // that hook implementation requires that we continue to alter the
+  // InstantArticle object inside $entity->fb_instant_article_wrapper for each
+  // FBIA field formatter. Caching here ensures the property mapping happens
+  // only once per Entity within the same http request.
+  $propertyMapperRun = &drupal_static(__FUNCTION__, array());
+  $entity_type = $context['entity_type'];
+  $entity = $context['entity'];
+  list($id) = entity_extract_ids($entity_type, $entity);
+  if (!isset($propertyMapperRun[$entity_type][$id])) {
+    \Drupal\fb_instant_articles_display\EntityPropertyMapper::create($entity_type, $entity, $instantArticle)
+      ->map();
+    $propertyMapperRun[$entity_type][$id] = TRUE;
+  }
+}
+
+/**
  * Implements hook_field_formatter_view().
  */
 function fb_instant_articles_display_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
@@ -48,8 +70,8 @@ function fb_instant_articles_display_field_formatter_view($entity_type, $entity,
   $article = $entity->fb_instant_article_wrapper->getArticle();
   list(, , $bundle) = entity_extract_ids($entity_type, $entity);
   $layout_settings = fb_instant_articles_display_get_layout_settings($entity_type, $bundle);
-  $display_wrapper = \Drupal\fb_instant_articles_display\EntityWrapper::create($entity_type, $entity, $layout_settings, $article);
-  $display_wrapper->fieldFormatterView($field, $instance, $langcode, $items, $display);
+  \Drupal\fb_instant_articles_display\EntityFieldMapper::create($layout_settings, $article)
+    ->map($field, $instance, $langcode, $items, $display);
 }
 
 /**
