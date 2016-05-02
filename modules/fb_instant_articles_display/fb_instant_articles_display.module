@@ -26,33 +26,18 @@ function fb_instant_articles_display_entity_load($entities, $type) {
     // to allow other modules to alter the InstantArticle object whenever it is
     // requested. If we request that now, it will not have the Entity-specific
     // information on it this module needs for later altering.
-    $wrapper = \Drupal\fb_instant_articles\ArticleWrapper::create();
-    $wrapper->setContext('entity_type', $type);
-    $wrapper->setContext('entity', $entity);
-
+    $context = array(
+      'entity_type' => $type,
+      'entity' => $entity,
+    );
+    $wrapper = \Drupal\fb_instant_articles\ArticleWrapper::create($context);
     $entity->fb_instant_article_wrapper = $wrapper;
-  }
-}
 
-/**
- * Implements hook_fb_instant_articles_article_alter().
- */
-function fb_instant_articles_display_fb_instant_articles_article_alter($instantArticle, $context) {
-  // We cache the EntityPropertyMapper object for this Entity, so we don't
-  // re-map the InstantArticle properties here over and over. Note that we can
-  // not cache this inside hook_field_formatter_view() because our strategy for
-  // that hook implementation requires that we continue to alter the
-  // InstantArticle object inside $entity->fb_instant_article_wrapper for each
-  // FBIA field formatter. Caching here ensures the property mapping happens
-  // only once per Entity within the same http request.
-  $propertyMapperRun = &drupal_static(__FUNCTION__, array());
-  $entity_type = $context['entity_type'];
-  $entity = $context['entity'];
-  list($id) = entity_extract_ids($entity_type, $entity);
-  if (!isset($propertyMapperRun[$entity_type][$id])) {
-    \Drupal\fb_instant_articles_display\EntityPropertyMapper::create($entity_type, $entity, $instantArticle)
+    // We map the Entity properties here, so we can ensure it runs only once per
+    // Entity (during load). If other modules wish to alter this, they should
+    // implement hook_fb_instant_articles_article_alter().
+    \Drupal\fb_instant_articles_display\EntityPropertyMapper::create($type, $entity, $entity->fb_instant_article_wrapper->getArticle())
       ->map();
-    $propertyMapperRun[$entity_type][$id] = TRUE;
   }
 }
 
