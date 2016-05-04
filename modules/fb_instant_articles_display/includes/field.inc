@@ -12,11 +12,11 @@ function fb_instant_articles_display_field_formatter_view($entity_type, $entity,
   // Grab the InstantArticle object we're going to be building up. If it's not
   // present, it means that a site admin selected an FB IA field formatter for
   // a non-FB IA content type.
-  if (!isset($entity->fb_instant_article_wrapper)) {
+  if (!isset($entity->fb_instant_article)) {
     return FALSE;
   }
 
-  $article = $entity->fb_instant_article_wrapper->getArticle();
+  $article = $entity->fb_instant_article;
   list(, , $bundle) = entity_extract_ids($entity_type, $entity);
   $layout_settings = fb_instant_articles_display_get_layout_settings($entity_type, $bundle);
   \Drupal\fb_instant_articles_display\EntityFieldMapper::create($layout_settings, $article)

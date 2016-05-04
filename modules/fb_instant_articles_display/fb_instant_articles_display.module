@@ -23,27 +23,35 @@ function fb_instant_articles_display_entity_load($entities, $type) {
       return FALSE;
     }
 
-    // We add Entity-specific information to the ArticleWrapper object, and
-    // attach it to the Entity for use in later hooks. Note that we don't store
-    // the InstantArticle object on the node directly, because our Singleton
-    // wrapper + Drupal hook class pattern relies on invoking
-    // hook_fb_instant_articles_article_alter() in ArticleWrapper->getArticle(),
-    // to allow other modules to alter the InstantArticle object whenever it is
-    // requested. If we request that now, it will not have the Entity-specific
-    // information on it this module needs for later altering.
+    // We add Entity-specific information when constructing the ArticleWrapper
+    // object, so that other modules can make use of this when implementing
+    // hook_fb_instant_articles_article_alter(). We then attach the
+    // InstantArticle object directly onto the Entity so that it will be
+    // available during hook_field_formatter_view() for mapping field data onto
+    // the InstantArticle object.
     $context = array(
       'entity_type' => $type,
       'entity' => $entity,
     );
-    $wrapper = \Drupal\fb_instant_articles\ArticleWrapper::create($context);
-    $entity->fb_instant_article_wrapper = $wrapper;
-
-    // We map the Entity properties here, so we can ensure it runs only once per
-    // Entity (during load). If other modules wish to alter this, they should
-    // implement hook_fb_instant_articles_article_alter().
-    \Drupal\fb_instant_articles_display\EntityPropertyMapper::create($type, $entity, $entity->fb_instant_article_wrapper->getArticle())
-      ->map();
+    $entity->fb_instant_article = \Drupal\fb_instant_articles\ArticleWrapper::create($context)->getArticle();
   }
+}
+
+/**
+ * Implements hook_fb_instant_articles_article_alter().
+ *
+ * @see fb_instant_articles_display_module_implements_alter()
+ */
+function fb_instant_articles_display_fb_instant_articles_article_alter($instantArticle, $context) {
+  if (!isset($context['entity_type']) || isset($context['entity'])) {
+    return FALSE;
+  }
+
+  // We map the Entity properties here, so we can ensure it runs only once per
+  // Entity (during load). If other modules wish to alter this, they should
+  // implement hook_fb_instant_articles_article_alter().
+  \Drupal\fb_instant_articles_display\EntityPropertyMapper::create($context['entity_type'], $context['entity'], $instantArticle)
+    ->map();
 }
 
 /**
@@ -56,6 +64,17 @@ function fb_instant_articles_display_module_implements_alter(&$implementations, 
   // be as good a place as any to call this function.
   // @see module_implements()
   fb_instant_articles_display_declare_entity_preprocess_hooks();
+
+  // We also ensure hook_fb_instant_articles_article_alter() runs first, so that
+  // other modules can override mappings made by this module by implementing
+  // hook_fb_instant_articles_article_alter().
+  if ($hook != 'fb_instant_articles_article_alter') {
+    return;
+  }
+  $module = 'fb_instant_articles_display';
+  $group = array($module => $implementations[$module]);
+  unset($implementations[$module]);
+  $implementations = $group + $implementations;
 }
 
 /**
@@ -115,11 +134,11 @@ function fb_instant_articles_display_theme() {
  * @ingroup themeable
  */
 function theme_entity__fb_instant_article($variables) {
-  if (!isset($variables['fb_instant_article_wrapper'])) {
+  if (!isset($variables['fb_instant_article'])) {
     return FALSE;
   }
 
-  return $variables['fb_instant_article_wrapper']->getArticle()->render('<!doctype html>', TRUE);
+  return $variables['fb_instant_article']->render('<!doctype html>', TRUE);
 }
 
 /**
