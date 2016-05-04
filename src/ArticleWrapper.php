@@ -44,7 +44,7 @@ class ArticleWrapper {
    * Note modules making use of this wrapper must set the required Canonical URL
    * with:
    * @code
-   * ArticleWrapper::create()->getArticle()->withCanonicalUrl($url);
+   * InstantArticle->withCanonicalUrl($url);
    * @endcode
    */
   private function __construct($context = array()) {

@@ -24,8 +24,8 @@
  *   InstantArticle object. When interacting with ArticleWrapper directly,
  *   modules may set additional context with ArticleWrapper::setContext().
  *
- * @see \Drupal\fb_instant_articles\ArticleWrapper::getArticle()
- * @see \Drupal\fb_instant_articles\ArticleWrapper::setContext()
+ * @see \Drupal\fb_instant_articles\ArticleWrapper::create()
+ * @see \Drupal\fb_instant_articles\ArticleWrapper::__construct()
  */
 function hook_fb_instant_articles_article_alter($instantArticle, $context) {
   // Check to see if a module like fb_instant_articles_display has set Entity
