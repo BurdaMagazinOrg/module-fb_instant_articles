@@ -39,7 +39,7 @@ class ArticleWrapper {
    *   An associative array of contextual information altering the
    *   InstantArticle object.
    *
-   * @see hook_fb_instant_articles_instant_article_alter()
+   * @see hook_fb_instant_articles_article_alter()
    *
    * Note modules making use of this wrapper must set the required Canonical URL
    * with:

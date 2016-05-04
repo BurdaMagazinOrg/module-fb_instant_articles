@@ -42,7 +42,7 @@ class EntityFieldMapper {
 
   /**
    * Facebook Instant Articles object that encapsulates the structure and
-   * content of the Entity object we are wrapping.
+   * content of the Entity object we are mapping.
    *
    * @var InstantArticle
    */
