@@ -43,7 +43,7 @@ function fb_instant_articles_display_entity_load($entities, $type) {
  * @see fb_instant_articles_display_module_implements_alter()
  */
 function fb_instant_articles_display_fb_instant_articles_article_alter($instantArticle, $context) {
-  if (!isset($context['entity_type']) || isset($context['entity'])) {
+  if (!isset($context['entity_type']) || !isset($context['entity'])) {
     return FALSE;
   }
 
