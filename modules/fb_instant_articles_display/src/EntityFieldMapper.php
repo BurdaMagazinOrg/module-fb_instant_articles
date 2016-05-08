@@ -7,6 +7,7 @@
 
 namespace Drupal\fb_instant_articles_display;
 
+use Drupal\fb_instant_articles\TransformerExtender;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
 use Facebook\InstantArticles\Elements\Author;
@@ -24,7 +25,6 @@ use Facebook\InstantArticles\Elements\Pullquote;
 use Facebook\InstantArticles\Elements\SocialEmbed;
 use Facebook\InstantArticles\Elements\TextContainer;
 use Facebook\InstantArticles\Elements\Video;
-use Facebook\InstantArticles\Transformer\Transformer;
 
 /**
  * Class EntityFieldMapper
@@ -401,9 +401,7 @@ class EntityFieldMapper {
    * @param array $langcode
    */
   private function fieldFormatTransfomer($items, InstantArticle $body, $instance, $langcode) {
-    $transformer = new Transformer();
-    $transformer->loadRules(file_get_contents(__DIR__ . '/../transformer_config.json'));
-    drupal_alter('fb_instant_articles_display_transformer', $transformer);
+    $transformer = new TransformerExtender();
     foreach($items as $delta => $item) {
       // @see _text_sanitize().
       if (isset($item['safe_value'])) {
@@ -413,7 +411,7 @@ class EntityFieldMapper {
         $output = $instance['settings']['text_processing'] ? check_markup($item['value'], $item['format'], $langcode) : check_plain($item['value']);
       }
 
-      // Pass the markup through Transformer::transform().
+      // Pass the markup through TransformerExtender::transform().
       $document = new \DOMDocument();
       // Before loading into DOMDocument, setup for success by taking care of
       // encoding issues.  Since we're dealing with HTML snippets, it will

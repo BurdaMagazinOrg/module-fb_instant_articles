@@ -43,5 +43,33 @@ function hook_fb_instant_articles_article_alter($instantArticle, $context) {
 }
 
 /**
+ * Add Transformer rule definitions.
+ *
+ * @return array
+ *   An array of transformer rule definitions. This is a PHP array
+ *   representation of the JSON list of Rules definitions expected by
+ *   \Facebook\InstantArticles\Transformer\Transformer::loadRules().
+ *
+ * @see \Drupal\fb_instant_articles\TransformerExtender::__construct()
+ * @see \Drupal\fb_instant_articles\TransformerExtender::addRules()
+ */
+function hook_fb_instant_articles_transformer_rules() {
+  // Example: Rule for Facebook post external embed via embed_external.module.
+  $rules[] = array(
+    'class' => 'SocialEmbedRule',
+    'selector' => "//div[div[div]]",
+    'properties' => array(
+      'socialembed.url' => array(
+        'type' => 'string',
+        'selector' => "div > div > div.fb-post",
+        'attribute' => 'data-href',
+      ),
+    ),
+  );
+
+  return $rules;
+}
+
+/**
  * @} End of "addtogroup hooks".
  */
