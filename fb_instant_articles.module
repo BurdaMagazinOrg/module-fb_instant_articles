@@ -143,20 +143,15 @@ function fb_instant_articles_help_markdown($string) {
  * Implements hook_html_head_alter().
  */
 function fb_instant_articles_html_head_alter(&$head_elements) {
-  if (drupal_is_front_page()) {
-    $tag_content = variable_get('fb_instant_articles_page_id', NULL);
-
-    if (!empty($tag_content)) {
-      $head_elements['fb_instant_articles_page'] = array(
-        '#type' => 'html_tag',
-        '#tag' => 'meta',
-        '#attributes' => array(
-          'property' => 'fb:pages',
-          'content' => $tag_content,
-        ),
-      );
-      drupal_add_html_head($head_elements, 'fb_instant_articles_page');
-    }
+  if (drupal_is_front_page() && $page_id = variable_get('fb_instant_articles_page_id', NULL)) {
+    $head_elements['fb_instant_articles_page'] = array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'property' => 'fb:pages',
+        'content' => $page_id,
+      ),
+    );
   }
 }
 
