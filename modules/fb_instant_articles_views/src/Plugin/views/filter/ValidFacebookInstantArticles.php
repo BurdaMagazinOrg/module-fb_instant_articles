@@ -59,7 +59,7 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
    */
   public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
     parent::init($view, $display, $options);
-    $this->valueTitle = t('Facebook Instant articles');
+    $this->valueTitle = t('Facebook Instant Articles');
   }
 
   /**

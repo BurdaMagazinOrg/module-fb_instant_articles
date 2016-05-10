@@ -1,6 +1,6 @@
-name: 'Facebook instant articles'
+name: 'Facebook Instant Articles Views'
 type: module
-description: 'FB Instant articles RSS feed generator for integration into the FB IA program'
+description: 'FB Instant Articles Views RSS feed generator'
 core: 8.x
 package: Facebook
 features: true

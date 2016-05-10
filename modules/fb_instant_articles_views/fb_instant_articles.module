@@ -17,7 +17,7 @@ function fb_instant_articles_views_help($route_name, RouteMatchInterface $route_
     case 'help.page.fb_instant_articles_views':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('FB Instant articles RSS feed generator for integration into the FB IA program') . '</p>';
+      $output .= '<p>' . t('FB Instant articles RSS feed generator') . '</p>';
       return $output;
 
     default:

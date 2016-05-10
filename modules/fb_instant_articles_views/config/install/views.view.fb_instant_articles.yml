@@ -9,9 +9,9 @@ dependencies:
     - node
     - user
 id: fb_instant_articles_views
-label: 'FaceBook Instant Articles'
+label: 'FaceBook Instant Articles Views'
 module: views
-description: 'All content for the Facebook instant articles integration.'
+description: 'All content for the Facebook Instant Articles Views integration.'
 tag: ''
 base_table: node_field_data
 base_field: nid
@@ -177,7 +177,7 @@ display:
           expose:
             label: ''
           granularity: second
-      title: 'FaceBook Instant Articles'
+      title: 'FaceBook Instant Articles Views'
       header: {  }
       footer: {  }
       empty: {  }
@@ -212,7 +212,7 @@ display:
         type: rss
         options:
           uses_fields: false
-          description: 'Facebook Instant Articles feed'
+          description: 'Facebook Instant Articles Views feed'
       row:
         type: fiafields
         options:

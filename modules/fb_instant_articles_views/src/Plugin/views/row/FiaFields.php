@@ -17,7 +17,7 @@ use Drupal\Core\Language\LanguageManagerInterface;
  * @ViewsRow(
  *   id = "fiafields",
  *   title = @Translation("FIA Fields"),
- *   help = @Translation("Display fields as FIA (facebook instant articles) items."),
+ *   help = @Translation("Display fields as Facebook Instant Articles items."),
  *   theme = "views_view_row_fia",
  *   display_types = {"feed"}
  * )
