@@ -5,7 +5,7 @@
  * Contains \Drupal\views\Plugin\views\filter\ImplementsViewMode.
  */
 
-namespace Drupal\fb_instant_articles\Plugin\views\filter;
+namespace Drupal\fb_instant_articles_views\Plugin\views\filter;
 
 use Drupal\views\Plugin\views\filter\FilterPluginBase;
 use Drupal\views\ViewExecutable;
@@ -22,7 +22,7 @@ use Drupal\Core\Entity\EntityInterface;
  */
 class ValidFacebookInstantArticles extends FilterPluginBase {
 
-  const FIA_VIEW_MODE = 'fb_instant_articles_rss';
+  const FIA_VIEW_MODE = 'fb_instant_articles_views_rss';
 
   /**
    * {@inheritdoc}

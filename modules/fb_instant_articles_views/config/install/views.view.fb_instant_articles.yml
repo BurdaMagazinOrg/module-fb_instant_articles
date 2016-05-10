@@ -2,13 +2,13 @@ langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_view_mode.node.fb_instant_articles_rss
+    - core.entity_view_mode.node.fb_instant_articles_views_rss
     - core.entity_view_mode.node.teaser
   module:
-    - fb_instant_articles
+    - fb_instant_articles_views
     - node
     - user
-id: fb_instant_articles
+id: fb_instant_articles_views
 label: 'FaceBook Instant Articles'
 module: views
 description: 'All content for the Facebook instant articles integration.'
@@ -135,10 +135,10 @@ display:
           expose:
             operator: ''
           group: 1
-        fb_instant_articles:
-          id: fb_instant_articles
+        fb_instant_articles_views:
+          id: fb_instant_articles_views
           table: node_field_data
-          field: fb_instant_articles
+          field: fb_instant_articles_views
           relationship: none
           group_type: group
           admin_label: ''
@@ -217,7 +217,7 @@ display:
         type: fiafields
         options:
           relationship: none
-          view_mode: fb_instant_articles_rss
+          view_mode: fb_instant_articles_views_rss
       display_extenders: {  }
     cache_metadata:
       contexts:
