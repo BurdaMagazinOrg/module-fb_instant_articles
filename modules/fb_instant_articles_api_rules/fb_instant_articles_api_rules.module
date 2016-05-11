@@ -68,7 +68,7 @@ function fb_instant_articles_api_rules_import_article($node) {
     $node->fb_instant_articles_display_wrapper = \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay::create($node, $layout_settings);
     node_build_content($node, $view_mode = 'fb_instant_article');
     $client = \Drupal\fb_instant_articles_api\DrupalClient::get();
-    $client->importArticle($node->fb_instant_articles_display_wrapper->getArticle(), $node->status === NODE_PUBLISHED);
+    $client->importArticle($node->fb_instant_article, $node->status === NODE_PUBLISHED);
   }
 }
 

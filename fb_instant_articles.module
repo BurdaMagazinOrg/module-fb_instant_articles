@@ -188,3 +188,244 @@ function fb_instant_articles_init() {
   );
   \Logger::configure($configuration);
 }
+
+/**
+ * Implements hook_fb_instant_articles_transformer_rules().
+ */
+function fb_instant_articles_fb_instant_articles_transformer_rules() {
+  return array(
+    array(
+      'class' => 'TextNodeRule',
+    ),
+    array(
+      'class' => 'PassThroughRule',
+      'selector' => 'html',
+    ),
+    array(
+      'class' => 'PassThroughRule',
+      'selector' => 'head',
+    ),
+    array(
+      'class' => 'PassThroughRule',
+      'selector' => 'body',
+    ),
+    array(
+      'class' => 'PassThroughRule',
+      'selector' => 'code',
+    ),
+    array(
+      'class' => 'PassThroughRule',
+      'selector' => 'del',
+    ),
+    array(
+      'class' => 'PassThroughRule',
+      'selector' => 'span',
+    ),
+    array(
+      'class' => 'ParagraphRule',
+      'selector' => 'p',
+    ),
+    array(
+      'class' => 'LineBreakRule',
+      'selector' => 'br',
+    ),
+    array(
+      'class' => 'AnchorRule',
+      'selector' => 'a',
+      'properties' => array(
+        'anchor.href' => array(
+          'type' => 'string',
+          'selector' => 'a',
+          'attribute' => 'href',
+        ),
+        'anchor.rel' => array(
+          'type' => 'string',
+          'selector' => 'a',
+          'attribute' => 'rel',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'BoldRule',
+      'selector' => 'b',
+    ),
+    array(
+      'class' => 'BoldRule',
+      'selector' => 'strong',
+    ),
+    array(
+      'class' => 'ItalicRule',
+      'selector' => 'i',
+    ),
+    array(
+      'class' => 'ItalicRule',
+      'selector' => 'em',
+    ),
+    array(
+      'class' => 'BlockquoteRule',
+      'selector' => 'blockquote',
+    ),
+    array(
+      'class' => 'InteractiveRule',
+      'selector' => 'dl',
+      'properties' => array(
+        'interactive.iframe' => array(
+          'type' => 'element',
+          'selector' => 'dl',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'ImageRule',
+      'selector' => '//p[img]',
+      'properties' => array(
+        'image.url' => array(
+          'type' => 'string',
+          'selector' => 'img',
+          'attribute' => 'src',
+        ),
+        'image.caption' => array(
+          'type' => 'element',
+          'selector' => 'img',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'ImageRule',
+      'selector' => 'img',
+      'properties' => array(
+        'image.url' => array(
+          'type' => 'string',
+          'selector' => 'img',
+          'attribute' => 'src',
+        ),
+        'image.caption' => array(
+          'type' => 'element',
+          'selector' => 'img[@alt]',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'CaptionRule',
+      'selector' => 'img',
+      'properties' => array(
+        'caption.default' => array(
+          'type' => 'string',
+          'selector' => 'img',
+          'attribute' => 'alt',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'ListItemRule',
+      'selector' => 'li',
+    ),
+    array(
+      'class' => 'ListElementRule',
+      'selector' => 'ul',
+    ),
+    array(
+      'class' => 'ListElementRule',
+      'selector' => 'ol',
+    ),
+    array(
+      'class' => 'H1Rule',
+      'selector' => 'h1',
+      'properties' => array(
+        'h1.class' => array(
+          'type' => 'string',
+          'selector' => 'link',
+          'attribute' => 'class',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'H1Rule',
+      'selector' => 'title',
+    ),
+    array(
+      'class' => 'H2Rule',
+      'selector' => 'h2',
+      'properties' => array(
+        'h2.class' => array(
+          'type' => 'string',
+          'selector' => 'link',
+          'attribute' => 'class',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'SocialEmbedRule',
+      'selector' => 'iframe',
+      'properties' => array(
+        'socialembed.url' => array(
+          'type' => 'string',
+          'selector' => 'iframe',
+          'attribute' => 'src',
+        ),
+        'socialembed.iframe' => array(
+          'type' => 'children',
+          'selector' => 'iframe',
+        ),
+        'socialembed.caption' => array(
+          'type' => 'element',
+          'selector' => 'figcaption',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'SocialEmbedRule',
+      'selector' => '//p[iframe]',
+      'properties' => array(
+        'socialembed.url' => array(
+          'type' => 'string',
+          'selector' => 'iframe',
+          'attribute' => 'src',
+        ),
+        'socialembed.iframe' => array(
+          'type' => 'children',
+          'selector' => 'iframe',
+        ),
+        'socialembed.caption' => array(
+          'type' => 'element',
+          'selector' => 'figcaption',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'SocialEmbedRule',
+      'selector' => 'div.embed',
+      'properties' => array(
+        'socialembed.iframe' => array(
+          'type' => 'children',
+          'selector' => 'div.embed',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'SocialEmbedRule',
+      'selector' => 'div.oembed',
+      'properties' => array(
+        'socialembed.iframe' => array(
+          'type' => 'children',
+          'selector' => 'div.oembed',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'ImageRule',
+      'selector' => '//p[a[img]]|//a[img]',
+      'properties' => array(
+        'image.url' => array(
+          'type' => 'string',
+          'selector' => 'img',
+          'attribute' => 'src',
+        ),
+        'image.caption' => array(
+          'type' => 'element',
+          'selector' => 'img[@alt]',
+        ),
+      ),
+    ),
+  );
+}

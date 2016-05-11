@@ -2,11 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay.
+ * Contains \Drupal\fb_instant_articles_display\EntityFieldMapper.
  */
 
 namespace Drupal\fb_instant_articles_display;
 
+use Drupal\fb_instant_articles\TransformerExtender;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
 use Facebook\InstantArticles\Elements\Author;
@@ -23,135 +24,64 @@ use Facebook\InstantArticles\Elements\ListItem;
 use Facebook\InstantArticles\Elements\Pullquote;
 use Facebook\InstantArticles\Elements\SocialEmbed;
 use Facebook\InstantArticles\Elements\TextContainer;
-use Facebook\InstantArticles\Elements\Time;
 use Facebook\InstantArticles\Elements\Video;
-use Facebook\InstantArticles\Transformer\Transformer;
 
 /**
- * Facebook Instant Article node wrapper class.  Builds up an InstantArticle
- * object using field formatters.
- *
- * Class DrupalInstantArticleDisplay
+ * Class EntityFieldMapper
  * @package Drupal\fb_instant_articles_display
  */
-class DrupalInstantArticleDisplay {
-
-  /**
-   * Facebook Instant Articles version number.
-   */
-  const FB_INSTANT_ARTICLES_VERSION = '7.x-1.0-rc1';
-
-  /**
-   * Node object for which we are building an InstantArticle object.
-   *
-   * @var \stdClass
-   */
-  private $node;
+class EntityFieldMapper {
 
   /**
    * Layout settings which map fields to the Facebook Instant Article region
    * (header, footer, body).
    *
-   * @var array
+   * @var \stdClass
    */
   private $layoutSettings;
 
   /**
    * Facebook Instant Articles object that encapsulates the structure and
-   * content of the node object we are wrapping.
+   * content of the Entity object we are mapping.
    *
-   * @var \Facebook\InstantArticles\Elements\InstantArticle
+   * @var InstantArticle
    */
   private $instantArticle;
 
   /**
-   * @param \stdClass $node
-   * @param \Facebook\InstantArticles\Elements\InstantArticle $instantArticle
+   * EntityFieldMapper constructor.
+   *
+   * @param \stdClass $layoutSettings
+   * @param InstantArticle $instantArticle
+   * @return EntityFieldMapper
    */
-  private function __construct($node, $layoutSettings, $instantArticle) {
-    $this->node = $node;
+  private function __construct(\stdClass $layoutSettings, InstantArticle $instantArticle) {
     $this->layoutSettings = $layoutSettings;
     $this->instantArticle = $instantArticle;
   }
 
   /**
-   * @param \stdClass $node
-   * @return \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay
+   * @param \stdClass $layoutSettings
+   * @param InstantArticle $instantArticle
+   * @return EntityFieldMapper
    */
-  public static function create($node, $layoutSettings) {
-    // InstantArticle object for the node.  This will be built up by any field
-    // formatters and rendered out in hook_preprocess_node().
-    $instantArticle = InstantArticle::create()
-      ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
-      ->addMetaProperty('op:generator:application:version', self::FB_INSTANT_ARTICLES_VERSION)
-      ->withCanonicalUrl(url('node/' . $node->nid, array('absolute' => TRUE)))
-      ->withStyle(variable_get('fb_instant_articles_style', 'default'));
-    // InstantArticles header, at this point, only have publish an modify
-    // times to add.
-    $header = Header::create()
-      ->withTitle($node->title)
-      ->withPublishTime(
-        Time::create(Time::PUBLISHED)
-          ->withDatetime(
-            \DateTime::createFromFormat('U', $node->created)
-          )
-      )
-      ->withModifyTime(
-        Time::create(Time::MODIFIED)
-          ->withDatetime(
-            \DateTime::createFromFormat('U', $node->changed)
-          )
-      );
-    // Default the article author to the username.
-    $author = user_load($node->uid);
-    if ($author) {
-      $header->addAuthor(
-        Author::create()
-          ->withName($author->name)
-      );
-    }
-    $instantArticle->withHeader($header);
-
-    $display = new DrupalInstantArticleDisplay($node, $layoutSettings, $instantArticle);
-    $display->addAnalyticsFromSettings();
-    $display->addAdsFromSettings();
-    return $display;
+  public static function create(\stdClass $layoutSettings, InstantArticle $instantArticle) {
+    return new EntityFieldMapper($layoutSettings, $instantArticle);
   }
 
   /**
-   * Gets the wrapped InstantArticle object.
+   * Builds up an InstantArticle object using field formatters.
    *
-   * Also invokes a hook to allow other modules to alter the InstantArticle
-   * object before render or any other operation.
+   * @param array $field
+   * @param array $instance
+   * @param string $langcode
+   * @param array $items
+   * @param array $display
    *
-   * @see hook_fb_instant_articles_display_instant_article_alter()
-   *
-   * @return \Facebook\InstantArticles\Elements\InstantArticle
+   * @see fb_instant_articles_display_field_formatter_view()
+   * @see fb_instant_articles_display_declare_entity_preprocess_hooks()
    */
-  public function getArticle() {
-    drupal_alter('fb_instant_articles_display_instant_article', $this->instantArticle, $this->node);
-    return $this->instantArticle;
-  }
-
-  /**
-   * @deprecated
-   *
-   * Instead use DrupalInstantArticleDisplay->getArticle()->render().
-   */
-  public function render() {
-    return $this->getArticle()->render('<!doctype html>', TRUE);
-  }
-
-  /**
-   * @param $entity_type
-   * @param $entity
-   * @param $field
-   * @param $instance
-   * @param $langcode
-   * @param $items
-   * @param $display
-   */
-  public function fieldFormatterView($field, $instance, $langcode, $items, $display) {
+  public function map($field, $instance, $langcode, $items, $display) {
     $settings = $display['settings'];
     $active_region = 'none';
     $header = $this->instantArticle->getHeader();
@@ -272,10 +202,10 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for the Subtitle element.
    *
-   * @param $items
+   * @param array $items
    * @param Header $header
    */
-  private function fieldFormatSubtitle($items, $header) {
+  private function fieldFormatSubtitle($items, Header $header) {
     // We can only have a single subtitle, so just take the first delta to
     // be the subtitle.
     // @todo do we have to sanitize first, or will FB IA SDK take care of it?
@@ -287,11 +217,10 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for the Kicker element.
    *
-   * @param $region
-   * @param $items
+   * @param array $items
    * @param Header $header
    */
-  private function fieldFormatKicker($items, $header) {
+  private function fieldFormatKicker($items, Header $header) {
     // We can only have a single kicker, so just take the first delta to
     // be the kicker.
     if (!empty($items[0]['value'])) {
@@ -302,11 +231,11 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for standard elements.
    *
-   * @param $items
+   * @param array $items
    * @param InstantArticle $body
    * @param TextContainer $text_container
    */
-  private function fieldFormatTextContainer($items, $body, $text_container) {
+  private function fieldFormatTextContainer($items, InstantArticle $body, TextContainer $text_container) {
     foreach ($items as $delta => $item) {
       // @todo sanitize text before sending off to FB IA SDK?
       // @todo how does this do with markup in $item['value']?
@@ -319,10 +248,10 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for authors.
    *
-   * @param $items
+   * @param array $items
    * @param Header $header
    */
-  private function fieldFormatAuthor($items, $header) {
+  private function fieldFormatAuthor($items, Header $header) {
     foreach ($items as $delta => $item) {
       // @todo sanitize text before sending off to FB IA SDK?
       $header->addAuthor(
@@ -335,10 +264,10 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for credits.
    *
-   * @param $items
+   * @param array $items
    * @param Footer $footer
    */
-  private function fieldFormatCredits($items, $footer) {
+  private function fieldFormatCredits($items, Footer $footer) {
     // We can only have a single credits group.
     // @todo sanitize text before sending off to FB IA SDK?
     if (!empty($items[0]['value'])) {
@@ -349,10 +278,10 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for copyright.
    *
-   * @param $items
+   * @param array $items
    * @param Footer $footer
    */
-  private function fieldFormatCopyright($items, $footer) {
+  private function fieldFormatCopyright($items, Footer $footer) {
     // We can only have a single copyright line.
     // @todo sanitize text before sending off to FB IA SDK?
     if (!empty($items[0]['value'])) {
@@ -363,11 +292,11 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for the Ad element.
    *
-   * @param $items
+   * @param array $items
    * @param Header $header
-   * @param $settings
+   * @param array $settings
    */
-  private function fieldFormatAdElement($items, $header, $settings) {
+  private function fieldFormatAdElement($items, Header $header, $settings) {
     foreach ($items as $delta => $item) {
       $ad = Ad::create();
       if (!empty($settings['height'])) {
@@ -391,11 +320,11 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for the Analytics element.
    *
-   * @param $items
+   * @param array $items
    * @param InstantArticle $body
-   * @param $settings
+   * @param array $settings
    */
-  private function fieldFormatAnalyticsElement($items, $body, $settings) {
+  private function fieldFormatAnalyticsElement($items, InstantArticle $body, $settings) {
     foreach ($items as $delta => $item) {
       $analytics = Analytics::create();
 
@@ -414,15 +343,15 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for the Image element.
    *
-   * @param $items
+   * @param array $items
    * @param Element $region
-   * @param $settings
+   * @param array $settings
    */
-  private function fieldFormatImageElement($items, $region, $settings) {
+  private function fieldFormatImageElement($items, Element $region, $settings) {
     foreach ($items as $delta => $item) {
       if (!empty($settings['style'])) {
         if (empty($item['uri']) && !empty($item['fid'])) {
-          // Ensure images work, without requiring a full node load.
+          // Ensure images work, without requiring a full entity load.
           $item['uri'] = file_load($item['fid'])->uri;
         }
         $image_url = image_style_url($settings['style'], $item['uri']);
@@ -466,15 +395,13 @@ class DrupalInstantArticleDisplay {
    * Formatter for any markup field that must needs be piped through the
    * Transfomer object.
    *
-   * @param $items
+   * @param array $items
    * @param InstantArticle $body
-   * @param $instance
-   * @param $langcode
+   * @param array $instance
+   * @param array $langcode
    */
-  private function fieldFormatTransfomer($items, $body, $instance, $langcode) {
-    $transformer = new Transformer();
-    $transformer->loadRules(file_get_contents(__DIR__ . '/../transformer_config.json'));
-    drupal_alter('fb_instant_articles_display_transformer', $transformer);
+  private function fieldFormatTransfomer($items, InstantArticle $body, $instance, $langcode) {
+    $transformer = new TransformerExtender();
     foreach($items as $delta => $item) {
       // @see _text_sanitize().
       if (isset($item['safe_value'])) {
@@ -484,7 +411,7 @@ class DrupalInstantArticleDisplay {
         $output = $instance['settings']['text_processing'] ? check_markup($item['value'], $item['format'], $langcode) : check_plain($item['value']);
       }
 
-      // Pass the markup through Transformer::transform().
+      // Pass the markup through TransformerExtender::transform().
       $document = new \DOMDocument();
       // Before loading into DOMDocument, setup for success by taking care of
       // encoding issues.  Since we're dealing with HTML snippets, it will
@@ -500,11 +427,11 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for the Interactive element.
    *
-   * @param $items
+   * @param array $items
    * @param InstantArticle $body
-   * @param $settings
+   * @param array $settings
    */
-  private function fieldFormatInteractiveElement($items, $body, $settings) {
+  private function fieldFormatInteractiveElement($items, InstantArticle $body, $settings) {
     foreach ($items as $delta => $item) {
       $interactive = Interactive::create();
 
@@ -524,11 +451,11 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for the List element.
    *
-   * @param $items
+   * @param array $items
    * @param InstantArticle $body
-   * @param $settings
+   * @param array $settings
    */
-  private function fieldFormatListElement($items, $body, $settings) {
+  private function fieldFormatListElement($items, InstantArticle $body, $settings) {
     $list_type = !empty($settings['list_type']) ? $settings['list_type'] : 'ol';
     if ($list_type == 'ol') {
       $list_element = ListElement::createOrdered();
@@ -549,11 +476,11 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for the Video element.
    *
-   * @param $items
+   * @param array $items
    * @param Element $region
-   * @param $settings
+   * @param array $settings
    */
-  private function fieldFormatVideoElement($items, $region, $settings) {
+  private function fieldFormatVideoElement($items, Element $region, $settings) {
     foreach ($items as $delta => $item) {
       $video = Video::create()
         ->withURL(file_create_url($item['uri']));
@@ -572,10 +499,10 @@ class DrupalInstantArticleDisplay {
   /**
    * Formatter for the Social element.
    *
-   * @param $items
+   * @param array $items
    * @param InstantArticle $body
    */
-  private function fieldFormatSocialElement($items, $body) {
+  private function fieldFormatSocialElement($items, InstantArticle $body) {
     foreach ($items as $delta => $item) {
       // @todo sanitize text before sending off to FB IA SDK?
       $social = SocialEmbed::create()
