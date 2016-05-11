@@ -97,7 +97,7 @@ function fb_instant_articles_display_declare_entity_preprocess_hooks() {
     $code = '';
     if (!function_exists("fb_instant_articles_display_preprocess_{$entity_type}")) {
       $code .= 'function fb_instant_articles_display_preprocess_' . $entity_type . "(&" . '$vars' . ") {
-      if (" . '$vars' . "['view_mode'] === 'fb_instant_article') {
+      if (isset(" . '$vars' . "['view_mode']) && " . '$vars' . "['view_mode'] === 'fb_instant_article') {
         " . '$vars' . "['theme_hook_suggestions'][] = 'entity__fb_instant_article';
       }
     }";
