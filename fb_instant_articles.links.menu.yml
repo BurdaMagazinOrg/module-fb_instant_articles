@@ -1,7 +1,5 @@
-fb_instant_articles.fia_admin_config:
+fb_instant_articles.config:
   title: 'FaceBook Instant Articles administration'
-  route_name: fb_instant_articles.fia_admin_config
+  route_name: fb_instant_articles.config
   description: 'Configure FaceBook Instant Articles'
   parent: system.admin_config_system
-  weight: 99
-
