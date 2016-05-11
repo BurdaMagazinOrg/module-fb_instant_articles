@@ -22,3 +22,22 @@ function fb_instant_articles_help($route_name, RouteMatchInterface $route_match)
     default:
   }
 }
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function fb_instant_articles_page_attachments_alter(array &$page) {
+  $config = \Drupal::config('fb_instant_articles.adminconfig');
+  $path_matcher = \Drupal::service('path.matcher');
+
+  if ($path_matcher->isFrontPage() && $page_id = $config->get('pagesid')) {
+    $meta_page_id = [
+      '#tag' => 'meta',
+      '#attributes' => [
+        'property' => 'fb:pages',
+        'content' => $page_id,
+      ],
+    ];
+    $page['#attached']['html_head'][] = [$meta_page_id, 'fia_pagesid'];
+  }
+}
