@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains fb_instant_articles.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function fb_instant_articles_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the fb_instant_articles module.
+    case 'help.page.fb_instant_articles':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Base module for Facebook Instant Articles.') . '</p>';
+      return $output;
+
+    default:
+  }
+}

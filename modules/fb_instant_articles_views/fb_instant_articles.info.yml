@@ -1,10 +1,11 @@
-name: 'Facebook Instant Articles Views'
+name: Facebook Instant Articles Views
 type: module
-description: 'FB Instant Articles Views RSS feed generator'
+description: Views module for Facebook Instant Articles.
 core: 8.x
-package: Facebook
+package: Facebook Instant Articles
 features: true
 dependencies:
-    0: node
-    1: views
+    0: fb_instant_articles
+    1: node
     2: user
+    3: views
