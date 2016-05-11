@@ -22,3 +22,29 @@ function fb_instant_articles_help($route_name, RouteMatchInterface $route_match)
     default:
   }
 }
+
+/**
+ * Implements hook_init().
+ */
+function fb_instant_articles_init() {
+  $enable_transformer_logging = \Drupal::config('fb_instant_articles_enable_logging');
+  $appender = array(
+    'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
+    'layout' => array(
+      'class' => 'LoggerLayoutSimple'
+    ),
+  );
+  $configuration = array(
+    'rootLogger' => array(
+      'appenders' => array(
+        'facebook-instantarticles-transformer',
+        'facebook-instantarticles-client',
+      ),
+    ),
+    'appenders' => array(
+      'facebook-instantarticles-transformer' => $appender,
+      'facebook-instantarticles-client' => $appender,
+    ),
+  );
+  \Logger::configure($configuration);
+}
