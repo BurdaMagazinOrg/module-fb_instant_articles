@@ -25,44 +25,6 @@ function fb_instant_articles_views_help($route_name, RouteMatchInterface $route_
 }
 
 /**
- * Implements hook_page_attachments_alter
- *
- * @param array $page
- *   page render array
- */
-function fb_instant_articles_views_page_attachments_alter(array &$page) {
-
-  /**
-   * @var Drupal\Core\Config\ImmutableConfig $config
-   *   The config entity for fb_instant_articles_views
-   */
-  $config = \Drupal::config('fb_instant_articles_views.adminconfig');
-
-  if ($config instanceof Drupal\Core\Config\ImmutableConfig) {
-
-    /**
-     * If there is a stored configuration for the FIA Application ID
-     * then add a page <meta> tag to all pages showing the id
-     *
-     * <meta property="fb:pages" content="{id goes here}" />
-     */
-
-    $fia_pagesid = $config->get('pagesid');
-    if ($fia_pagesid != '') {
-      $meta_fia_pagesid = [
-        '#tag' => 'meta',
-        '#attributes' => [
-          'property' => 'fb:pages',
-          'content' => $fia_pagesid,
-        ],
-      ];
-      $page['#attached']['html_head'][] = [$meta_fia_pagesid, 'fia_pagesid'];
-    }
-
-  }
-}
-
-/**
  * Prepares variables for views FIA item templates.
  *
  * Default template: views-view-row-fia.html.twig.
