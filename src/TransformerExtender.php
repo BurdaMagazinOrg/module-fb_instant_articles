@@ -31,6 +31,7 @@ class TransformerExtender extends Transformer {
    */
   public function __construct() {
     $rules = module_invoke_all('fb_instant_articles_transformer_rules');
+    drupal_alter('fb_instant_articles_transformer_rules', $rules);
     $this->addRules($rules);
   }
 

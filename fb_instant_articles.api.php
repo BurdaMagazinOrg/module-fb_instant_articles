@@ -71,5 +71,22 @@ function hook_fb_instant_articles_transformer_rules() {
 }
 
 /**
+ * Transform rule definitions.
+ *
+ * @param array $rules
+ *   An array of transformer rule definitions.
+ *
+ * @see hook_fb_instant_articles_transformer_rules()
+ */
+function hook_fb_instant_articles_transformer_rules_alter($rules) {
+  // Example: Remove caption rule from list of base rules.
+  foreach ($rules as $rule) {
+    if ($rule['class'] == 'CaptionRule' && $rule['selector'] == 'img') {
+      unset($rules[$rule]);
+    }
+  }
+}
+
+/**
  * @} End of "addtogroup hooks".
  */
