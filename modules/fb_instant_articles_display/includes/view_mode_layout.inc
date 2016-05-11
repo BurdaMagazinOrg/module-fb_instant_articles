@@ -16,7 +16,7 @@ function fb_instant_articles_display_layout_form(&$form, &$form_state) {
   $view_mode = $form['#view_mode'];
   $form['#export_id'] = $entity_type . '|' . $bundle_name . '|' . $view_mode;
 
-  $layout = fb_instant_articles_display_get_node_layout_settings($bundle_name);
+  $layout = fb_instant_articles_display_get_layout_settings($entity_type, $bundle_name);
   $form['#fbia_layout'] = $layout;
 
   fb_instant_articles_display_field_ui_fields($entity_type, $bundle_name, $view_mode, $form, $form_state);
@@ -387,6 +387,8 @@ function fb_instant_articles_display_field_ui_fields($entity_type, $bundle, $vie
  *
  * @return array
  *   Collection of fields.
+ *
+ * @todo Support other Entity types.
  */
 function fb_instant_articles_display_get_fields($entity_type, $cache = TRUE) {
   $fields = array(
