@@ -1,20 +1,19 @@
 {
   "name": "drupal/fb_instant_articles",
+  "description": "Drupal Facebook Instant Articles.",
+  "keywords": ["facebook", "instant", "articles", "drupal"],
   "type": "drupal-module",
-  "description": "FB Instant articles RSS feed generator for integration into the FB IA program",
-  "keywords": ["Drupal"],
   "license": "GPL-2.0+",
-  "homepage": "https://www.drupal.org/project/fb_instant_articles",
-  "minimum-stability": "dev",
-  "authors": [
-    {
-      "name": "James Nesbitt",
-      "email": "james.nesbitt@wunderkraut.com",
-      "role": "Developer"
-    }
-  ],
-  "support": {
-    "email": "james.nesbitt@wunderkraut.com"
+  "authors": [{
+    "name": "Drupal community",
+    "homepage": "https://www.drupal.org/node/2676800/committers"
+  }],
+  "require": {
+    "facebook/facebook-instant-articles-sdk-php": "^1.0.0"
   },
-  "require": { }
+  "autoload": {
+    "psr-4": {
+      "Drupal\\fb_instant_articles\\": "src/"
+    }
+  }
 }
