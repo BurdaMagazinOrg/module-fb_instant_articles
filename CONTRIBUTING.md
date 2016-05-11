@@ -22,8 +22,8 @@ Also note that this project uses issues on Drupal.org, but opts to use a GitHub
     git clone git@github.com:YOUR_USERNAME/module-fb_instant_articles.git
     cd module-fb_instant_articles
     # Check out the correct core branch you are contributing to.
-    # Example: `7.x-1.x` or `8.x-1.x`:
-    git checkout 7.x-1.x
+    # Example: `7.x-2.x` or `8.x-2.x`:
+    git checkout 7.x-2.x
     # Create and checkout a local topic branch for the issue you're working on,
     # following this naming convention: [issue-number]-[short-description].
     # Example: If the issue is at http://drupal.org/node/123456 is 123456.
@@ -60,7 +60,7 @@ Also note that this project uses issues on Drupal.org, but opts to use a GitHub
     [documentation standards](https://www.drupal.org/node/1354).
 
 4. [Open a GitHub PR](https://help.github.com/articles/creating-a-pull-request)
- against the correct branch (example: `7.x-.x` or `8.x-1.x`).
+ against the correct branch (example: `7.x-2.x` or `8.x-2.x`).
 
 5. Mark your corresponding Drupal.org issue with the status
  [Needs review](https://www.drupal.org/issue-queue/status#needs-review) and
