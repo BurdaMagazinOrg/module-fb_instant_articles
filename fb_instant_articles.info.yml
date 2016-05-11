@@ -3,3 +3,4 @@ type: module
 description: Base module for Facebook Instant Articles.
 core: 8.x
 package: Facebook Instant Articles
+configure: fb_instant_articles.config
