@@ -21,6 +21,9 @@
     "selector": "span"
   }, {
     "class": "ParagraphRule",
+    "selector": "div"
+  }, {
+    "class": "ParagraphRule",
     "selector": "p"
   }, {
     "class": "LineBreakRule",
