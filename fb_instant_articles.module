@@ -223,6 +223,10 @@ function fb_instant_articles_fb_instant_articles_transformer_rules() {
     ),
     array(
       'class' => 'ParagraphRule',
+      'selector' => 'div',
+    ),
+    array(
+      'class' => 'ParagraphRule',
       'selector' => 'p',
     ),
     array(
