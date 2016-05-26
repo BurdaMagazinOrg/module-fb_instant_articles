@@ -52,7 +52,7 @@ function fb_instant_articles_rss_node_operations() {
     $operations = array(
       'add_fia' => array(
         'label' => t('Publish selected content to Facebook Instant Articles RSS feed'),
-        'callback' => 'fb_instant_articles_mass_update',
+        'callback' => 'fb_instant_articles_rss_mass_update',
         'callback arguments' => array('fia_enabled' => 1),
       ),
       'remove_fia' => array(
