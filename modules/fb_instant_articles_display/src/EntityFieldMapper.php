@@ -145,7 +145,7 @@ class EntityFieldMapper {
           $pass_region = $header;
         }
         else if ($active_region === 'body') {
-          $pass_region = $header;
+          $pass_region = $this->instantArticle;
         }
         if ($pass_region) {
           $this->fieldFormatVideoElement($items, $pass_region, $settings);
