@@ -173,7 +173,7 @@ function fb_instant_articles_validate_an_placement_id($element, &$form_state, $f
     form_error($element, t('You must specify a valid Placement ID when using the Audience Network ad type.'));
   }
 
-  if (!(is_numeric($element['#value']))) {
+  if (preg_match('/^[\d_]+$/', $element['#value']) !== 1) {
     form_error($element, t('You must specify a valid Placement ID when using the Audience Network ad type.'));
   }
 }
