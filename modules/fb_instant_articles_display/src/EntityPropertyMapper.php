@@ -111,11 +111,12 @@ class EntityPropertyMapper {
 
     // Default the article author to the username.
     if (isset($this->entity->uid)) {
-      $author = user_load($this->entity->uid);
+     $author_token = variable_get('fb_instant_articles_display_author', '[node:author]');
+     $author = token_replace($author_token, array('node' => $node));
       if ($author) {
         $header->addAuthor(
           Author::create()
-            ->withName($author->name)
+            ->withName($author)
         );
       }
     }

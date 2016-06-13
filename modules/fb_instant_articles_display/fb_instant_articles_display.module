@@ -11,6 +11,48 @@
 require_once __DIR__ . '/includes/field.inc';
 
 /**
+ * Implements hook_menu().
+ */
+function fb_instant_articles_display_menu() {
+  $items['admin/config/services/fb-instant-display'] = array(
+    'title' => 'Facebook Instant Articles Display',
+    'description' => 'Display settings for Facebook Instant Articles.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('fb_instant_articles_display_settings'),
+    'access arguments' => array('administer fb_instant_articles_display'),
+  );
+
+  return $items;
+}
+
+/**
+ * Form constructor for Facebook Instant Articles API settings form.
+ */
+function fb_instant_articles_display_settings() {
+  // Initialize this module's settings form
+  $form = array();
+
+  $form['fb_instant_articles_display']['author']  = array(
+    '#type' => 'fieldset',
+    '#title' => t('Author'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+
+  $token_listing_link = theme('token_tree', array('token_types' => 'all', 'dialog' => TRUE));
+
+  $form['fb_instant_articles_display']['author']['fb_instant_articles_display_author'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Facebook instant articles node author'),
+    '#description' => 'Use token value for node author e.g [node:author] ' . $token_listing_link,
+    '#default_value' => variable_get('fb_instant_articles_display_author', '[node:author]'),
+    '#size' => 60,
+  );
+
+  return system_settings_form($form);
+}
+
+/**
  * Implements hook_entity_load().
  */
 function fb_instant_articles_display_entity_load($entities, $type) {
@@ -273,7 +315,7 @@ function fb_instant_articles_display_get_article_entity_types() {
       'bundle' => $fia_entity_type->entity_bundle,
     );
   }
- 
+
   // Allow other modules to alter.
   drupal_alter('fb_instant_articles_display_entity_types', $entity_types);
   return $entity_types;
