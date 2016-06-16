@@ -81,10 +81,17 @@ class DrupalInstantArticleDisplay {
   public static function create($node, $layoutSettings) {
     // InstantArticle object for the node.  This will be built up by any field
     // formatters and rendered out in hook_preprocess_node().
+    $canonical_override = variable_get('fb_instant_articles_canonical_url_override', '');
+    if (empty($canonical_override)) {
+      $canonical_url = url('node/' . $node->nid, array('absolute' => TRUE));
+    }
+    else {
+      $canonical_url = $canonical_override . url('node/' . $node->nid);
+    }
     $instantArticle = InstantArticle::create()
       ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
       ->addMetaProperty('op:generator:application:version', self::FB_INSTANT_ARTICLES_VERSION)
-      ->withCanonicalUrl(url('node/' . $node->nid, array('absolute' => TRUE)))
+      ->withCanonicalUrl($canonical_url)
       ->withStyle(variable_get('fb_instant_articles_style', 'default'));
     // InstantArticles header, at this point, only have publish an modify
     // times to add.

@@ -51,7 +51,16 @@ function fb_instant_articles_settings() {
     '#description' => t('Sends Facebook Instant Articles SDK logging messages to Drupal watchdog.'),
   );
 
+  // Add the Canonical URL override.
+  $form['fb_instant_articles_canonical_url_override'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Canonical URL override'),
+    '#default_value' => variable_get('fb_instant_articles_canonical_url_override', ''),
+    '#description' => t('If you need to override the base url of the canonical URL, you can do so here. This may be helpful for development domains or necessary if admin users perform edits that trigger Facebook requests from alternate domains. This URL should not include a trailing slash (e.g. http://drupal.org).'),
+  );
+
   $form = system_settings_form($form);
+
   return $form;
 }
 
