@@ -152,6 +152,8 @@ class DrupalInstantArticleDisplay {
    * @param $display
    */
   public function fieldFormatterView($field, $instance, $langcode, $items, $display) {
+    // Allow other modules to alter the field data before handling displays.
+    drupal_alter('fb_instant_articles_field_view', $field, $items, $display);
     $settings = $display['settings'];
     $active_region = 'none';
     $header = $this->instantArticle->getHeader();

@@ -134,3 +134,15 @@ function hook_fb_instant_articles_display_label_options_alter(&$field_label_opti
  */
 function hook_fb_instant_articles_display_field_settings_alter(&$field_settings, &$form, &$form_state) {
 }
+
+/**
+ * Allows modules to alter field data prior to being handling formatter display.
+ *
+ * @param array $field
+ * @param array $items
+ * @param array $display
+ *
+ * @see fieldFormatterView()
+ */
+function hook_fb_instant_articles_field_view_alter(&$field, &$items, &$display) {
+}

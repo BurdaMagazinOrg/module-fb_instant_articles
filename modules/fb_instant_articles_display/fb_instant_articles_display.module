@@ -279,90 +279,152 @@ function fb_instant_articles_display_get_node_layout_settings($bundle_name) {
  * Implements hook_field_formatter_info().
  */
 function fb_instant_articles_display_field_formatter_info() {
+  $formatters = fb_instant_articles_get_field_formatter_types();
   $formats = array();
-  // Header only elements
-  $formats['fbia_subtitle_formatter'] = array(
-    'label' => t('FBIA Subtitle'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-  );
-  $formats['fbia_kicker_formatter'] = array(
-    'label' => t('FBIA Kicker'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-  );
-  $formats['fbia_blockquote_formatter'] = array(
-    'label' => t('FBIA Blockquote'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-  );
-  $formats['fbia_pullquote_formatter'] = array(
-    'label' => t('FBIA Pullquote'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-  );
-  $formats['fbia_social_formatter'] = array(
-    'label' => t('FBIA Social Embed'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-  );
-  $formats['fbia_credits_formatter'] = array(
-    'label' => t('FBIA Credits'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-  );
-  $formats['fbia_copyright_formatter'] = array(
-    'label' => t('FBIA Copyright'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-  );
-  $formats['fbia_author_formatter'] = array(
-    'label' => t('FBIA Author'),
-    'field types' => array('text', 'text_with_summary', 'list_text'),
-  );
-  $formats['fbia_video_formatter'] = array(
-    'label' => t('FBIA Video'),
-    'field types' => array('file'),
-  );
-  $formats['fbia_ad_formatter'] = array(
-    'label' => t('FBIA Ad'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-    'settings'  => array(
-      'height' => '50',
-      'width' => '320',
-      'source' => 'url',
-    ),
-  );
-  $formats['fbia_analytics_formatter'] = array(
-    'label' => t('FBIA Analytics'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-    'settings'  => array(
-      'source' => 'url',
-    ),
-  );
-  $formats['fbia_image_formatter'] = array(
-    'label' => t('FBIA Image'),
-    'field types' => array('image'),
-    'settings'  => array(
-      'style' => 'medium',
-      'caption' => '',
-      'likes' => '',
-      'comments' => '',
-      'fullscreen' => '',
-    ),
-  );
-  $formats['fbia_interactive_formatter'] = array(
-    'label' => t('FBIA Interactive'),
-    'field types' => array('text', 'text_with_summary'),
-    'settings'  => array(
-      'height' => '50',
-      'width' => 'no-margin',
-    ),
-  );
-  $formats['fbia_list_formatter'] = array(
-    'label' => t('FBIA List'),
-    'field types' => array('list_text', 'list_integer', 'list_float'),
-    'settings'  => array(
-      'list_type' => 'ol',
-    ),
-  );
-  $formats['fbia_transformer_formatter'] = array(
-    'label' => t('FBIA Transfomer'),
-    'field types' => array('text', 'text_long', 'text_with_summary'),
-  );
+  foreach ($formatters as $format) {
+    // Header only elements
+    switch ($format) {
+      case 'fbia_subtitle_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Subtitle'),
+          'field types' => array('text', 'text_long', 'text_with_summary'),
+        );
+        break;
+
+      case 'fbia_kicker_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Kicker'),
+          'field types' => array('text', 'text_long', 'text_with_summary'),
+        );
+        break;
+
+      case 'fbia_blockquote_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Blockquote'),
+          'field types' => array('text', 'text_long', 'text_with_summary'),
+        );
+        break;
+
+      case 'fbia_pullquote_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Pullquote'),
+          'field types' => array('text', 'text_long', 'text_with_summary'),
+        );
+        break;
+
+      case 'fbia_social_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Social Embed'),
+          'field types' => array('text', 'text_long', 'text_with_summary'),
+        );
+        break;
+
+      case 'fbia_credits_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Credits'),
+          'field types' => array('text', 'text_long', 'text_with_summary'),
+        );
+        break;
+
+      case 'fbia_copyright_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Copyright'),
+          'field types' => array('text', 'text_long', 'text_with_summary'),
+        );
+        break;
+
+      case 'fbia_author_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Author'),
+          'field types' => array('text', 'text_with_summary', 'list_text'),
+        );
+        break;
+
+      case 'fbia_video_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Video'),
+          'field types' => array('file'),
+        );
+        break;
+
+      case 'fbia_ad_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Ad'),
+          'field types' => array('text', 'text_long', 'text_with_summary'),
+          'settings' => array(
+            'height' => '50',
+            'width' => '320',
+            'source' => 'url',
+          ),
+        );
+        break;
+
+      case 'fbia_analytics_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Analytics'),
+          'field types' => array('text', 'text_long', 'text_with_summary'),
+          'settings' => array(
+            'source' => 'url',
+          ),
+        );
+        break;
+
+      case 'fbia_image_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Image'),
+          'field types' => array('image'),
+          'settings' => array(
+            'style' => 'medium',
+            'caption' => '',
+            'likes' => '',
+            'comments' => '',
+            'fullscreen' => '',
+          ),
+        );
+        break;
+
+      case 'fbia_interactive_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Interactive'),
+          'field types' => array('text', 'text_with_summary'),
+          'settings' => array(
+            'height' => '50',
+            'width' => 'no-margin',
+          ),
+        );
+        break;
+
+      case 'fbia_list_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA List'),
+          'field types' => array('list_text', 'list_integer', 'list_float'),
+          'settings' => array(
+            'list_type' => 'ol',
+          ),
+        );
+        break;
+
+      case 'fbia_transformer_formatter':
+        $formats[$format] = array(
+          'label' => t('FBIA Transfomer'),
+          'field types' => array('text', 'text_long', 'text_with_summary'),
+        );
+        break;
+
+      case 'fbia_custom_formatter':
+        $types = field_info_field_types();
+        $formats[$format] = array(
+          'label' => t('FBIA Custom'),
+          'field types' => array_keys($types),
+          'settings' => array(
+            'formatter' => '',
+          ),
+        );
+        break;
+
+    }
+  }
+
   return $formats;
 }
 
@@ -480,6 +542,17 @@ function fb_instant_articles_display_field_formatter_settings_form($field, $inst
       );
       break;
 
+    case 'fbia_custom_formatter':
+      $element['formatter'] = array(
+        '#type' => 'select',
+        '#title' => t('Formatter'),
+        '#description' => t('Warning: This display requires using hook_fb_instant_articles_field_view_alter() to alter the display data prior to use. Select the formatter that this field should use.'),
+        '#options' => fb_instant_articles_get_field_formatter_types(),
+        '#default_value'  => $settings['formatter'],
+        '#required' => TRUE,
+      );
+      break;
+
   }
 
   return $element;
@@ -532,7 +605,15 @@ function fb_instant_articles_display_field_formatter_settings_summary($field, $i
         '@list_type' => $settings['list_type'],
       ));
       break;
+
+    case 'fbia_custom_formatter':
+      $summary = t('List field - Formatter:(@formatter)', array(
+        '@formatter' => $settings['formatter'],
+      ));
+      break;
+
   }
+
   return $summary;
 }
 
@@ -577,4 +658,46 @@ function fb_instant_articles_display_time_element($timestamp, $class) {
   $element = '<time' . $class . $datetime . '>' . $text_time . '</time>';
 
   return $element;
+}
+
+/**
+ * A function to list field formatter types and check if one exists.
+ *
+ * @param string $formatter
+ *     The formatter for which to check.
+ *
+ * @return mixed
+ *     A boolean if formatter is passed, otherwise, an array of all formatters.
+ */
+function fb_instant_articles_get_field_formatter_types($formatter = '') {
+  $formatters = array(
+    'fbia_subtitle_formatter',
+    'fbia_kicker_formatter',
+    'fbia_blockquote_formatter',
+    'fbia_pullquote_formatter',
+    'fbia_social_formatter',
+    'fbia_credits_formatter',
+    'fbia_copyright_formatter',
+    'fbia_author_formatter',
+    'fbia_video_formatter',
+    'fbia_ad_formatter',
+    'fbia_analytics_formatter',
+    'fbia_image_formatter',
+    'fbia_interactive_formatter',
+    'fbia_list_formatter',
+    'fbia_transformer_formatter',
+    'fbia_custom_formatter',
+  );
+
+  if (!empty($formatter)) {
+    if (in_array($formatter, $formatters)) {
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
+  }
+  else {
+    return drupal_map_assoc($formatters);
+  }
 }
