@@ -482,8 +482,10 @@ class EntityFieldMapper {
    */
   private function fieldFormatVideoElement($items, Element $region, $settings) {
     foreach ($items as $delta => $item) {
+      // A video url may already be provided for external videos files.
+      $video_url = !empty($item['url']) ? $item['url'] : file_create_url($item['uri']);
       $video = Video::create()
-        ->withURL(file_create_url($item['uri']));
+        ->withURL($video_url);
 
       if ($region instanceof Header) {
         $region->withCover($video);
