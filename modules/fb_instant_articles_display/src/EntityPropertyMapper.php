@@ -80,8 +80,15 @@ class EntityPropertyMapper {
   }
 
   private function addCanonicalURL() {
+    $canonical_override = variable_get('fb_instant_articles_canonical_url_override', '');
     $path = entity_uri($this->entity_type, $this->entity);
-    $this->instantArticle->withCanonicalUrl(url($path['path'], array('absolute' => TRUE)));
+    if (empty($canonical_override)) {
+      $canonical_url = url($path['path'], array('absolute' => TRUE));
+    }
+    else {
+      $canonical_url = $canonical_override . url($path['path']);
+    }
+    $this->instantArticle->withCanonicalUrl($canonical_url);
   }
 
   private function addHeaderFromProperties() {
