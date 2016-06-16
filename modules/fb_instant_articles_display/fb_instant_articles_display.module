@@ -60,13 +60,8 @@ function fb_instant_articles_display_fb_instant_articles_article_alter($instantA
  * @see fb_instant_articles_display_declare_entity_preprocess_hooks()
  */
 function fb_instant_articles_display_module_implements_alter(&$implementations, $hook) {
-  // Dynamically declare hook_preprocess_ENTITY() for each Entity type. This may
-  // be as good a place as any to call this function.
-  // @see module_implements()
-  fb_instant_articles_display_declare_entity_preprocess_hooks();
-
-  // We also ensure hook_fb_instant_articles_article_alter() runs first, so that
-  // other modules can override mappings made by this module by implementing
+  // Ensure hook_fb_instant_articles_article_alter() runs first, so that other
+  // modules can override mappings made by this module by implementing
   // hook_fb_instant_articles_article_alter().
   if ($hook != 'fb_instant_articles_article_alter') {
     return;
@@ -78,31 +73,26 @@ function fb_instant_articles_display_module_implements_alter(&$implementations, 
 }
 
 /**
- * Dynamically declare hook_preprocess_ENTITY() for each Entity type.
+ * Implements hook_preprocess().
  *
- * This adds a theme function to control the output of entity_view(), for every
- * entity type, when the view mode is 'fb_instant_article'. See
- * ctools_features_declare_functions() for precedent on dynamically declared
- * functions.
- *
- * See @link https://www.drupal.org/node/1443202#comment-5787770 this d.o issue comment about updating documention for hook_preprocess_ENTITY() in D8. @endlink
- *
- * @see hook_preprocess_HOOK()
- * @see fb_instant_articles_display_module_implements_alter()
- * @see fb_instant_articles_display_theme()
- * @see theme_entity__fb_instant_article()
+ * Add template suggestions for an entity based on view modes if they do not
+ * already exist.
  */
-function fb_instant_articles_display_declare_entity_preprocess_hooks() {
-  foreach (array_keys(entity_get_info()) as $entity_type) {
-    $code = '';
-    if (!function_exists("fb_instant_articles_display_preprocess_{$entity_type}")) {
-      $code .= 'function fb_instant_articles_display_preprocess_' . $entity_type . "(&" . '$vars' . ") {
-      if (isset(" . '$vars' . "['view_mode']) && " . '$vars' . "['view_mode'] === 'fb_instant_article') {
-        " . '$vars' . "['theme_hook_suggestions'][] = 'entity__fb_instant_article';
-      }
-    }";
+function fb_instant_articles_display_preprocess(&$variables, $hook) {
+  $entities = array_keys(entity_get_info());
+  if (isset($variables['elements']['#entity_type']) && in_array($variables['elements']['#entity_type'], $entities, TRUE)) {
+    // Sometimes a rendered entity is passed into another theme function, in
+    // which case do not process. Also account that #theme may be a hook
+    // suggestion itself. For example. #theme = 'comment__node_type' and
+    // $hook = 'comment'.
+    if ($variables['elements']['#theme'] != $hook && strpos($variables['elements']['#theme'], $hook . '__') !== 0) {
+      return;
     }
-    eval($code);
+
+    if (isset($variables['view_mode']) && $variables['view_mode'] === 'fb_instant_article') {
+      $suggestions = &$variables['theme_hook_suggestions'];
+      array_push($suggestions, 'entity__fb_instant_article');
+    }
   }
 }
 
@@ -273,7 +263,7 @@ function fb_instant_articles_display_get_article_entity_types() {
       'bundle' => $fia_entity_type->entity_bundle,
     );
   }
- 
+
   // Allow other modules to alter.
   drupal_alter('fb_instant_articles_display_entity_types', $entity_types);
   return $entity_types;
