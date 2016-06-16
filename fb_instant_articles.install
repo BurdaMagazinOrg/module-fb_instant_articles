@@ -19,6 +19,7 @@ function fb_instant_articles_uninstall() {
   variable_del('fb_instant_articles_analytics_embed_code');
   variable_del('fb_instant_articles_enable_logging');
   variable_del('fb_instant_articles_bypass_composer_manager');
+  variable_del('fb_instant_articles_canonical_url_override');
 }
 
 /**
