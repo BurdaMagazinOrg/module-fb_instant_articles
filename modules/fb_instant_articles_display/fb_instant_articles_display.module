@@ -44,10 +44,12 @@ function fb_instant_articles_display_settings() {
   $form['fb_instant_articles_display']['author']['fb_instant_articles_display_author'] = array(
     '#type' => 'textfield',
     '#title' => t('Facebook instant articles node author'),
-    '#description' => 'Use token value for node author e.g [node:author] ' . $token_listing_link,
+    '#description' => 'keep blank to use the entity author, add a static string, or for dynamic strings enable the Token module e.g [node:author] ' . $token_listing_link,
     '#default_value' => variable_get('fb_instant_articles_display_author', '[node:author]'),
     '#size' => 60,
   );
+
+
 
   return system_settings_form($form);
 }

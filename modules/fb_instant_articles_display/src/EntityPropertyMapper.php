@@ -109,16 +109,26 @@ class EntityPropertyMapper {
       );
     }
 
+    // user token or static string for author name
+    $author = '';
+    if (module_exists('Token')) {
+      $display_author = variable_get('fb_instant_articles_display_author', '[node:author]');
+      $author = token_replace($author_token, array('node' => $node));
+    } else {
+      $author = variable_get('fb_instant_articles_display_author', '');
+    }
     // Default the article author to the username.
     if (isset($this->entity->uid)) {
-     $author_token = variable_get('fb_instant_articles_display_author', '[node:author]');
-     $author = token_replace($author_token, array('node' => $node));
-      if ($author) {
-        $header->addAuthor(
-          Author::create()
-            ->withName($author)
-        );
+      if (empty($author)) {
+        $display_author = user_load($this->entity->uid);
+        $author = $display_author->name;
       }
+    }
+    if ($author) {
+      $header->addAuthor(
+        Author::create()
+          ->withName($author)
+      );
     }
 
     $this->instantArticle->withHeader($header);
