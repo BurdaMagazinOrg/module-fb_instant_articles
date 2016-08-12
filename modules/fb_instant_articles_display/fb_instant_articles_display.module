@@ -85,8 +85,11 @@ function fb_instant_articles_display_preprocess(&$variables, $hook) {
     // which case do not process. Also account that #theme may be a hook
     // suggestion itself. For example. #theme = 'comment__node_type' and
     // $hook = 'comment'.
-    if ($variables['elements']['#theme'] != $hook && strpos($variables['elements']['#theme'], $hook . '__') !== 0) {
-      return;
+    $theme_keys = is_string($variables['elements']['#theme']) ? array($variables['elements']['#theme']) : $variables['elements']['#theme'];
+    foreach ($theme_keys as $theme) {
+      if ($theme != $hook && strpos($theme, $hook . '__') !== 0) {
+        return;
+      }
     }
 
     if (isset($variables['view_mode']) && $variables['view_mode'] === 'fb_instant_article') {
