@@ -55,6 +55,7 @@
       <meta charset="utf-8">
       <link rel="canonical" href="{{ options.link.url }}">
       <meta property="op:markup_version" content="v1.0">
+      {% if options.automatic_ad %} <meta property="fb:use_automatic_ad_placement" content="true"> {% endif %}
     </head>
     <body>
     <article>
@@ -69,6 +70,13 @@
         <time class="op-published" datetime="{{ options.created|date("Y-d-m\TH:i:s\Z") }}">{{ options.created|date("F jS, g:i A") }}</time>
         <!-- The date and time when your article was last updated {{  options.modified }} -->
         <time class="op-modified" datetime="{{ options.modified|date("Y-d-m\TH:i:s\Z") }}">{{ options.modified|date("F jS, g:i A") }}</time>
+
+        {% if options.automatic_ad %}
+          <!-- Ad to be automatically placed throughout the article -->
+          <figure class="op-ad">
+            {{ options.automatic_ad }}
+          </figure>
+        {% endif %}
 
         {% if kicker -%}
           <!-- A kicker for your article -->
