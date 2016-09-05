@@ -44,7 +44,7 @@
   <title>{{ options.title }}</title>
   <link>{{  options.link.url }}</link>
   <guid>{{ options.guid }}</guid>
-  <pubDate>{{ options.created|date("Y-d-m\TH:i:s\Z") }}</pubDate>
+  <pubDate>{{ options.created|date("Y-d-m\\TH:i:sT") }}</pubDate>
   <author>{{  options.author }}</author>
   <description>{{ options.kicker }}</description>
   <content:encoded>
@@ -67,9 +67,9 @@
         {% endif %}
 
         <!-- The date and time when your article was originally published {{ options.created }} -->
-        <time class="op-published" datetime="{{ options.created|date("Y-d-m\TH:i:s\Z") }}">{{ options.created|date("F jS, g:i A") }}</time>
+        <time class="op-published" datetime="{{ options.created|date("Y-d-m\\TH:i:sT") }}">{{ options.created|date("F jS, g:i A") }}</time>
         <!-- The date and time when your article was last updated {{  options.modified }} -->
-        <time class="op-modified" datetime="{{ options.modified|date("Y-d-m\TH:i:s\Z") }}">{{ options.modified|date("F jS, g:i A") }}</time>
+        <time class="op-modified" datetime="{{ options.modified|date("Y-d-m\\TH:i:sT") }}">{{ options.modified|date("F jS, g:i A") }}</time>
 
         {% if options.automatic_ad %}
           <!-- Ad to be automatically placed throughout the article -->
