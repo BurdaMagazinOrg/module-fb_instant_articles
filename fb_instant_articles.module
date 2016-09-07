@@ -76,3 +76,14 @@ function fb_instant_articles_preprocess_views_view_row_fia(&$variables) {
 
   $variables['attributes'] = new Attribute($item);
 }
+
+/**
+ * Implements hook_preprocess_views_view_rss().
+ */
+function fb_instant_articles_preprocess_views_view_rss(&$variables) {
+  // Drupal 8.1.8 uses \DOMDocument() to load the xml, which throws a warning,
+  // because the content namespace doesn't exist.
+  /** @var Drupal\Core\Template\Attribute $namespaces */
+  $namespaces = $variables['namespaces'];
+  $namespaces->offsetSet('xmlns:content', 'http://purl.org/rss/1.0/modules/content/');
+}
