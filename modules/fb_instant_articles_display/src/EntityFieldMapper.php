@@ -416,7 +416,7 @@ class EntityFieldMapper {
       // Before loading into DOMDocument, setup for success by taking care of
       // encoding issues.  Since we're dealing with HTML snippets, it will
       // always be missing a <meta charset="utf-8" /> or equivalent.
-      $output = '<!doctype html><html><head><meta charset="utf-8" /></head><body>' . $output . '</body></html>';
+      $output = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<!doctype html><html><head><meta charset="utf-8" /></head><body>' . $output . '</body></html>';
       @$document->loadHTML(decode_entities($output));
       $transformer->transform($body, $document);
 
