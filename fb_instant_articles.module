@@ -1,430 +1,510 @@
 <?php
 
-/**
- * @file
- * Hook implementations for Facebook Instant Articles Base module.
- */
+  /**
+   * @file
+   * Hook implementations for Facebook Instant Articles Base module.
+   */
 
-define('FB_INSTANT_ARTICLES_AD_TYPE_NONE', 'none');
-define('FB_INSTANT_ARTICLES_AD_TYPE_FBAN', 'fban');
-define('FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL', 'source_url');
-define('FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE', 'embed_code');
+  define('FB_INSTANT_ARTICLES_AD_TYPE_NONE', 'none');
+  define('FB_INSTANT_ARTICLES_AD_TYPE_FBAN', 'fban');
+  define('FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL', 'source_url');
+  define('FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE', 'embed_code');
 
-/**
- * Get an array of possible ad types and their descriptive names
- **/
-function fb_instant_articles_get_ad_types() {
-  return array(
-    FB_INSTANT_ARTICLES_AD_TYPE_NONE => t('None'),
-    FB_INSTANT_ARTICLES_AD_TYPE_FBAN => t('Facebook Audience Network'),
-    FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL => t('Source URL'),
-    FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE => t('Embed Code'),
-  );
-}
+  /**
+   * Get an array of possible ad types and their descriptive names
+   **/
+  function fb_instant_articles_get_ad_types() {
+    return array(
+      FB_INSTANT_ARTICLES_AD_TYPE_NONE => t('None'),
+      FB_INSTANT_ARTICLES_AD_TYPE_FBAN => t('Facebook Audience Network'),
+      FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL => t('Source URL'),
+      FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE => t('Embed Code'),
+    );
+  }
 
-/**
- * Implements hook_menu().
- */
-function fb_instant_articles_menu() {
-  $items['admin/config/services/fb-instant-articles'] = array(
-    'title' => 'Facebook Instant Articles',
-    'description' => 'Settings related to Facebook Instant Articles.',
-    'page callback' => 'system_admin_menu_block_page',
-    'access arguments' => array('access administration pages'),
-    'file' => 'system.admin.inc',
-    'file path' => drupal_get_path('module', 'system'),
-  );
+  /**
+   * Implements hook_menu().
+   */
+  function fb_instant_articles_menu() {
+    $items['admin/config/services/fb-instant-articles'] = array(
+      'title' => 'Facebook Instant Articles',
+      'description' => 'Settings related to Facebook Instant Articles.',
+      'page callback' => 'system_admin_menu_block_page',
+      'access arguments' => array('access administration pages'),
+      'file' => 'system.admin.inc',
+      'file path' => drupal_get_path('module', 'system'),
+    );
 
-  $items['admin/config/services/fb-instant-articles/settings'] = array(
-    'title' => 'Facebook Instant Articles Base settings',
-    'description' => 'Base settings for Facebook Instant Articles.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('fb_instant_articles_settings'),
-    'access arguments' => array('administer fb_instant_articles'),
-    'file' => 'includes/admin.inc',
-    'weight' => -10,
-  );
+    $items['admin/config/services/fb-instant-articles/settings'] = array(
+      'title' => 'Facebook Instant Articles Base settings',
+      'description' => 'Base settings for Facebook Instant Articles.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('fb_instant_articles_settings'),
+      'access arguments' => array('administer fb_instant_articles'),
+      'file' => 'includes/admin.inc',
+      'weight' => -10,
+    );
 
-  return $items;
-}
+    return $items;
+  }
 
-/**
- * Implements hook_permission().
- */
-function fb_instant_articles_permission() {
-  $permissions = array();
+  /**
+   * Implements hook_permission().
+   */
+  function fb_instant_articles_permission() {
+    $permissions = array();
 
-  $permissions['administer fb_instant_articles'] = array(
-    'title' => t('Administer Facebook Instant Articles'),
-  );
-  return $permissions;
-}
+    $permissions['administer fb_instant_articles'] = array(
+      'title' => t('Administer Facebook Instant Articles'),
+    );
+    return $permissions;
+  }
 
-/**
- * Implements hook_help().
- */
-function fb_instant_articles_help($path, $arg) {
-  switch ($path) {
-    case 'admin/help#fb_instant_articles':
-      $filepath = dirname(__FILE__) . '/README.md';
-      if (file_exists($filepath)) {
-        $string = file_get_contents($filepath);
-        if ($processed = fb_instant_articles_help_markdown($string)) {
-          return $processed;
+  /**
+   * Implements hook_help().
+   */
+  function fb_instant_articles_help($path, $arg) {
+    switch ($path) {
+      case 'admin/help#fb_instant_articles':
+        $filepath = dirname(__FILE__) . '/README.md';
+        if (file_exists($filepath)) {
+          $string = file_get_contents($filepath);
+          if ($processed = fb_instant_articles_help_markdown($string)) {
+            return $processed;
+          }
+          return '<pre>' . $string . '</pre>';
         }
-        return '<pre>' . $string . '</pre>';
-      }
-      break;
-    case 'admin/config/services/fb-instant-articles':
-    case 'admin/config/services/fb-instant-articles/settings':
-      $page_id = (variable_get('fb_instant_articles_page_id', ''));
-      $output = '';
-      $output .= '<h2>' . t('Setup') . '</h2>';
-      $output .= '<p>' . t('Once you\'ve activated this Drupal module, set up your Instant Articles and submit them to Facebook for a one-time review. The review is required before you can begin publishing. Follow these steps to get started:') . '</p>';
-      $output .= '<ol>';
-      $output .= '  <li>' . t('<a href="@sign_up_url" target="_blank">Sign up</a> for Instant Articles, if you haven\'t already, and enabled the same Facebook Page you have selected.', array('@sign_up_url' => 'https://www.facebook.com/instant_articles/signup')) . '</li>';
-      $output .= '  <li>' . t('Claim the URL you will use to publish articles.</b> Right now, we think the URL for this page is: %url. ', array('%url' => $_SERVER['HTTP_HOST']));
-      if ($page_id != '') {
-        $claim_url = 'https://www.facebook.com/'. $page_id .'/settings/?tab=instant_articles#URL';
-        $output .= t('<a href="@claim_url" target="_blank">Claim your URL here.</a>', array('@claim_url' => $claim_url));
-      }
-      $output .= '</li>';
-      $output .= '  <li>' . t('Install the Pages Manager App to preview your articles and styles on <a href="@ios_url" target="_blank">iOS</a> or <a href="@android_url" target="_blank">Android</a>.', array('@ios_url' => 'http://itunes.apple.com/app/facebook-pages-manager/id514643583?ls=1&mt=8&ign-mscache=1', '@android_url' => 'https://play.google.com/store/apps/details?id=com.facebook.pages.app')) . '</li>';
-      $output .= '  <li>' . t('Create a style template for your articles using the <a href="@style_url" target="_blank">Style Editor</a>. Be sure to provide the name of the template you want to use in the Module Configuration settings below.', array('@style_url' => 'https://developers.facebook.com/docs/instant-articles/guides/design#style')) . '</li>';
-      $output .= '  <li>' . t('[Optional] Enable Audience Network, if you choose. Learn more about <a href="@audience_url" target="_blank">Audience Network</a> for Instant Articles and <a href="@sign_up_url" target="_blank">sign up here</a>.', array('@audience_url' => 'https://fbinstantarticles.files.wordpress.com/2016/03/audience-network_wp_instant-articles-2-2-web_self-serve.pdf', '@sign_up_url' => '')) . '</li>';
-      $output .= '  <li>' . t('[Optional] Set up your ads and analytics, including Audience Network, in the Configuration area, below.') . '</li>';
-      if ($page_id != '') {
-        $article_review_url = 'https://www.facebook.com/'. $page_id .'/settings/?tab=instant_articles#Setup-Step2';
-        $output .= '  <li>' . t('<a href="@article_review_url" target="_blank">Submit your articles</a> for review.', array('@article_review_url' => $article_review_url)) . '</li>';
-      } else {
-        $output .= '  <li>' . t('Submit your articles for review.') . '</li>';
-      }
-      $output .= '</ol>';
-      $output .= '<p>' . t('Other Resources:') . '</p>';
-      $output .= '<ol>';
-      $output .= '  <li>' . t('Read the <a href="@docs_url" target="_blank">documentation</a> to answer additional questions you might have about Instant Articles.', array('@docs_url' => 'https://developers.facebook.com/docs/instant-articles')) . '</li>';
-      $output .= '  <li>' . t('Check out the <a href="@blog_url" target="_blank">Instant Articles blog</a> and sign up to receive notifications of important updates.', array('@blog_url' => 'https://developers.facebook.com/ia/blog/')) . '</li>';
-      if ($page_id != '') {
-        $tools_url = 'https://www.facebook.com/'. $page_id .'/settings/?tab=instant_articles';
-        $roles_url = 'https://www.facebook.com/'. $page_id .'/settings/?tab=admin_roles';
-        $output .= '  <li>' . t('To give other members of your team access to the <a href="@tools_url" target="_blank">Instant Articles tools</a>, assign them <a href="@roles_url" target="_blank">page roles here</a>.', array('@tools_url' => $tools_url, '@roles_url' => $roles_url)) . '</li>';
-      } else {
-        $output .= '  <li>' . t('To give other members of your team access to the Instant Articles tools, assign them page roles.') . '</li>';
-      }
-      $output .= '</ol>';
-      return $output;
-      break;
-  }
-}
-
-/**
- * Adds markdown module support for displaying README files as Drupal help text.
- *
- * @param string $string
- *   The unprocessed README file contents string.
- *
- * @return string|false
- *   A string containing the markdown filtered text, or FALSE.
- *
- * @see fb_instant_articles_help()
- */
-function fb_instant_articles_help_markdown($string) {
-  if (module_exists('markdown')) {
-    $filters = module_invoke('markdown', 'filter_info');
-    $info = $filters['filter_markdown'];
-    if (function_exists($info['process callback'])) {
-      return $info['process callback']($string, NULL);
+        break;
+      case 'admin/config/services/fb-instant-articles':
+      case 'admin/config/services/fb-instant-articles/settings':
+        $page_id = (variable_get('fb_instant_articles_page_id', ''));
+        $output = '';
+        $output .= '<h2>' . t('Setup') . '</h2>';
+        $output .= '<p>' . t('Once you\'ve activated this Drupal module, set up your Instant Articles and submit them to Facebook for a one-time review. The review is required before you can begin publishing. Follow these steps to get started:') . '</p>';
+        $output .= '<ol>';
+        $output .= '  <li>' . t('<a href="@sign_up_url" target="_blank">Sign up</a> for Instant Articles, if you haven\'t already, and enabled the same Facebook Page you have selected.', array('@sign_up_url' => 'https://www.facebook.com/instant_articles/signup')) . '</li>';
+        $output .= '  <li>' . t('Claim the URL you will use to publish articles.</b> Right now, we think the URL for this page is: %url. ', array('%url' => $_SERVER['HTTP_HOST']));
+        if ($page_id != '') {
+          $claim_url = 'https://www.facebook.com/'. $page_id .'/settings/?tab=instant_articles#URL';
+          $output .= t('<a href="@claim_url" target="_blank">Claim your URL here.</a>', array('@claim_url' => $claim_url));
+        }
+        $output .= '</li>';
+        $output .= '  <li>' . t('Install the Pages Manager App to preview your articles and styles on <a href="@ios_url" target="_blank">iOS</a> or <a href="@android_url" target="_blank">Android</a>.', array('@ios_url' => 'http://itunes.apple.com/app/facebook-pages-manager/id514643583?ls=1&mt=8&ign-mscache=1', '@android_url' => 'https://play.google.com/store/apps/details?id=com.facebook.pages.app')) . '</li>';
+        $output .= '  <li>' . t('Create a style template for your articles using the <a href="@style_url" target="_blank">Style Editor</a>. Be sure to provide the name of the template you want to use in the Module Configuration settings below.', array('@style_url' => 'https://developers.facebook.com/docs/instant-articles/guides/design#style')) . '</li>';
+        $output .= '  <li>' . t('[Optional] Enable Audience Network, if you choose. Learn more about <a href="@audience_url" target="_blank">Audience Network</a> for Instant Articles and <a href="@sign_up_url" target="_blank">sign up here</a>.', array('@audience_url' => 'https://fbinstantarticles.files.wordpress.com/2016/03/audience-network_wp_instant-articles-2-2-web_self-serve.pdf', '@sign_up_url' => '')) . '</li>';
+        $output .= '  <li>' . t('[Optional] Set up your ads and analytics, including Audience Network, in the Configuration area, below.') . '</li>';
+        if ($page_id != '') {
+          $article_review_url = 'https://www.facebook.com/'. $page_id .'/settings/?tab=instant_articles#Setup-Step2';
+          $output .= '  <li>' . t('<a href="@article_review_url" target="_blank">Submit your articles</a> for review.', array('@article_review_url' => $article_review_url)) . '</li>';
+        } else {
+          $output .= '  <li>' . t('Submit your articles for review.') . '</li>';
+        }
+        $output .= '</ol>';
+        $output .= '<p>' . t('Other Resources:') . '</p>';
+        $output .= '<ol>';
+        $output .= '  <li>' . t('Read the <a href="@docs_url" target="_blank">documentation</a> to answer additional questions you might have about Instant Articles.', array('@docs_url' => 'https://developers.facebook.com/docs/instant-articles')) . '</li>';
+        $output .= '  <li>' . t('Check out the <a href="@blog_url" target="_blank">Instant Articles blog</a> and sign up to receive notifications of important updates.', array('@blog_url' => 'https://developers.facebook.com/ia/blog/')) . '</li>';
+        if ($page_id != '') {
+          $tools_url = 'https://www.facebook.com/'. $page_id .'/settings/?tab=instant_articles';
+          $roles_url = 'https://www.facebook.com/'. $page_id .'/settings/?tab=admin_roles';
+          $output .= '  <li>' . t('To give other members of your team access to the <a href="@tools_url" target="_blank">Instant Articles tools</a>, assign them <a href="@roles_url" target="_blank">page roles here</a>.', array('@tools_url' => $tools_url, '@roles_url' => $roles_url)) . '</li>';
+        } else {
+          $output .= '  <li>' . t('To give other members of your team access to the Instant Articles tools, assign them page roles.') . '</li>';
+        }
+        $output .= '</ol>';
+        return $output;
+        break;
     }
-    return FALSE;
   }
-}
 
-/**
- * Implements hook_html_head_alter().
- */
-function fb_instant_articles_html_head_alter(&$head_elements) {
-  if (drupal_is_front_page() && $page_id = variable_get('fb_instant_articles_page_id', NULL)) {
-    $head_elements['fb_instant_articles_page'] = array(
-      '#type' => 'html_tag',
-      '#tag' => 'meta',
-      '#attributes' => array(
-        'property' => 'fb:pages',
-        'content' => $page_id,
+  /**
+   * Adds markdown module support for displaying README files as Drupal help text.
+   *
+   * @param string $string
+   *   The unprocessed README file contents string.
+   *
+   * @return string|false
+   *   A string containing the markdown filtered text, or FALSE.
+   *
+   * @see fb_instant_articles_help()
+   */
+  function fb_instant_articles_help_markdown($string) {
+    if (module_exists('markdown')) {
+      $filters = module_invoke('markdown', 'filter_info');
+      $info = $filters['filter_markdown'];
+      if (function_exists($info['process callback'])) {
+        return $info['process callback']($string, NULL);
+      }
+      return FALSE;
+    }
+  }
+
+  /**
+   * Implements hook_html_head_alter().
+   */
+  function fb_instant_articles_html_head_alter(&$head_elements) {
+    if (drupal_is_front_page() && $page_id = variable_get('fb_instant_articles_page_id', NULL)) {
+      $head_elements['fb_instant_articles_page'] = array(
+        '#type' => 'html_tag',
+        '#tag' => 'meta',
+        '#attributes' => array(
+          'property' => 'fb:pages',
+          'content' => $page_id,
+        ),
+      );
+    }
+  }
+
+  /**
+   * Implements hook_init().
+   *
+   * @todo Update to use a custom DrupalFBInstantArticlesLogger once
+   *   @link https://github.com/facebook/facebook-instant-articles-sdk-php/issues/14 this SDK issue @endlink is in resolved.
+   */
+  function fb_instant_articles_init() {
+    $enable_transformer_logging = variable_get('fb_instant_articles_enable_logging');
+    $appender = array(
+      'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
+      'layout' => array(
+        'class' => 'LoggerLayoutSimple'
+      ),
+    );
+    $configuration = array(
+      'rootLogger' => array(
+        'appenders' => array(
+          'facebook-instantarticles-transformer',
+          'facebook-instantarticles-client',
+        ),
+      ),
+      'appenders' => array(
+        'facebook-instantarticles-transformer' => $appender,
+        'facebook-instantarticles-client' => $appender,
+      ),
+    );
+    \Logger::configure($configuration);
+  }
+
+  /**
+   * Implements hook_fb_instant_articles_transformer_rules().
+   */
+  function fb_instant_articles_fb_instant_articles_transformer_rules() {
+    return array(
+      array(
+        'class' => 'TextNodeRule',
+      ),
+      array(
+        'class' => 'PassThroughRule',
+        'selector' => 'html',
+      ),
+      array(
+        'class' => 'PassThroughRule',
+        'selector' => 'head',
+      ),
+      array(
+        'class' => 'PassThroughRule',
+        'selector' => 'body',
+      ),
+      array(
+        'class' => 'PassThroughRule',
+        'selector' => 'code',
+      ),
+      array(
+        'class' => 'PassThroughRule',
+        'selector' => 'del',
+      ),
+      array(
+        'class' => 'PassThroughRule',
+        'selector' => 'span',
+      ),
+      array(
+        'class' => 'ParagraphRule',
+        'selector' => 'div',
+      ),
+      array(
+        'class' => 'ParagraphRule',
+        'selector' => 'p',
+      ),
+      array(
+        'class' => 'LineBreakRule',
+        'selector' => 'br',
+      ),
+      array(
+        'class' => 'AnchorRule',
+        'selector' => 'a',
+        'properties' => array(
+          'anchor.href' => array(
+            'type' => 'string',
+            'selector' => 'a',
+            'attribute' => 'href',
+          ),
+          'anchor.rel' => array(
+            'type' => 'string',
+            'selector' => 'a',
+            'attribute' => 'rel',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'BoldRule',
+        'selector' => 'b',
+      ),
+      array(
+        'class' => 'BoldRule',
+        'selector' => 'strong',
+      ),
+      array(
+        'class' => 'ItalicRule',
+        'selector' => 'i',
+      ),
+      array(
+        'class' => 'ItalicRule',
+        'selector' => 'em',
+      ),
+      array(
+        'class' => 'BlockquoteRule',
+        'selector' => 'blockquote',
+      ),
+      array(
+        'class' => 'PassThroughRule',
+        'selector' => 'blockquote p',
+      ),
+      array(
+        'class' => 'ImageInsideParagraphRule',
+        'selector' => 'img',
+        'properties' => array(
+          'image.url' => array(
+            'type' => 'string',
+            'selector' => 'img',
+            'attribute' => 'src',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'ImageRule',
+        'selector' => 'img',
+        'properties' => array(
+          'image.url' => array(
+            'type' => 'string',
+            'selector' => 'img',
+            'attribute' => 'src',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'ListItemRule',
+        'selector' => 'li',
+      ),
+      array(
+        'class' => 'ListElementRule',
+        'selector' => 'ul',
+      ),
+      array(
+        'class' => 'ListElementRule',
+        'selector' => 'ol',
+      ),
+      array(
+        'class' => 'BlockquoteRule',
+        'selector' => 'blockquote',
+      ),
+      array(
+        'class' => 'H1Rule',
+        'selector' => 'h1',
+        'properties' => array(
+          'h1.class' => array(
+            'type' => 'string',
+            'selector' => 'link',
+            'attribute' => 'class',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'H1Rule',
+        'selector' => 'title',
+      ),
+      array(
+        'class' => 'H2Rule',
+        'selector' => 'h2',
+        'properties' => array(
+          'h2.class' => array(
+            'type' => 'string',
+            'selector' => 'link',
+            'attribute' => 'class',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'H2Rule',
+        'selector' => 'h3,h4,h5,h6',
+      ),
+      array(
+        'class' => 'InteractiveRule',
+        'selector' => 'blockquote.instagram-media',
+        'properties' => array(
+          'interactive.iframe' => array(
+            'type' => 'multiple',
+            'children' => array(
+              array(
+                'type' => 'element',
+                'selector' => 'blockquote',
+              ),
+              array(
+                'type' => 'next-sibling-element-of',
+                'selector' => 'blockquote',
+              ),
+            ),
+          ),
+        ),
+      ),
+      array(
+        'class' => 'InteractiveRule',
+        'selector' => 'iframe',
+        'properties' => array(
+          'interactive.url' => array(
+            'type' => 'string',
+            'selector' => 'iframe',
+            'attribute' => 'src',
+          ),
+          'interactive.width' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'width',
+          ),
+          'interactive.height' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'height',
+          ),
+          'interactive.iframe' => array(
+            'type' => 'children',
+            'selector' => 'iframe',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'InteractiveRule',
+        'selector' => 'div.embed',
+        'properties' => array(
+          'interactive.iframe' => array(
+            'type' => 'children',
+            'selector' => 'div.embed',
+          ),
+          'interactive.height' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'height',
+          ),
+          'interactive.width' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'width',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'InteractiveRule',
+        'selector' => 'div.interactive',
+        'properties' => array(
+          'interactive.iframe' => array(
+            'type' => 'children',
+            'selector' => 'div.interactive',
+          ),
+          'interactive.height' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'height',
+          ),
+          'interactive.width' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'width',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'InteractiveRule',
+        'selector' => "//div[@class='embed' and iframe]",
+        'properties' => array(
+          'interactive.url' => array(
+            'type' => 'string',
+            'selector' => 'iframe',
+            'attribute' => 'src',
+          ),
+          'interactive.iframe' => array(
+            'type' => 'children',
+            'selector' => 'iframe',
+            'attribute' => 'src',
+          ),
+          'interactive.width' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'width',
+          ),
+          'interactive.height' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'height',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'InteractiveRule',
+        'selector' => "//div[@class='interactive' and iframe]",
+        'properties' => array(
+          'interactive.url' => array(
+            'type' => 'string',
+            'selector' => 'iframe',
+            'attribute' => 'src',
+          ),
+          'interactive.iframe' => array(
+            'type' => 'children',
+            'selector' => 'iframe',
+          ),
+          'interactive.height' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'height',
+          ),
+          'interactive.width' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'width',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'InteractiveRule',
+        'selector' => 'table',
+        'properties' => array(
+          'interactive.iframe' => array(
+            'type' => 'element',
+            'selector' => 'table',
+          ),
+          'interactive.height' => array(
+            'type' => 'int',
+            'selector' => 'table',
+            'attribute' => 'height',
+          ),
+          'interactive.width' => array(
+            'type' => 'int',
+            'selector' => 'iframe',
+            'attribute' => 'width',
+          ),
+        ),
+      ),
+      array(
+        'class' => 'ImageRule',
+        'selector' => '//p[a[img]]|//a[img]',
+        'properties' => array(
+          'image.url' => array(
+            'type' => 'string',
+            'selector' => 'img',
+            'attribute' => 'src',
+          ),
+          'image.caption' => array(
+            'type' => 'element',
+            'selector' => 'img[@alt]',
+          ),
+        ),
       ),
     );
   }
-}
-
-/**
- * Implements hook_init().
- *
- * @todo Update to use a custom DrupalFBInstantArticlesLogger once
- *   @link https://github.com/facebook/facebook-instant-articles-sdk-php/issues/14 this SDK issue @endlink is in resolved.
- */
-function fb_instant_articles_init() {
-  $enable_transformer_logging = variable_get('fb_instant_articles_enable_logging');
-  $appender = array(
-    'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
-    'layout' => array(
-      'class' => 'LoggerLayoutSimple'
-    ),
-  );
-  $configuration = array(
-    'rootLogger' => array(
-      'appenders' => array(
-        'facebook-instantarticles-transformer',
-        'facebook-instantarticles-client',
-      ),
-    ),
-    'appenders' => array(
-      'facebook-instantarticles-transformer' => $appender,
-      'facebook-instantarticles-client' => $appender,
-    ),
-  );
-  \Logger::configure($configuration);
-}
-
-/**
- * Implements hook_fb_instant_articles_transformer_rules().
- */
-function fb_instant_articles_fb_instant_articles_transformer_rules() {
-  return array(
-    array(
-      'class' => 'TextNodeRule',
-    ),
-    array(
-      'class' => 'PassThroughRule',
-      'selector' => 'html',
-    ),
-    array(
-      'class' => 'PassThroughRule',
-      'selector' => 'head',
-    ),
-    array(
-      'class' => 'PassThroughRule',
-      'selector' => 'body',
-    ),
-    array(
-      'class' => 'PassThroughRule',
-      'selector' => 'code',
-    ),
-    array(
-      'class' => 'PassThroughRule',
-      'selector' => 'del',
-    ),
-    array(
-      'class' => 'PassThroughRule',
-      'selector' => 'span',
-    ),
-    array(
-      'class' => 'ParagraphRule',
-      'selector' => 'div',
-    ),
-    array(
-      'class' => 'ParagraphRule',
-      'selector' => 'p',
-    ),
-    array(
-      'class' => 'LineBreakRule',
-      'selector' => 'br',
-    ),
-    array(
-      'class' => 'AnchorRule',
-      'selector' => 'a',
-      'properties' => array(
-        'anchor.href' => array(
-          'type' => 'string',
-          'selector' => 'a',
-          'attribute' => 'href',
-        ),
-        'anchor.rel' => array(
-          'type' => 'string',
-          'selector' => 'a',
-          'attribute' => 'rel',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'BoldRule',
-      'selector' => 'b',
-    ),
-    array(
-      'class' => 'BoldRule',
-      'selector' => 'strong',
-    ),
-    array(
-      'class' => 'ItalicRule',
-      'selector' => 'i',
-    ),
-    array(
-      'class' => 'ItalicRule',
-      'selector' => 'em',
-    ),
-    array(
-      'class' => 'BlockquoteRule',
-      'selector' => 'blockquote',
-    ),
-    array(
-      'class' => 'InteractiveRule',
-      'selector' => 'dl',
-      'properties' => array(
-        'interactive.iframe' => array(
-          'type' => 'element',
-          'selector' => 'dl',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'ImageRule',
-      'selector' => '//p[img]',
-      'properties' => array(
-        'image.url' => array(
-          'type' => 'string',
-          'selector' => 'img',
-          'attribute' => 'src',
-        ),
-        'image.caption' => array(
-          'type' => 'element',
-          'selector' => 'img',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'ImageRule',
-      'selector' => 'img',
-      'properties' => array(
-        'image.url' => array(
-          'type' => 'string',
-          'selector' => 'img',
-          'attribute' => 'src',
-        ),
-        'image.caption' => array(
-          'type' => 'element',
-          'selector' => 'img[@alt]',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'CaptionRule',
-      'selector' => 'img',
-      'properties' => array(
-        'caption.default' => array(
-          'type' => 'string',
-          'selector' => 'img',
-          'attribute' => 'alt',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'ListItemRule',
-      'selector' => 'li',
-    ),
-    array(
-      'class' => 'ListElementRule',
-      'selector' => 'ul',
-    ),
-    array(
-      'class' => 'ListElementRule',
-      'selector' => 'ol',
-    ),
-    array(
-      'class' => 'H1Rule',
-      'selector' => 'h1',
-      'properties' => array(
-        'h1.class' => array(
-          'type' => 'string',
-          'selector' => 'link',
-          'attribute' => 'class',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'H1Rule',
-      'selector' => 'title',
-    ),
-    array(
-      'class' => 'H2Rule',
-      'selector' => 'h2',
-      'properties' => array(
-        'h2.class' => array(
-          'type' => 'string',
-          'selector' => 'link',
-          'attribute' => 'class',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'SocialEmbedRule',
-      'selector' => 'iframe',
-      'properties' => array(
-        'socialembed.url' => array(
-          'type' => 'string',
-          'selector' => 'iframe',
-          'attribute' => 'src',
-        ),
-        'socialembed.iframe' => array(
-          'type' => 'children',
-          'selector' => 'iframe',
-        ),
-        'socialembed.caption' => array(
-          'type' => 'element',
-          'selector' => 'figcaption',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'SocialEmbedRule',
-      'selector' => '//p[iframe]',
-      'properties' => array(
-        'socialembed.url' => array(
-          'type' => 'string',
-          'selector' => 'iframe',
-          'attribute' => 'src',
-        ),
-        'socialembed.iframe' => array(
-          'type' => 'children',
-          'selector' => 'iframe',
-        ),
-        'socialembed.caption' => array(
-          'type' => 'element',
-          'selector' => 'figcaption',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'SocialEmbedRule',
-      'selector' => 'div.embed',
-      'properties' => array(
-        'socialembed.iframe' => array(
-          'type' => 'children',
-          'selector' => 'div.embed',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'SocialEmbedRule',
-      'selector' => 'div.oembed',
-      'properties' => array(
-        'socialembed.iframe' => array(
-          'type' => 'children',
-          'selector' => 'div.oembed',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'ImageRule',
-      'selector' => '//p[a[img]]|//a[img]',
-      'properties' => array(
-        'image.url' => array(
-          'type' => 'string',
-          'selector' => 'img',
-          'attribute' => 'src',
-        ),
-        'image.caption' => array(
-          'type' => 'element',
-          'selector' => 'img[@alt]',
-        ),
-      ),
-    ),
-  );
-}
