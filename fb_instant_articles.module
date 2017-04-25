@@ -50,7 +50,7 @@ function fb_instant_articles_init() {
   $appender = array(
     'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
     'layout' => array(
-      'class' => 'LoggerLayoutSimple'
+      'class' => 'LoggerLayoutSimple',
     ),
   );
   $configuration = array(
