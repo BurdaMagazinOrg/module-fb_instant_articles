@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains Drupal\fb_instant_articles\Plugin\views\row\RssFields.
+ * Contains Drupal\fb_instant_articles_views\Plugin\views\row\RssFields.
  */
 
-namespace Drupal\fb_instant_articles\Plugin\views\row;
+namespace Drupal\fb_instant_articles_views\Plugin\views\row;
 
 use \Drupal\views\Plugin\views\row\EntityRow;
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -17,7 +17,7 @@ use Drupal\Core\Language\LanguageManagerInterface;
  * @ViewsRow(
  *   id = "fiafields",
  *   title = @Translation("FIA Fields"),
- *   help = @Translation("Display fields as FIA (facebook instant articles) items."),
+ *   help = @Translation("Display fields as Facebook Instant Articles items."),
  *   theme = "views_view_row_fia",
  *   display_types = {"feed"}
  * )
@@ -36,7 +36,7 @@ class FiaFields extends EntityRow {
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManagerInterface $entity_manager, LanguageManagerInterface $language_manager) {
     $configuration['entity_type'] = 'node';
     parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_manager, $language_manager);
-    $this->options['view_mode'] = 'fb_instant_articles_rss';
+    $this->options['view_mode'] = 'fb_instant_articles_views_rss';
   }
 
 

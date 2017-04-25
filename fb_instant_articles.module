@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Template\Attribute;
 
 /**
  * Implements hook_help().
@@ -17,7 +16,7 @@ function fb_instant_articles_help($route_name, RouteMatchInterface $route_match)
     case 'help.page.fb_instant_articles':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('FB Instant articles RSS feed generator for integration into the FB IA program') . '</p>';
+      $output .= '<p>' . t('Base module for Facebook Instant Articles.') . '</p>';
       return $output;
 
     default:
@@ -25,54 +24,46 @@ function fb_instant_articles_help($route_name, RouteMatchInterface $route_match)
 }
 
 /**
- * Implements hook_page_attachments_alter
- *
- * @param array $page
- *   page render array
+ * Implements hook_page_attachments_alter().
  */
 function fb_instant_articles_page_attachments_alter(array &$page) {
-
-  /**
-   * @var Drupal\Core\Config\ImmutableConfig $config
-   *   The config entity for fb_instant_articles
-   */
   $config = \Drupal::config('fb_instant_articles.adminconfig');
+  $path_matcher = \Drupal::service('path.matcher');
 
-  if ($config instanceof Drupal\Core\Config\ImmutableConfig) {
-
-    /**
-     * If there is a stored configuration for the FIA Application ID
-     * then add a page <meta> tag to all pages showing the id
-     *
-     * <meta property="fb:pages" content="{id goes here}" />
-     */
-
-    $fia_pagesid = $config->get('pagesid');
-    if ($fia_pagesid != '') {
-      $meta_fia_pagesid = [
-        '#tag' => 'meta',
-        '#attributes' => [
-          'property' => 'fb:pages',
-          'content' => $fia_pagesid,
-        ],
-      ];
-      $page['#attached']['html_head'][] = [$meta_fia_pagesid, 'fia_pagesid'];
-    }
-
+  if ($path_matcher->isFrontPage() && $page_id = $config->get('pagesid')) {
+    $meta_page_id = [
+      '#tag' => 'meta',
+      '#attributes' => [
+        'property' => 'fb:pages',
+        'content' => $page_id,
+      ],
+    ];
+    $page['#attached']['html_head'][] = [$meta_page_id, 'fia_pagesid'];
   }
 }
 
 /**
- * Prepares variables for views FIA item templates.
- *
- * Default template: views-view-row-fia.html.twig.
- *
- * @param array $variables
- *   An associative array containing:
- *   - row: The raw results rows.
+ * Implements hook_init().
  */
-function fb_instant_articles_preprocess_views_view_row_fia(&$variables) {
-  $item = $variables['row'];
-
-  $variables['attributes'] = new Attribute($item);
+function fb_instant_articles_init() {
+  $enable_transformer_logging = \Drupal::config('fb_instant_articles_enable_logging');
+  $appender = array(
+    'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
+    'layout' => array(
+      'class' => 'LoggerLayoutSimple'
+    ),
+  );
+  $configuration = array(
+    'rootLogger' => array(
+      'appenders' => array(
+        'facebook-instantarticles-transformer',
+        'facebook-instantarticles-client',
+      ),
+    ),
+    'appenders' => array(
+      'facebook-instantarticles-transformer' => $appender,
+      'facebook-instantarticles-client' => $appender,
+    ),
+  );
+  \Logger::configure($configuration);
 }

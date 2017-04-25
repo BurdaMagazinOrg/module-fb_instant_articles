@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\fb_instant_articles\Form\AdminConfig.
+ * Contains Drupal\fb_instant_articles\Form\Config.
  */
 
 namespace Drupal\fb_instant_articles\Form;
@@ -11,11 +11,11 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class AdminConfig.
+ * Class Config.
  *
  * @package Drupal\fb_instant_articles\Form
  */
-class AdminConfig extends ConfigFormBase {
+class Config extends ConfigFormBase {
 
   /**
    * {@inheritdoc}

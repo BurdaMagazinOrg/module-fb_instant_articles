@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Contains fb_instant_articles_views.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Template\Attribute;
+
+/**
+ * Implements hook_help().
+ */
+function fb_instant_articles_views_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the fb_instant_articles_views module.
+    case 'help.page.fb_instant_articles_views':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('FB Instant articles RSS feed generator') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Prepares variables for views FIA item templates.
+ *
+ * Default template: views-view-row-fia.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - row: The raw results rows.
+ */
+function fb_instant_articles_views_preprocess_views_view_row_fia(&$variables) {
+  $item = $variables['row'];
+
+  $variables['attributes'] = new Attribute($item);
+}

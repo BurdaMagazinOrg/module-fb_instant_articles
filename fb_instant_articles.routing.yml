@@ -1,11 +1,9 @@
-
-fb_instant_articles.fia_admin_config:
-  path: '/admin/config/fb_instant_articles/adminconfig'
+fb_instant_articles.config:
+  path: '/admin/config/services/fb_instant_articles'
   defaults:
-    _form: '\Drupal\fb_instant_articles\Form\AdminConfig'
-    _title: 'AdminConfig'
+    _form: '\Drupal\fb_instant_articles\Form\Config'
+    _title: 'FaceBook Instant Articles'
   requirements:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
-

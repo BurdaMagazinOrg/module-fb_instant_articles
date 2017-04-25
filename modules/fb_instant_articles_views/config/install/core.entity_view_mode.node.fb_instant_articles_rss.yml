@@ -3,7 +3,7 @@ status: false
 dependencies:
     module:
         - node
-id: node.fb_instant_articles_rss
-label: 'Facebook Instant Articles: RSS'
+id: node.fb_instant_articles_views_rss
+label: 'Facebook Instant Articles Views: RSS'
 targetEntityType: node
 cache: true
