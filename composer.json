@@ -10,10 +10,5 @@
   }],
   "require": {
     "facebook/facebook-instant-articles-sdk-php": "^1.0.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Drupal\\fb_instant_articles\\": "src/"
-    }
   }
 }
