@@ -1,5 +1,6 @@
-fb_instant_articles.config:
-  title: 'FaceBook Instant Articles'
-  route_name: fb_instant_articles.config
-  description: 'Configure FaceBook Instant Articles'
+fb_instant_articles.base_settings_form:
+  title: 'Facebook Instant Articles'
+  route_name: fb_instant_articles.base_settings_form
+  description: 'Settings related to Facebook Instant Articles'
   parent: system.admin_config_services
+  weight: 99

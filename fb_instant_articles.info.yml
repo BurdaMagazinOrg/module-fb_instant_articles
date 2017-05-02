@@ -3,6 +3,6 @@ type: module
 description: Base module for Facebook Instant Articles.
 core: 8.x
 package: Facebook Instant Articles
-configure: fb_instant_articles.config
+configure: fb_instant_articles.base_settings_form
 dependencies:
   - drupal:system (>= 8.3.x)
