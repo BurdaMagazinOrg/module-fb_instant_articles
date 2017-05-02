@@ -10,10 +10,25 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 
-define('FB_INSTANT_ARTICLES_AD_TYPE_NONE', 'none');
-define('FB_INSTANT_ARTICLES_AD_TYPE_FBAN', 'fban');
-define('FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL', 'source_url');
-define('FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE', 'embed_code');
+/**
+ * No ads will automatically be inserted into Instant Articles.
+ */
+const FB_INSTANT_ARTICLES_AD_TYPE_NONE = 'none';
+
+/**
+ * Use Facebook Audience Network for ads.
+ */
+const FB_INSTANT_ARTICLES_AD_TYPE_FBAN = 'fban';
+
+/**
+ * Use an IFrame as the method of placing ads into Instant Articles.
+ */
+const FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL = 'source_url';
+
+/**
+ * Use a custom embed code for ads placed into Instant Articles.
+ */
+const FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE = 'embed_code';
 
 /**
  * Get an array of possible ad types and their descriptive names.
@@ -78,7 +93,6 @@ function fb_instant_articles_help($route_name, RouteMatchInterface $route_match)
       }
       $output .= '</ol>';
       return $output;
-
   }
 }
 

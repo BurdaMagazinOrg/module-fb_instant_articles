@@ -3,13 +3,10 @@
 namespace Drupal\fb_instant_articles\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
-use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class BaseSettingsForm.
- *
- * @package Drupal\fb_instant_articles\Form
+ * Facebook Instant Articles base settings form.
  */
 class BaseSettingsForm extends ConfigFormBase {
 
@@ -58,7 +55,7 @@ class BaseSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('style') ? $config->get('style') : 'default',
       '#size' => 30,
       '#required' => TRUE,
-      '#description' => $this->t('Assign your Instant Articles a custom style. To begin, customize a template using the <a href="@style_url" target="_blank">Style Editor</a>. Next, input the name of the style below. <strong>Note</strong>: if this field is left blank, the module will enable the “Default” style. Learn more about Instant Articles style options in the <a href="@design_url" target="_blank">Design Guide</a>.', array('@style_url' => '', '@design_url' => 'https://developers.facebook.com/docs/instant-articles/guides/design')),
+      '#description' => $this->t('Assign your Instant Articles a custom style. To begin, customize a template using the <a href="@style_url" target="_blank">Style Editor</a>. Next, input the name of the style above. <strong>Note</strong>: if this field is left blank, the module will enable the “Default” style. Learn more about Instant Articles style options in the <a href="@design_url" target="_blank">Design Guide</a>.', array('@style_url' => '', '@design_url' => 'https://developers.facebook.com/docs/instant-articles/guides/design')),
     ];
 
     // Add the Ads sub-section.
@@ -133,6 +130,11 @@ class BaseSettingsForm extends ConfigFormBase {
         '300x250' => t('Large (300 x 250)'),
       ],
       '#default_value' => $config->get('ads.dimensions'),
+      '#states' => [
+        'invisible' => [
+          '[name=ads_type]' => ['value' => FB_INSTANT_ARTICLES_AD_TYPE_NONE],
+        ],
+      ],
     ];
 
     // Add the Analytics sub-section.
@@ -140,7 +142,7 @@ class BaseSettingsForm extends ConfigFormBase {
       '#type' => 'details',
       '#title' => t('Analytics'),
       '#open' => TRUE,
-      '#description' => t('Enable 3rd-party analytics to be used with Instant Articles. You can embed code to insert your own trackers and analytics. Learn more about <a href="@analytics_url">analytics in Instant Articles</a>.', array('@analytics_url' => 'https://developers.facebook.com/docs/instant-articles/ads-analytics#analytics')),
+      '#description' => t('Enable 3rd-party analytics to be used with Instant Articles. You can use an embed code to insert your own trackers and analytics. Learn more about <a href="@analytics_url">analytics in Instant Articles</a>.', array('@analytics_url' => 'https://developers.facebook.com/docs/instant-articles/ads-analytics#analytics')),
     );
 
     $form['analytics']['analytics_embed_code'] = array(
