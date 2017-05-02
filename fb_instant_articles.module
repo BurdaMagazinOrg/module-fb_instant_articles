@@ -100,10 +100,10 @@ function fb_instant_articles_help($route_name, RouteMatchInterface $route_match)
  * Implements hook_page_attachments_alter().
  */
 function fb_instant_articles_page_attachments_alter(array &$page) {
-  $config = \Drupal::config('fb_instant_articles.adminconfig');
+  $config = \Drupal::config('fb_instant_articles.base_settings');
   $path_matcher = \Drupal::service('path.matcher');
 
-  if ($path_matcher->isFrontPage() && $page_id = $config->get('pagesid')) {
+  if ($path_matcher->isFrontPage() && $page_id = $config->get('page_id')) {
     $meta_page_id = [
       '#tag' => 'meta',
       '#attributes' => [
@@ -119,7 +119,7 @@ function fb_instant_articles_page_attachments_alter(array &$page) {
  * Implements hook_init().
  */
 function fb_instant_articles_init() {
-  $enable_transformer_logging = \Drupal::config('fb_instant_articles_enable_logging');
+  $enable_transformer_logging = \Drupal::config('fb_instant_articles.base_settings')->get('enable_logging');
   $appender = array(
     'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
     'layout' => array(
