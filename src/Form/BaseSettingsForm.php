@@ -55,7 +55,7 @@ class BaseSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('style') ? $config->get('style') : 'default',
       '#size' => 30,
       '#required' => TRUE,
-      '#description' => $this->t('Assign your Instant Articles a custom style. To begin, customize a template using the <a href="@style_url" target="_blank">Style Editor</a>. Next, input the name of the style above. <strong>Note</strong>: if this field is left blank, the module will enable the “Default” style. Learn more about Instant Articles style options in the <a href="@design_url" target="_blank">Design Guide</a>.', array('@style_url' => '', '@design_url' => 'https://developers.facebook.com/docs/instant-articles/guides/design')),
+      '#description' => $this->t('Assign your Instant Articles a custom style. To begin, customize a template using the <a href="@style_url" target="_blank">Style Editor</a>. Next, input the name of the style above. <strong>Note</strong>: if this field is left blank, the module will enable the “Default” style. Learn more about Instant Articles style options in the <a href="@design_url" target="_blank">Design Guide</a>.', ['@style_url' => '', '@design_url' => 'https://developers.facebook.com/docs/instant-articles/guides/design']),
     ];
 
     // Add the Ads sub-section.
@@ -63,7 +63,7 @@ class BaseSettingsForm extends ConfigFormBase {
       '#type' => 'details',
       '#title' => t('Ads'),
       '#open' => TRUE,
-      '#description' => t('Choose your preferred method for displaying ads in your Instant Articles and input the code in the boxes below. Learn more about your options for <a href="@ads_url">advertising in Instant Articles</a>', array('@ads_url' => 'https://developers.facebook.com/docs/instant-articles/ads-analytics')),
+      '#description' => t('Choose your preferred method for displaying ads in your Instant Articles and input the code in the boxes below. Learn more about your options for <a href="@ads_url">advertising in Instant Articles</a>', ['@ads_url' => 'https://developers.facebook.com/docs/instant-articles/ads-analytics']),
     ];
 
     $form['ads']['ads_type'] = [
@@ -72,7 +72,7 @@ class BaseSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('ads.type') ? $config->get('ads.type') : FB_INSTANT_ARTICLES_AD_TYPE_NONE,
       '#options' => fb_instant_articles_get_ad_types(),
       '#description' => t('<strong>Note:</strong> this module will automatically place the ads within your articles.'),
-      '#attributes' => array('class' => array('ad-type')),
+      '#attributes' => ['class' => ['ad-type']],
     ];
 
     $form['ads']['ads_iframe_url'] = [
@@ -95,7 +95,7 @@ class BaseSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => t('Audience Network Placement ID'),
       '#default_value' => $config->get('ads.an_placement_id'),
-      '#description' => t('Find your <a href="@placement_id_url" target="_blank">Placement ID</a> on your app\'s <a href="@audience_network_url" target="_blank">Audience Network Portal</a>.', array('@placement_id_url' => '', '@audience_netowrk_url' => '')),
+      '#description' => t('Find your <a href="@placement_id_url" target="_blank">Placement ID</a> on your app\'s <a href="@audience_network_url" target="_blank">Audience Network Portal</a>.', ['@placement_id_url' => '', '@audience_netowrk_url' => '']),
       '#size' => 30,
       '#element_validate' => [
         [$this, 'validateAnPlacementId'],
@@ -138,20 +138,20 @@ class BaseSettingsForm extends ConfigFormBase {
     ];
 
     // Add the Analytics sub-section.
-    $form['analytics'] = array(
+    $form['analytics'] = [
       '#type' => 'details',
       '#title' => t('Analytics'),
       '#open' => TRUE,
-      '#description' => t('Enable 3rd-party analytics to be used with Instant Articles. You can use an embed code to insert your own trackers and analytics. Learn more about <a href="@analytics_url">analytics in Instant Articles</a>.', array('@analytics_url' => 'https://developers.facebook.com/docs/instant-articles/ads-analytics#analytics')),
-    );
+      '#description' => t('Enable 3rd-party analytics to be used with Instant Articles. You can use an embed code to insert your own trackers and analytics. Learn more about <a href="@analytics_url">analytics in Instant Articles</a>.', ['@analytics_url' => 'https://developers.facebook.com/docs/instant-articles/ads-analytics#analytics']),
+    ];
 
-    $form['analytics']['analytics_embed_code'] = array(
+    $form['analytics']['analytics_embed_code'] = [
       '#type' => 'textarea',
       '#title' => t('Analytics Embed Code'),
       '#default_value' => $config->get('analytics.embed_code'),
       '#description' => t('Add code for any analytics services you wish to use. <strong>Note:</strong> you do not need to include any &lt;op-tracker&gt; tags. The module will automatically include them in the article markup.'),
       '#size' => 30,
-    );
+    ];
 
     // Add the Debug Configuration.
     $form['enable_logging'] = [
