@@ -1,0 +1,7 @@
+name: Facebook Instant Articles Display
+type: module
+description: Display module for Facebook Instant Articles.
+core: 8.x
+package: Facebook Instant Articles
+dependencies:
+  - fb_instant_articles

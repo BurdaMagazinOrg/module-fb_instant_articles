@@ -1,0 +1,73 @@
+<?php
+
+/**
+ * @file
+ * Hook implementations for Facebook Instant Articles Display module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeTypeInterface;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
+
+/**
+ * Implements hook_form_FORM_ID_alter() for \Drupal\node\NodeTypeForm.
+ *
+ * @see fb_instant_articles_display_form_node_type_form_builder()
+ */
+function fb_instant_articles_display_form_node_type_form_alter(&$form, FormStateInterface $form_state) {
+  /** @var \Drupal\node\NodeTypeInterface $node_type */
+  $node_type = $form_state->getFormObject()->getEntity();
+
+  // Add a vertical tab to the node type form.
+  $form['fb_instant_articles_display'] = [
+    '#type' => 'details',
+    '#title' => t('Facebook Instant Articles'),
+    '#group' => 'additional_settings',
+    '#access' => \Drupal::currentUser()->hasPermission('administer fb_instant_articles_display'),
+  ];
+
+  // Facebook Instant Articles enabled checkbox.
+  $form['fb_instant_articles_display']['fb_instant_articles_enabled'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Enable Facebook Instant Articles'),
+    '#description' => t('Enable content of this type with support for Facebook Instant Articles.'),
+    '#weight' => 0,
+    '#default_value' => $node_type->getThirdPartySetting('fb_instant_articles_display', 'fb_instant_articles_enabled'),
+  ];
+
+  $form['#entity_builders'][] = 'fb_instant_articles_display_form_node_type_form_builder';
+}
+
+/**
+ * Entity builder for the node type form with the FBIA toggle.
+ *
+ * @see fb_instant_articles_display_form_node_type_form_alter()
+ */
+function fb_instant_articles_display_form_node_type_form_builder($entity_type, NodeTypeInterface $type, &$form, FormStateInterface $form_state) {
+  if ($form_state->getValue('fb_instant_articles_enabled') === 1) {
+    /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display */
+    if ($display = \Drupal::entityTypeManager()->getStorage('entity_view_display')->load('node.' . $type->id() . '.fb_instant_articles')) {
+      $display->setStatus(TRUE)
+        ->save();
+    }
+    else {
+      $display = new EntityViewDisplay([
+        'id' => 'node.' . $type->id() . '.fb_instant_articles',
+        'targetEntityType' => 'node',
+        'bundle' => $type->id(),
+        'mode' => 'fb_instant_articles',
+        'status' => TRUE,
+      ], 'entity_view_display');
+      $display->save();
+    }
+    $type->setThirdPartySetting('fb_instant_articles_display', 'fb_instant_articles_enabled', 1);
+  }
+  else {
+    /** @var \Drupal\Core\Entity\Display\EntityDisplayInterface $display */
+    if ($display = \Drupal::entityTypeManager()->getStorage('entity_view_display')->load('node.' . $type->id() . '.fb_instant_articles')) {
+      $display->setStatus(FALSE)
+        ->save();
+    }
+    $type->unsetThirdPartySetting('fb_instant_articles_display', 'fb_instant_articles_enabled');
+  }
+}

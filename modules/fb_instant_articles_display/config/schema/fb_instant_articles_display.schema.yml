@@ -1,0 +1,7 @@
+node.type.*.third_party.fb_instant_articles_display:
+  type: mapping
+  label: 'Facebook Instant Articles Display'
+  mapping:
+    fb_instant_articles_enabled:
+      type: boolean
+      label: 'Whether to enable Facebook Instant Articles for this content type'
