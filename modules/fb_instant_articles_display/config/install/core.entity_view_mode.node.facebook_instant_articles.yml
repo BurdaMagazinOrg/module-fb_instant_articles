@@ -1,0 +1,12 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+  enforced:
+    module:
+      - fb_instant_articles
+id: node.facebook_instant_articles
+label: Facebook Instant Articles
+targetEntityType: node
+cache: true
