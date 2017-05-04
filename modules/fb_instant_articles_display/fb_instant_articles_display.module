@@ -32,7 +32,7 @@ function fb_instant_articles_display_form_node_type_form_alter(&$form, FormState
     '#title' => t('Enable Facebook Instant Articles'),
     '#description' => t('Enable content of this type with support for Facebook Instant Articles.'),
     '#weight' => 0,
-    '#default_value' => $node_type->getThirdPartySetting('facebook_instant_articles_display', 'fb_instant_articles_enabled'),
+    '#default_value' => $node_type->getThirdPartySetting('fb_instant_articles_display', 'fb_instant_articles_enabled'),
   ];
 
   $form['#entity_builders'][] = 'fb_instant_articles_display_form_node_type_form_builder';
@@ -46,28 +46,28 @@ function fb_instant_articles_display_form_node_type_form_alter(&$form, FormState
 function fb_instant_articles_display_form_node_type_form_builder($entity_type, NodeTypeInterface $type, &$form, FormStateInterface $form_state) {
   if ($form_state->getValue('fb_instant_articles_enabled') === 1) {
     /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display */
-    if ($display = \Drupal::entityTypeManager()->getStorage('entity_view_display')->load('node.' . $type->id() . '.facebook_instant_articles')) {
+    if ($display = \Drupal::entityTypeManager()->getStorage('entity_view_display')->load('node.' . $type->id() . '.fb_instant_articles')) {
       $display->setStatus(TRUE)
         ->save();
     }
     else {
       $display = new EntityViewDisplay([
-        'id' => 'node.' . $type->id() . '.facebook_instant_articles',
+        'id' => 'node.' . $type->id() . '.fb_instant_articles',
         'targetEntityType' => 'node',
         'bundle' => $type->id(),
-        'mode' => 'facebook_instant_articles',
+        'mode' => 'fb_instant_articles',
         'status' => TRUE,
       ], 'entity_view_display');
       $display->save();
     }
-    $type->setThirdPartySetting('facebook_instant_articles_display', 'fb_instant_articles_enabled', 1);
+    $type->setThirdPartySetting('fb_instant_articles_display', 'fb_instant_articles_enabled', 1);
   }
   else {
     /** @var \Drupal\Core\Entity\Display\EntityDisplayInterface $display */
-    if ($display = \Drupal::entityTypeManager()->getStorage('entity_view_display')->load('node.' . $type->id() . '.facebook_instant_articles')) {
+    if ($display = \Drupal::entityTypeManager()->getStorage('entity_view_display')->load('node.' . $type->id() . '.fb_instant_articles')) {
       $display->setStatus(FALSE)
         ->save();
     }
-    $type->unsetThirdPartySetting('facebook_instant_articles_display', 'fb_instant_articles_enabled');
+    $type->unsetThirdPartySetting('fb_instant_articles_display', 'fb_instant_articles_enabled');
   }
 }

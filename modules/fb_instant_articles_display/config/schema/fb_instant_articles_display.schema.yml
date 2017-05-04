@@ -1,4 +1,4 @@
-node.type.*.third_party.facebook_instant_articles_display:
+node.type.*.third_party.fb_instant_articles_display:
   type: mapping
   label: 'Facebook Instant Articles Display'
   mapping:

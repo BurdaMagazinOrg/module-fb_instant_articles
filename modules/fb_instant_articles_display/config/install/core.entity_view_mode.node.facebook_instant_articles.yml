@@ -6,7 +6,7 @@ dependencies:
   enforced:
     module:
       - fb_instant_articles
-id: node.facebook_instant_articles
+id: node.fb_instant_articles
 label: Facebook Instant Articles
 targetEntityType: node
 cache: true
