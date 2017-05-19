@@ -2,7 +2,10 @@
 
 namespace Drupal\Tests\fb_instant_articles\Functional;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Url;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\Tests\BrowserTestBase;
 
 /**
@@ -45,6 +48,13 @@ class FbiaViewModeToggleTest extends BrowserTestBase {
   protected $adminUser;
 
   /**
+   * Name of a test field.
+   *
+   * @var string
+   */
+  protected $testField;
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp() {
@@ -55,6 +65,21 @@ class FbiaViewModeToggleTest extends BrowserTestBase {
       'type' => 'article',
       'name' => 'Article',
     ]);
+
+    // Create a field storage with settings to validate.
+    $this->testField = Unicode::strtolower($this->randomMachineName());
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => $this->testField,
+      'entity_type' => 'node',
+      'type' => 'string',
+    ]);
+    $field_storage->save();
+
+    $field = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => 'article',
+    ]);
+    $field->save();
   }
 
   /**
@@ -84,6 +109,21 @@ class FbiaViewModeToggleTest extends BrowserTestBase {
     $this->drupalGet($article_display_url);
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->checkboxChecked('edit-display-modes-custom-fb-instant-articles');
+
+    // Check that the additional regions show up on the Manage Display UI.
+    $article_display_url = Url::fromRoute('entity.entity_view_display.node.view_mode', [
+      'node_type' => 'article',
+      'view_mode_name' => 'fb_instant_articles',
+    ])->toString();
+    $this->drupalGet($article_display_url);
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->pageTextContains('Header');
+    $this->assertSession()->pageTextContains('Body');
+    $this->assertSession()->pageTextContains('Footer');
+    $this->assertSession()->pageTextContains('No fields are displayed in this region.');
+    $edit = ['fields[' . $this->testField . '][region]' => 'content'];
+    $this->submitForm($edit, t('Save'));
+    $this->assertSession()->fieldValueEquals('fields[' . $this->testField . '][region]', 'content');
 
     // Disable the FBIA view mode.
     $article_url = Url::fromRoute('entity.node_type.edit_form', ['node_type' => 'article'])->toString();
