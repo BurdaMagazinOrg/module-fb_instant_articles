@@ -4,6 +4,7 @@ namespace Drupal\fb_instant_articles\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Component\Utility\UrlHelper;
 
 /**
  * Facebook Instant Articles base settings form.
@@ -41,11 +42,7 @@ class BaseSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#default_value' => $config->get('page_id'),
       '#required' => TRUE,
-      '#description' => $this->t('In order to designate the domain that will host your
-      articles you must add your Facebook page ID to a metatag in the HEAD tag
-      of your HTML page. Entering your Facebook Page ID here will add the
-      metatag automatically. See <a href="@claim_url">Claiming your URL
-      </a>.', $args),
+      '#description' => $this->t('In order to designate the domain that will host your articles you must add your Facebook page ID to a metatag in the HEAD tag of your HTML page. Entering your Facebook Page ID here will add the metatag automatically. See <a href="@claim_url">Claiming your URL</a>.', $args),
     ];
 
     // Add the style configuration.
@@ -191,7 +188,7 @@ class BaseSettingsForm extends ConfigFormBase {
       $form_state->setErrorByName('ads_iframe_url', $this->t('You must specify a valid source URL for your Ads when using the Source URL ad type.'));
     }
 
-    if (filter_var($ads_iframe_url, FILTER_VALIDATE_URL) === FALSE) {
+    if(UrlHelper::isValid($ads_iframe_url, $absolute = FALSE)) {
       $form_state->setErrorByName('ads_iframe_url', $this->t('You must specify a valid source URL for your Ads when using the Source URL ad type.'));
     }
   }
@@ -216,7 +213,7 @@ class BaseSettingsForm extends ConfigFormBase {
     }
 
     if (preg_match('/^[\d_]+$/', $ads_an_placement_id) !== 1) {
-      $form_state->setErrorByName('ads_an_placement_id', $this->t('You must specify a valid Placement ID when using the Audience Network ad type.'));
+      $form_state->setErrorByName('ads_an_placement_id', $this->t('You must specify a valid Placement ID when using the Audience Network ad type.  To find or set your placement id, you will need to go to your Audience Network account for Instant Articles. In the account, navigate to ‘Placements’ and create a ‘Placement of Banner’ type. You will only need one placement.'));
     }
   }
 
