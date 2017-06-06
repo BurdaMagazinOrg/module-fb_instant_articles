@@ -18,7 +18,7 @@ class BaseSettingsFormTest extends BrowserTestBase {
    */
   public static $modules = [
     'fb_instant_articles',
-    'node'
+    'node',
   ];
 
   /**
@@ -32,7 +32,6 @@ class BaseSettingsFormTest extends BrowserTestBase {
   /**
    * Verify form has all the fields.
    */
-
   public function testBuildForm() {
     $this->drupalGet('/admin/config/services/fb_instant_articles');
     $assert = $this->assertSession();
@@ -52,7 +51,7 @@ class BaseSettingsFormTest extends BrowserTestBase {
    * Try posting the form.
    */
   public function testPostForm() {
-    // Post some values to the form
+    // Post some values to the form.
     $this->drupalGet('/admin/config/services/fb_instant_articles');
     $values = [
       'page_id' => 'test_page_id',
@@ -64,7 +63,7 @@ class BaseSettingsFormTest extends BrowserTestBase {
     ];
     $this->drupalPostForm(NULL, $values, t('Save configuration'));
 
-    // Verify that posted values show up in form reload
+    // Verify that posted values show up in form reload.
     $this->drupalGet('/admin/config/services/fb_instant_articles');
     $assert = $this->assertSession();
     $assert->fieldValueEquals('page_id', 'test_page_id');
