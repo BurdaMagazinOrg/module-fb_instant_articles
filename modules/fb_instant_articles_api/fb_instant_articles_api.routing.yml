@@ -1,0 +1,9 @@
+fb_instant_articles_api.settings_form:
+  path: '/admin/config/services/fb_instant_articles/api_settings'
+  defaults:
+    _form: '\Drupal\fb_instant_articles_api\Form\ApiSettingsForm'
+    _title: 'Facebook Instant Articles API Settings'
+  requirements:
+    _permission: 'administer fb_instant_articles'
+  options:
+    _admin_route: TRUE
