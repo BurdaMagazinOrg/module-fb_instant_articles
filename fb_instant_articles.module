@@ -133,3 +133,11 @@ function fb_instant_articles_form_node_type_form_builder($entity_type, NodeTypeI
     $type->unsetThirdPartySetting('fb_instant_articles', 'fb_instant_articles_enabled');
   }
 }
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function fb_instant_articles_entity_type_alter(array &$entity_types) {
+  /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
+  $entity_types['entity_view_display']->setFormClass('edit', 'Drupal\fb_instant_articles\Form\EntityViewDisplayEditForm');
+}
