@@ -10,6 +10,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 
+// @todo move these constants out of the global namespace and into a class that makes sense.
+
 /**
  * No ads will automatically be inserted into Instant Articles.
  */
