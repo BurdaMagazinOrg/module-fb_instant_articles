@@ -7,3 +7,12 @@ fb_instant_articles_api.settings_form:
     _permission: 'administer fb_instant_articles'
   options:
     _admin_route: TRUE
+fb_instant_articles_api.login_callback:
+  path: 'admin/config/services/fb_instant_articles/api/login'
+  defaults:
+    _title: 'Facebook login callback'
+    _controller: '\Drupal\fb_instant_articles_api\Controller\ApiController::facebookLogin'
+  requirements:
+    _permission: 'administer fb_instant_articles'
+  options:
+    _admin_route: TRUE
