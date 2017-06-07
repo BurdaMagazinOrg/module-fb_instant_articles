@@ -125,7 +125,7 @@ class ApiSettingsForm extends ConfigFormBase {
     }
     // Everything's been configured, so let's provide the summary view.
     else {
-      $form = $this->moduleActivationSummary($form, $app_id);
+      $form = $this->moduleActivationSummary($form, $app_id, $page_id);
     }
     return $form;
   }
@@ -391,11 +391,13 @@ class ApiSettingsForm extends ConfigFormBase {
    *   FAPI array.
    * @param string $app_id
    *   Facebook application id.
+   * @param string $page_id
+   *   Facebook page id.
    *
    * @return array
    *   FAPI array.
    */
-  protected function moduleActivationSummary(array $form, $app_id) {
+  protected function moduleActivationSummary(array $form, $app_id, $page_id) {
     $page_name = $this->config('fb_instant_articles.base_settings')->get('page_name');
 
     $form['module_activation'] = [
@@ -403,11 +405,17 @@ class ApiSettingsForm extends ConfigFormBase {
       '#title' => t('Module activation'),
       '#open' => TRUE,
     ];
+    $markup = [
+      '<p>' . $this->t('Your Facebook App ID is <strong>@app_id</strong>. <a href="?edit=fb_app_settings">Update Facebook app id</a>.', ['@app_id' => $app_id]) . '</p>',
+    ];
+    if ($page_name) {
+      $markup[] = '<p>' . $this->t('Your Facebook Page is <strong>@page_name</strong>. <a href="?edit=fb_page">Update facebook page</a>.', ['@page_name' => $page_name]) . '</p>';
+    }
+    elseif ($page_id) {
+      $markup[] = '<p>' . $this->t('Your Facebook Page ID is <strong>@page_id</strong>. <a href="?edit=fb_page">Update facebook page</a>.', ['@page_id' => $page_id]) . '</p>';
+    }
     $form['module_activation']['fb_app_settings'] = [
-      '#markup' => '
-        <p>' . $this->t('Your Facebook App ID is <strong>@app_id</strong>. <a href="?edit=fb_app_settings">Update Facebook app id</a>.', ['@app_id' => $app_id]) . '</p>
-        <p>' . $this->t('Your Facebook Page is <strong>@page_name</strong>. <a href="?edit=fb_page">Update facebook page id</a>.', ['@page_name' => $page_name]) . '</p>
-      ',
+      '#markup' => implode('', $markup),
     ];
 
     return $form;
