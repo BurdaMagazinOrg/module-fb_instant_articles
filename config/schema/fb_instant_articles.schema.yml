@@ -1,3 +1,48 @@
+fb_instant_articles.base_settings:
+  type: config_object
+  mapping:
+    page_id:
+      type: string
+      label: 'Page ID'
+    page_name:
+      type: string
+      label: 'Page Name'
+    style:
+      type: string
+      label: 'Style'
+    ads:
+      type: mapping
+      label: 'Ads settings'
+      mapping:
+        type:
+          type: string
+          label: 'Ad type'
+        iframe_url:
+          type: uri
+          label: 'Ad source URL'
+        an_placement_id:
+          type: string
+          label: 'Audience network placement ID'
+        embed_code:
+          type: string
+          label: 'Ad embed code'
+        dimensions:
+          type: string
+          label: 'Ad dimensions'
+    analytics:
+      type: mapping
+      label: 'Analytics settings'
+      mapping:
+        embed_code:
+          type: string
+          label: 'Analytics embed code'
+    enable_logging:
+      type: integer
+      label: 'Enable FB Instant Articles SDK logging'
+    canonical_url_override:
+      type: uri
+      label: 'Canonical URL override'
+
 node.type.*.third_party.fb_instant_articles:
   type: mapping
   label: 'Facebook Instant Articles'

@@ -13,7 +13,7 @@ use Drupal\Tests\BrowserTestBase;
  *
  * @group fb_instant_articles
  */
-class FbiaViewModeToggleTest extends BrowserTestBase {
+class ViewModeToggleTest extends BrowserTestBase {
 
   /**
    * Modules to enable.

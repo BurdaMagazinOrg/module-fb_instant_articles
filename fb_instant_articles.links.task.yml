@@ -1,0 +1,4 @@
+fb_instant_articles.base_settings_tab:
+  route_name: fb_instant_articles.base_settings_form
+  title: 'Base settings'
+  base_route: fb_instant_articles.base_settings_form
