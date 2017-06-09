@@ -60,10 +60,10 @@ function fb_instant_articles_help($route_name, RouteMatchInterface $route_match)
       $page_id = \Drupal::config('fb_instant_articles.base_settings')->get('page_id');
       $output = '';
       $output .= '<h2>' . t('Setup') . '</h2>';
-      $output .= '<p>' . t('Once you\'ve activated this Drupal module, set up your Instant Articles and submit them to Facebook for a one-time review. The review is required before you can begin publishing. Follow these steps to get started:') . '</p>';
+      $output .= '<p>' . t("Once you've activated this Drupal module, set up your Instant Articles and submit them to Facebook for a one-time review. The review is required before you can begin publishing. Follow these steps to get started:") . '</p>';
       $output .= '<ol>';
       $output .= '  <li>' . t('<a href="@sign_up_url" target="_blank">Sign up</a> for Instant Articles, if you haven\'t already, and enabled the same Facebook Page you have selected.', ['@sign_up_url' => 'https://www.facebook.com/instant_articles/signup']) . '</li>';
-      $output .= '  <li>' . t('Claim the URL you will use to publish articles.</b> Right now, we think the URL for this page is: %url. ', ['%url' => $_SERVER['HTTP_HOST']]);
+      $output .= '  <li>' . t('Claim the URL you will use to publish articles.</b> Right now, we think the URL for this page is: %url.', ['%url' => $_SERVER['HTTP_HOST']]);
       if ($page_id != '') {
         $claim_url = 'https://www.facebook.com/' . $page_id . '/settings/?tab=instant_articles#URL';
         $output .= t('<a href="@claim_url" target="_blank">Claim your URL here.</a>', ['@claim_url' => $claim_url]);
