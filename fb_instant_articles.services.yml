@@ -1,0 +1,15 @@
+services:
+  serializer.fb_instant_articles.fbia.encoder:
+    class: Drupal\fb_instant_articles\Encoder\InstantArticleEncoder
+    tags:
+      - { name: encoder, priority: 10, format: 'fbia' }
+
+  serializer.fb_instant_articles.fbia.content_entity:
+    class: Drupal\fb_instant_articles\Normalizer\ContentEntityNormalizer
+    tags:
+      - { name: normalizer, priority: 10 }
+
+  serializer.fb_instant_articles.fbia.field_item_list:
+    class: Drupal\fb_instant_articles\Normalizer\FieldItemListNormalizer
+    tags:
+      - { name: normalizer, priority: 10 }
