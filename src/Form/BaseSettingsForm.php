@@ -188,7 +188,7 @@ class BaseSettingsForm extends ConfigFormBase {
       $form_state->setErrorByName('ads_iframe_url', $this->t('You must specify a valid source URL for your Ads when using the Source URL ad type.'));
     }
 
-    if (UrlHelper::isValid($ads_iframe_url, $absolute = FALSE)) {
+    if (!UrlHelper::isValid($ads_iframe_url, TRUE)) {
       $form_state->setErrorByName('ads_iframe_url', $this->t('You must specify a valid source URL for your Ads when using the Source URL ad type.'));
     }
   }
