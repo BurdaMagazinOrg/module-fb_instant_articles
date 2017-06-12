@@ -15,4 +15,4 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
  *   }
  * )
  */
-class KickerFormatter extends FbiaFormatterBase {}
+class KickerFormatter extends FormatterBase {}

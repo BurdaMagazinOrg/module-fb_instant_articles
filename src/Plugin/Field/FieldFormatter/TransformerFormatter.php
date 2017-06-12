@@ -15,4 +15,4 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
  *   }
  * )
  */
-class TransformerFormatter extends FbiaFormatterBase {}
+class TransformerFormatter extends FormatterBase {}

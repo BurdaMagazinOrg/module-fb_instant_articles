@@ -15,4 +15,4 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
  *   }
  * )
  */
-class CreditsFormatter extends FbiaFormatterBase {}
+class CreditsFormatter extends FormatterBase {}

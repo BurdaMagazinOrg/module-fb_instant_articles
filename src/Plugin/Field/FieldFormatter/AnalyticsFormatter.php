@@ -16,7 +16,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   }
  * )
  */
-class AnalyticsFormatter extends FbiaFormatterBase {
+class AnalyticsFormatter extends FormatterBase {
 
   /**
    * {@inheritdoc}

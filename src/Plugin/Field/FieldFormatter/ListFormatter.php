@@ -16,7 +16,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   }
  * )
  */
-class ListFormatter extends FbiaFormatterBase {
+class ListFormatter extends FormatterBase {
 
   /**
    * {@inheritdoc}

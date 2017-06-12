@@ -15,7 +15,7 @@ use Facebook\InstantArticles\Elements\Image;
  *   }
  * )
  */
-class ImageFormatter extends FbiaFormatterBase {
+class ImageFormatter extends FormatterBase {
 
   /**
    * {@inheritdoc}

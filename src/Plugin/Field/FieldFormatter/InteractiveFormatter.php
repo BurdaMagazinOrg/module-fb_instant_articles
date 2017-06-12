@@ -18,7 +18,7 @@ use Facebook\InstantArticles\Elements\Interactive;
  *   }
  * )
  */
-class InteractiveFormatter extends FbiaFormatterBase {
+class InteractiveFormatter extends FormatterBase {
 
   /**
    * {@inheritdoc}

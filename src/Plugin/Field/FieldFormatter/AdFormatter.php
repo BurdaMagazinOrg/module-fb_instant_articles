@@ -17,7 +17,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   }
  * )
  */
-class AdFormatter extends FbiaFormatterBase {
+class AdFormatter extends FormatterBase {
 
   /**
    * {@inheritdoc}
