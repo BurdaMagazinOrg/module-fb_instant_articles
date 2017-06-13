@@ -60,22 +60,26 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    */
   public function normalize($data, $format = NULL, array $context = []) {
     /** @var \Drupal\Core\Entity\ContentEntityInterface $data */
-    $article = $this->initInstantArticle($data);
+    $article = InstantArticle::create();
+    $this->normalizeCanonicalUrl($article, $data);
+    $this->normalizeDefaultHeader($article, $data);
+    $this->analyticsFromSettings($article);
+    $this->adsFromSettings($article);
     return $article;
   }
 
   /**
-   * Initialize an Instant Article object from a given content entity.
+   * Normalize the canonical URL into the Instant Article object.
    *
+   * @param \Facebook\InstantArticles\Elements\InstantArticle $article
+   *   Instant article object we are normalizing to.
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
-   *   Content entity from which to initialize an Instant Article.
+   *   Content entity being normalized.
    *
    * @return \Facebook\InstantArticles\Elements\InstantArticle
-   *   Instant article object conversion of the given entity.
+   *   Modified instant article.
    */
-  protected function initInstantArticle(ContentEntityInterface $entity) {
-    $article = InstantArticle::create();
-
+  public function normalizeCanonicalUrl(InstantArticle $article, ContentEntityInterface $entity) {
     // Set the canonical URL.
     if ($override = $this->baseSettings->get('canonical_url_override')) {
       $article->withCanonicalURL($override . $entity->toUrl('canonical')->toString());
@@ -83,10 +87,28 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
     else {
       $article->withCanonicalURL($entity->toUrl('canonical', ['absolute' => TRUE])->toString());
     }
+    return $article;
+  }
 
-    // Setup an initial header.
-    $header = Header::create();
-    $article->withHeader($header);
+  /**
+   * Normalize the default header of the instant article.
+   *
+   * Use known properties of the content entity to normalize default properties
+   * of the instant article header.
+   *
+   * @param \Facebook\InstantArticles\Elements\InstantArticle $article
+   *   Instant article object we are normalizing to.
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   Content entity being normalized.
+   *
+   * @return \Facebook\InstantArticles\Elements\InstantArticle
+   *   Modified instant article.
+   */
+  public function normalizeDefaultHeader(InstantArticle $article, ContentEntityInterface $entity) {
+    $header = $article->getHeader();
+    if (!$header) {
+      $header = Header::create();
+    }
     if ($label = $entity->label()) {
       $header->withTitle($label);
     }
@@ -115,7 +137,19 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
           ->withName($owner->getDisplayName())
       );
     }
+    return $article;
+  }
 
+  /**
+   * Add analytics settings if any to the instant article normalize result.
+   *
+   * @param \Facebook\InstantArticles\Elements\InstantArticle $article
+   *   Instant article object we are normalizing to.
+   *
+   * @return \Facebook\InstantArticles\Elements\InstantArticle
+   *   Modified instant article.
+   */
+  public function analyticsFromSettings(InstantArticle $article) {
     // Add analytics from settings.
     if ($analytics_embed_code = $this->baseSettings->get('analytics_embed_code')) {
       $document = new \DOMDocument();
@@ -131,23 +165,19 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
           );
       }
     }
-
-    // Add ads from settings.
-    $article = $this->addAdsFromSettings($article);
-
     return $article;
   }
 
   /**
-   * Add ads if configured in settings.
+   * Add ads if configured in settings to the instant article normalize result.
    *
    * @param \Facebook\InstantArticles\Elements\InstantArticle $article
-   *   Instant article.
+   *   Instant article object we are normalizing to.
    *
    * @return \Facebook\InstantArticles\Elements\InstantArticle
-   *   Modified instant article with ads setup if applicable.
+   *   Modified instant article.
    */
-  protected function addAdsFromSettings(InstantArticle $article) {
+  protected function adsFromSettings(InstantArticle $article) {
     $ads_type = $this->baseSettings->get('ads.type');
     if (!$ads_type || $ads_type === FB_INSTANT_ARTICLES_AD_TYPE_NONE) {
       return $article;
