@@ -4,9 +4,11 @@ namespace Drupal\fb_instant_articles\Normalizer;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
+use Drupal\user\EntityOwnerInterface;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
 use Facebook\InstantArticles\Elements\Author;
@@ -27,7 +29,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
 
   const FORMAT = 'fbia';
 
-  protected $config;
+  protected $baseSettings;
 
   protected $entityTypeManager;
 
@@ -40,7 +42,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    *   Entity type manager service.
    */
   public function __construct(ConfigFactoryInterface $config, EntityTypeManagerInterface $entity_type_manager) {
-    $this->config = $config;
+    $this->baseSettings = $config->get('fb_instant_articles.base_settings');
     $this->entityTypeManager = $entity_type_manager;
   }
 
@@ -73,10 +75,9 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    */
   protected function initInstantArticle(ContentEntityInterface $entity) {
     $article = InstantArticle::create();
-    $base_settings = $this->config->get('fb_instant_articles.base_settings');
 
     // Set the canonical URL.
-    if ($override = $base_settings->get('canonical_url_override')) {
+    if ($override = $this->baseSettings->get('canonical_url_override')) {
       $article->withCanonicalURL($override . $entity->toUrl('canonical')->toString());
     }
     else {
@@ -90,36 +91,33 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
       $header->withTitle($label);
     }
     // Set a created date if available.
-    if (isset($entity->created)) {
+    if ($created = $entity->get('created')) {
       $header->withPublishTime(
         Time::create(Time::PUBLISHED)
           ->withDatetime(
-            \DateTime::createFromFormat('U', $entity->created->value)
+            \DateTime::createFromFormat('U', $created->value)
           )
       );
     }
     // Set a changed date if available.
-    if (isset($entity->changed)) {
+    if ($entity instanceof EntityChangedInterface && ($changed = $entity->getChangedTime())) {
       $header->withModifyTime(
         Time::create(Time::MODIFIED)
           ->withDatetime(
-            \DateTime::createFromFormat('U', $entity->changed->value)
+            \DateTime::createFromFormat('U', $changed)
           )
       );
     }
     // Default the article author to the username.
-    if (isset($entity->uid)) {
-      /** @var \Drupal\user\Entity\User $author */
-      if ($author = $this->entityTypeManager->getStorage('user')->load($entity->uid->target_id)) {
-        $header->addAuthor(
-          Author::create()
-            ->withName($author->getDisplayName())
-        );
-      }
+    if ($entity instanceof EntityOwnerInterface && ($owner = $entity->getOwner())) {
+      $header->addAuthor(
+        Author::create()
+          ->withName($owner->getDisplayName())
+      );
     }
 
     // Add analytics from settings.
-    if ($analytics_embed_code = $base_settings->get('analytics_embed_code')) {
+    if ($analytics_embed_code = $this->baseSettings->get('analytics_embed_code')) {
       $document = new \DOMDocument();
       $fragment = $document->createDocumentFragment();
       $valid_html = @$fragment->appendXML($analytics_embed_code);
@@ -150,15 +148,14 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    *   Modified instant article with ads setup if applicable.
    */
   protected function addAdsFromSettings(InstantArticle $article) {
-    $base_settings = $this->config->get('fb_instant_articles.base_settings');
-    $ads_type = $base_settings->get('ads.type');
+    $ads_type = $this->baseSettings->get('ads.type');
     if (!$ads_type || $ads_type === FB_INSTANT_ARTICLES_AD_TYPE_NONE) {
       return $article;
     }
     $width = 300;
     $height = 250;
     $dimensions_match = [];
-    $dimensions_raw = $base_settings->get('ads.dimensions');
+    $dimensions_raw = $this->baseSettings->get('ads.dimensions');
     if (preg_match('/^(?:\s)*(\d+)x(\d+)(?:\s)*$/', $dimensions_raw, $dimensions_match)) {
       $width = intval($dimensions_match[1]);
       $height = intval($dimensions_match[2]);
@@ -171,7 +168,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
 
     switch ($ads_type) {
       case FB_INSTANT_ARTICLES_AD_TYPE_FBAN:
-        $an_placement_id = $base_settings->get('ads.an_placement_id');
+        $an_placement_id = $this->baseSettings->get('ads.an_placement_id');
         if ($an_placement_id) {
           $ad->withSource(
             Url::fromUri('https://www.facebook.com/adnw_request', [
@@ -186,7 +183,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
         break;
 
       case FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL:
-        $iframe_url = $base_settings->get('ads.iframe_url');
+        $iframe_url = $this->baseSettings->get('ads.iframe_url');
         if ($iframe_url) {
           $ad->withSource(
             $iframe_url
@@ -196,7 +193,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
         break;
 
       case FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE:
-        $embed_code = $base_settings->get('ads.embed_code');
+        $embed_code = $this->baseSettings->get('ads.embed_code');
         if ($embed_code) {
           $document = new \DOMDocument();
           $fragment = $document->createDocumentFragment();

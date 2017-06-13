@@ -53,15 +53,15 @@ class ContentEntityNormalizerTest extends UnitTestCase {
    */
   public function testNormalize() {
     // Setup a mock config object.
-    $config = $this->prophesize(ImmutableConfig::class)->reveal();
+    $config = $this->prophesize(ImmutableConfig::class);
     $config_factory = $this->prophesize(ConfigFactoryInterface::class);
     $config_factory->get('fb_instant_articles.base_settings')
-      ->willReturn($config);
+      ->willReturn($config->reveal());
     // Setup a mock entity type manager.
-    $storage = $this->prophesize(EntityStorageInterface::class)->reveal();
+    $storage = $this->prophesize(EntityStorageInterface::class);
     $entity_type_manager = $this->prophesize(EntityTypeManagerInterface::class);
     $entity_type_manager->getStorage('user')
-      ->willReturn($storage);
+      ->willReturn($storage->reveal());
     // Setup a mock content entity.
     $url = $this->prophesize(Url::class);
     $url->toString()
@@ -76,6 +76,8 @@ class ContentEntityNormalizerTest extends UnitTestCase {
     $article = $normalizer->normalize($content_entity->reveal(), 'fbia', []);
     $this->assertEquals('http://example.com', $article->getCanonicalURL());
     $this->assertEquals('Foo bar', $article->getHeader()->getTitle()->getPlainText());
+
+
   }
 
 }
