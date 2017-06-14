@@ -2,6 +2,7 @@
 
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
@@ -95,10 +96,10 @@ class AdFormatter extends FormatterBase implements InstantArticleFormatterInterf
         $ad->withHeight((int) $height);
       }
       if ($this->getSetting('source_type') === self::SOURCE_TYPE_HTML) {
-        $ad->withHTML($item->value);
+        $ad->withHTML($this->getItemValue($item));
       }
       else {
-        $ad->withSource($item->value);
+        $ad->withSource($this->getItemValue($item));
       }
       // Ad the ad to the appropriate region.
       if ($region === Regions::REGION_HEADER) {
@@ -112,6 +113,20 @@ class AdFormatter extends FormatterBase implements InstantArticleFormatterInterf
         $article->addChild($ad);
       }
     }
+  }
+
+  /**
+   * Return the value for the ad that we are interested in.
+   *
+   * @param \Drupal\Core\Field\FieldItemInterface $item
+   *   Field item.
+   *
+   * @return mixed
+   *   The value of the given field item that stores the Ad value we're
+   *   interested in.
+   */
+  protected function getItemValue(FieldItemInterface $item) {
+    return $item->value;
   }
 
 }
