@@ -2,10 +2,14 @@
 
 namespace Drupal\fb_instant_articles\Normalizer;
 
+use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Entity\EntityChangedInterface;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\user\EntityOwnerInterface;
@@ -33,6 +37,8 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
 
   protected $entityTypeManager;
 
+  protected $entityFieldManager;
+
   /**
    * ContentEntityNormalizer constructor.
    *
@@ -40,10 +46,13 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    *   Config factory service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   Entity type manager service.
+   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
+   *   Entity field manager service.
    */
-  public function __construct(ConfigFactoryInterface $config, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(ConfigFactoryInterface $config, EntityTypeManagerInterface $entity_type_manager, EntityFieldManagerInterface $entity_field_manager) {
     $this->baseSettings = $config->get('fb_instant_articles.base_settings');
     $this->entityTypeManager = $entity_type_manager;
+    $this->entityFieldManager = $entity_field_manager;
   }
 
   /**
@@ -65,6 +74,30 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
     $this->normalizeDefaultHeader($article, $data);
     $this->analyticsFromSettings($article);
     $this->adsFromSettings($article);
+
+    $context += [
+      'instant_article' => $article,
+    ];
+    // If we're given an entity_view_display object as context, use that as a
+    // mapping to guide the normalization.
+    if (isset($context['entity_view_display'])) {
+      // As silly as this may seem, EntityViewDisplay has no good way of
+      // returning just the components that are configurable and not hidden,
+      // other than to call it's toArray() method and use the resulting
+      // 'content' key. The methods that it uses internally are protected, so
+      // we can't break it down into something more sensible.
+      $components = $this->getApplicableComponents($context['entity_view_display']);
+      uasort($components, [SortArray::class, 'sortByWeightElement']);
+      foreach ($components as $name => $options) {
+        $this->serializer->normalize($data->get($name), $format, $context);
+      }
+    }
+    else {
+      foreach ($data as $name => $field) {
+        $this->serializer->normalize($field, $format, $context);
+      }
+    }
+
     return $article;
   }
 
@@ -240,6 +273,38 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
     $article->enableAutomaticAdPlacement();
 
     return $article;
+  }
+
+  /**
+   * Helper function to get relevant components from an entity view display.
+   *
+   * @param \Drupal\Core\Entity\Entity\EntityViewDisplay $display
+   *   Entity view display config entity.
+   *
+   * @return array
+   *   Components that should be included in the Facebook Instant Article.
+   *
+   * @see \Drupal\field_layout\FieldLayoutBuilder::getFields()
+   */
+  protected function getApplicableComponents(EntityViewDisplay $display) {
+    $components = $display->getComponents();
+
+    // Ignore any extra fields from the list of field definitions. Field
+    // definitions can have a non-configurable display, but all extra fields are
+    // always displayed.
+    $field_definitions = $this->entityFieldManager->getFieldDefinitions($display->getTargetEntityTypeId(), $display->getTargetBundle());
+
+    $fields_to_exclude = array_filter($field_definitions, function (FieldDefinitionInterface $field_definition) {
+      // Remove fields with a non-configurable display.
+      return !$field_definition->isDisplayConfigurable('view');
+    });
+
+    // Exclude extra fields as well for now, although we should find a way to
+    // include these.
+    $extra_fields = $this->entityFieldManager->getExtraFields($display->getTargetEntityTypeId(), $display->getTargetBundle());
+    $extra_fields = isset($extra_fields['display']) ? $extra_fields['display'] : [];
+
+    return array_diff_key($components, $fields_to_exclude, $extra_fields);
   }
 
 }
