@@ -28,7 +28,7 @@ class ParagraphFormatter extends FormatterBase implements InstantArticleFormatte
   /**
    * {@inheritdoc}
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $langcode = NULL) {
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
     foreach ($items as $delta => $item) {
       $article->addChild(
         Paragraph::create()

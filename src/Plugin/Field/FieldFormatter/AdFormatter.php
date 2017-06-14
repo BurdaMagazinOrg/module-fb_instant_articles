@@ -2,7 +2,13 @@
 
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
+use Drupal\fb_instant_articles\Regions;
+use Facebook\InstantArticles\Elements\Ad;
+use Facebook\InstantArticles\Elements\Header;
+use Facebook\InstantArticles\Elements\InstantArticle;
 
 /**
  * Plugin implementation of the 'fbia_ad' formatter.
@@ -11,13 +17,12 @@ use Drupal\Core\Form\FormStateInterface;
  *   id = "fbia_ad",
  *   label = @Translation("FBIA Advertisement"),
  *   field_types = {
- *     "text",
- *     "text_long",
- *     "text_with_summary",
+ *     "string",
+ *     "string_long"
  *   }
  * )
  */
-class AdFormatter extends FormatterBase {
+class AdFormatter extends FormatterBase implements InstantArticleFormatterInterface {
 
   /**
    * {@inheritdoc}
@@ -74,6 +79,39 @@ class AdFormatter extends FormatterBase {
       $summary[] = $this->t('Height: @height', ['@height' => $height]);
     }
     return $summary;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+    foreach ($items as $delta => $item) {
+      // Create the ad object according to the field settings.
+      $ad = Ad::create();
+      if ($width = $this->getSetting('width')) {
+        $ad->withWidth((int) $width);
+      }
+      if ($height = $this->getSetting('height')) {
+        $ad->withHeight((int) $height);
+      }
+      if ($this->getSetting('source_type') === self::SOURCE_TYPE_HTML) {
+        $ad->withHTML($item->value);
+      }
+      else {
+        $ad->withSource($item->value);
+      }
+      // Ad the ad to the appropriate region.
+      if ($region === Regions::REGION_HEADER) {
+        $header = $article->getHeader();
+        if (!$header) {
+          $header = Header::create();
+        }
+        $header->addAd($ad);
+      }
+      else {
+        $article->addChild($ad);
+      }
+    }
   }
 
 }

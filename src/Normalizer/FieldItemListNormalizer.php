@@ -41,7 +41,8 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
       $display = $context['entity_view_display'];
       $renderer = $display->getRenderer($object->getName());
       if ($renderer instanceof InstantArticleFormatterInterface) {
-        $renderer->viewInstantArticle($object, $article);
+        $component = $display->getComponent($object->getName());
+        $renderer->viewInstantArticle($object, $article, $component['region']);
       }
     }
     // @todo take a crack at doing the conversion without a mapping?

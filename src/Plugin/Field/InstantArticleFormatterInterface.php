@@ -18,6 +18,9 @@ interface InstantArticleFormatterInterface {
    * @param \Facebook\InstantArticles\Elements\InstantArticle $article
    *   Instant article object to modify, rendering the contents of this field
    *   into it.
+   * @param string $region
+   *   The Instant Article region name that the contents of this field should be
+   *   rendered into.
    * @param string $langcode
    *   (optional) The language that should be used to render the field. Defaults
    *   to the current content language.
@@ -25,6 +28,6 @@ interface InstantArticleFormatterInterface {
    * @return \Facebook\InstantArticles\Elements\InstantArticle
    *   Modified instant article.
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $langcode = NULL);
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL);
 
 }
