@@ -3,6 +3,7 @@
 namespace Drupal\fb_instant_articles\Normalizer;
 
 use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
@@ -26,7 +27,24 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
    * {@inheritdoc}
    */
   public function normalize($object, $format = NULL, array $context = []) {
+    /** @var \Drupal\Core\Field\FieldItemInterface $object */
+    if (!isset($context['instant_article'])) {
+      return;
+    }
+    /** @var \Facebook\InstantArticles\Elements\InstantArticle $article */
+    $article = $context['instant_article'];
 
+    // If we're given an entity_view_display object as context, use that as a
+    // mapping to guide the normalization.
+    if (isset($context['entity_view_display'])) {
+      /** @var \Drupal\Core\Entity\Entity\EntityViewDisplay $display */
+      $display = $context['entity_view_display'];
+      $renderer = $display->getRenderer($object->getName());
+      if ($renderer instanceof InstantArticleFormatterInterface) {
+        $renderer->viewInstantArticle($object, $article);
+      }
+    }
+    // @todo take a crack at doing the conversion without a mapping?
   }
 
 }

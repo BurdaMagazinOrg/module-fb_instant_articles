@@ -81,11 +81,6 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
     // If we're given an entity_view_display object as context, use that as a
     // mapping to guide the normalization.
     if (isset($context['entity_view_display'])) {
-      // As silly as this may seem, EntityViewDisplay has no good way of
-      // returning just the components that are configurable and not hidden,
-      // other than to call it's toArray() method and use the resulting
-      // 'content' key. The methods that it uses internally are protected, so
-      // we can't break it down into something more sensible.
       $components = $this->getApplicableComponents($context['entity_view_display']);
       uasort($components, [SortArray::class, 'sortByWeightElement']);
       foreach ($components as $name => $options) {
@@ -278,6 +273,11 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
   /**
    * Helper function to get relevant components from an entity view display.
    *
+   * This feels like it should be more straight forward, but alas. The
+   * EntityViewDispaly object has a method getComponents(), which returns
+   * display options for all fields. We're only interested in those which are
+   * configurable, marked as visible, and not extra fields.
+   *
    * @param \Drupal\Core\Entity\Entity\EntityViewDisplay $display
    *   Entity view display config entity.
    *
@@ -289,18 +289,18 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
   protected function getApplicableComponents(EntityViewDisplay $display) {
     $components = $display->getComponents();
 
-    // Ignore any extra fields from the list of field definitions. Field
-    // definitions can have a non-configurable display, but all extra fields are
-    // always displayed.
+    // Get a list of all fields for the given entity view display.
     $field_definitions = $this->entityFieldManager->getFieldDefinitions($display->getTargetEntityTypeId(), $display->getTargetBundle());
 
+    // Exclude any fields which have a non-configurable display.
     $fields_to_exclude = array_filter($field_definitions, function (FieldDefinitionInterface $field_definition) {
-      // Remove fields with a non-configurable display.
       return !$field_definition->isDisplayConfigurable('view');
     });
 
-    // Exclude extra fields as well for now, although we should find a way to
-    // include these.
+    // Ignore any extra fields from the list of field definitions. Field
+    // definitions can have a non-configurable display, but all extra fields are
+    // always displayed. We may want to re-visit including extra fields in the
+    // future.
     $extra_fields = $this->entityFieldManager->getExtraFields($display->getTargetEntityTypeId(), $display->getTargetBundle());
     $extra_fields = isset($extra_fields['display']) ? $extra_fields['display'] : [];
 
