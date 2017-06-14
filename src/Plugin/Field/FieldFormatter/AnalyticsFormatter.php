@@ -1,7 +1,15 @@
 <?php
 
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
+
+use Drupal\Core\Field\FieldItemInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
+use Drupal\fb_instant_articles\Regions;
+use Facebook\InstantArticles\Elements\Analytics;
+use Facebook\InstantArticles\Elements\Header;
+use Facebook\InstantArticles\Elements\InstantArticle;
 
 /**
  * Plugin implementation of the 'fbia_analytics' formatter.
@@ -10,13 +18,12 @@ use Drupal\Core\Form\FormStateInterface;
  *   id = "fbia_analytics",
  *   label = @Translation("FBIA Analytics"),
  *   field_types = {
- *     "text",
- *     "text_long",
- *     "text_with_summary",
+ *     "string",
+ *     "string_long"
  *   }
  * )
  */
-class AnalyticsFormatter extends FormatterBase {
+class AnalyticsFormatter extends FormatterBase implements InstantArticleFormatterInterface {
 
   /**
    * {@inheritdoc}
@@ -53,6 +60,39 @@ class AnalyticsFormatter extends FormatterBase {
       $summary[] = $source_type === self::SOURCE_TYPE_URL ? $this->t('URL') : $this->t('Embedded HTML');
     }
     return $summary;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+    foreach ($items as $delta => $item) {
+      // Create the analytics object according to the field settings.
+      $analytics = Analytics::create();
+      if ($this->getSetting('source_type') === self::SOURCE_TYPE_HTML) {
+        $analytics->withHTML($this->getItemValue($item));
+      }
+      else {
+        $analytics->withSource($this->getItemValue($item));
+      }
+      // Ad the ad to the body regardless of the region requests. The analytics
+      // element is only allowed in the body.
+      $article->addChild($analytics);
+    }
+  }
+
+  /**
+   * Return the value for the ad that we are interested in.
+   *
+   * @param \Drupal\Core\Field\FieldItemInterface $item
+   *   Field item.
+   *
+   * @return mixed
+   *   The value of the given field item that stores the Ad value we're
+   *   interested in.
+   */
+  protected function getItemValue(FieldItemInterface $item) {
+    return $item->value;
   }
 
 }
