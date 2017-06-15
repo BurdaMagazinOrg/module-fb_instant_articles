@@ -2,6 +2,12 @@
 
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
+use Facebook\InstantArticles\Elements\Footer;
+use Facebook\InstantArticles\Elements\InstantArticle;
+use Facebook\InstantArticles\Elements\Paragraph;
+
 /**
  * Plugin implementation of the 'fbia_credits' formatter.
  *
@@ -9,10 +15,32 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
  *   id = "fbia_credits",
  *   label = @Translation("FBIA Credits"),
  *   field_types = {
- *     "text",
- *     "text_long",
- *     "text_with_summary",
+ *     "string",
+ *     "string_long"
  *   }
  * )
  */
-class CreditsFormatter extends FormatterBase {}
+class CreditsFormatter extends FormatterBase implements InstantArticleFormatterInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+    $credits = [];
+    foreach ($items as $delta => $item) {
+      $credits[] = Paragraph::create()
+        ->appendText($item->value);
+    }
+    if (!empty($credits)) {
+      // Copyright can only go in the footer, put it there and ignore the given
+      // $region.
+      $footer = $article->getFooter();
+      if (!$footer) {
+        $footer = Footer::create();
+        $article->withFooter($footer);
+      }
+      $footer->withCredits($credits);
+    }
+  }
+
+}
