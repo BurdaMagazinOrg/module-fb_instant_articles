@@ -3,12 +3,13 @@
 namespace Drupal\fb_instant_articles\Plugin\Field;
 
 use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Field\FormatterInterface;
 use Facebook\InstantArticles\Elements\InstantArticle;
 
 /**
  * Interface to define an operation to manipulate an InstantArticle object.
  */
-interface InstantArticleFormatterInterface {
+interface InstantArticleFormatterInterface extends FormatterInterface {
 
   /**
    * Modifies the given instant article with the contents of this field.

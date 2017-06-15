@@ -6,23 +6,21 @@ use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
-use Drupal\fb_instant_articles\Regions;
-use Facebook\InstantArticles\Elements\Analytics;
-use Facebook\InstantArticles\Elements\Header;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Facebook\InstantArticles\Elements\Interactive;
 
 /**
- * Plugin implementation of the 'fbia_analytics_link' formatter.
+ * Plugin implementation of the 'fbia_interactive_link' formatter.
  *
  * @FieldFormatter(
- *   id = "fbia_analytics_link",
- *   label = @Translation("FBIA Analytics"),
+ *   id = "fbia_interactive_link",
+ *   label = @Translation("FBIA Interactive"),
  *   field_types = {
  *     "link"
  *   }
  * )
  */
-class AnalyticsLinkFormatter extends AnalyticsFormatter implements InstantArticleFormatterInterface {
+class InteractiveLinkFormatter extends InteractiveFormatter implements InstantArticleFormatterInterface {
 
   /**
    * {@inheritdoc}
@@ -46,11 +44,20 @@ class AnalyticsLinkFormatter extends AnalyticsFormatter implements InstantArticl
    * {@inheritdoc}
    */
   public function settingsSummary() {
-    return [];
+    $summary = [];
+    if ($width = $this->getSetting('width')) {
+      $summary[] = $this->t('Width: @width', ['@width' => $width]);
+    }
+    if ($height = $this->getSetting('height')) {
+      $summary[] = $this->t('Height: @height', ['@height' => $height]);
+    }
+    $margin = $this->getSetting('margin');
+    $summary[] = $this->t('Margin setting: @margin', ['@margin' => $margin === Interactive::NO_MARGIN ? $this->t('No margin') : $this->t('Column width')]);
+    return $summary;
   }
 
   /**
-   * Return the value for the ad that we are interested in.
+   * Return the value for the interactive embed that we are interested in.
    *
    * @param \Drupal\Core\Field\FieldItemInterface $item
    *   Field item.

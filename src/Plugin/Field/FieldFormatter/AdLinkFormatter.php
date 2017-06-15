@@ -3,6 +3,7 @@
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 
 /**
@@ -17,6 +18,38 @@ use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
  * )
  */
 class AdLinkFormatter extends AdFormatter implements InstantArticleFormatterInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function defaultSettings() {
+    $default_settings = parent::defaultSettings();
+    unset($default_settings['source_type']);
+    return $default_settings;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $element = parent::settingsForm($form, $form_state);
+    unset($element['source_type']);
+    return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsSummary() {
+    $summary = [];
+    if ($width = $this->getSetting('width')) {
+      $summary[] = $this->t('Width: @width', ['@width' => $width]);
+    }
+    if ($height = $this->getSetting('height')) {
+      $summary[] = $this->t('Height: @height', ['@height' => $height]);
+    }
+    return $summary;
+  }
 
   /**
    * {@inheritdoc}

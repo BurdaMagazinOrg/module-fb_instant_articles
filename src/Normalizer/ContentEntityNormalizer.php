@@ -83,6 +83,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
     if (isset($context['entity_view_display'])) {
       $components = $this->getApplicableComponents($context['entity_view_display']);
       uasort($components, [SortArray::class, 'sortByWeightElement']);
+      // @todo sort by region as well header, content, body
       foreach ($components as $name => $options) {
         $this->serializer->normalize($data->get($name), $format, $context);
       }
