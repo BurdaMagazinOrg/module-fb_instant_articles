@@ -27,7 +27,7 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
    * {@inheritdoc}
    */
   public function normalize($object, $format = NULL, array $context = []) {
-    /** @var \Drupal\Core\Field\FieldItemInterface $object */
+    /** @var \Drupal\Core\Field\FieldItemListInterface $object */
     if (!isset($context['instant_article'])) {
       return;
     }
