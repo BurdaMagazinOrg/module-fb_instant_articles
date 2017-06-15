@@ -14,3 +14,11 @@ services:
     class: Drupal\fb_instant_articles\Normalizer\FieldItemListNormalizer
     tags:
       - { name: normalizer, priority: 10 }
+
+  fb_instant_articles.transformer:
+    class: Drupal\fb_instant_articles\Transformer
+    arguments: ['@fb_instant_articles.transformer_rules_manager']
+
+  fb_instant_articles.transformer_rules_manager:
+    class: Drupal\fb_instant_articles\TransformerRulesManager
+    arguments: ['@module_handler']
