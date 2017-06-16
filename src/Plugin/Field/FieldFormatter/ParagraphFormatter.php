@@ -14,9 +14,6 @@ use Facebook\InstantArticles\Elements\Paragraph;
  *   id = "fbia_paragraph",
  *   label = @Translation("FBIA Paragraph"),
  *   field_types = {
- *     "text",
- *     "text_long",
- *     "text_with_summary",
  *     "string",
  *     "string_long"
  *   }
