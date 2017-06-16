@@ -8,10 +8,10 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
+use Drupal\fb_instant_articles\AdTypes;
 use Drupal\user\EntityOwnerInterface;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
@@ -204,7 +204,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    */
   protected function adsFromSettings(InstantArticle $article) {
     $ads_type = $this->baseSettings->get('ads.type');
-    if (!$ads_type || $ads_type === FB_INSTANT_ARTICLES_AD_TYPE_NONE) {
+    if (!$ads_type || $ads_type === AdTypes::AD_TYPE_NONE) {
       return $article;
     }
     $width = 300;
@@ -226,7 +226,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
     }
 
     switch ($ads_type) {
-      case FB_INSTANT_ARTICLES_AD_TYPE_FBAN:
+      case AdTypes::AD_TYPE_FBAN:
         $an_placement_id = $this->baseSettings->get('ads.an_placement_id');
         if ($an_placement_id) {
           $ad->withSource(
@@ -241,7 +241,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
         }
         break;
 
-      case FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL:
+      case AdTypes::AD_TYPE_SOURCE_URL:
         $iframe_url = $this->baseSettings->get('ads.iframe_url');
         if ($iframe_url) {
           $ad->withSource(
@@ -251,7 +251,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
         }
         break;
 
-      case FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE:
+      case AdTypes::AD_TYPE_EMBED_CODE:
         $embed_code = $this->baseSettings->get('ads.embed_code');
         if ($embed_code) {
           $document = new \DOMDocument();

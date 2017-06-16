@@ -59,6 +59,9 @@ class ContentEntityNormalizerTest extends UnitTestCase {
     $normalizer = $this->getContentEntityNormalizer([
       'canonical_url_override' => 'http://example.com',
       'analytics_embed_code' => 'analytics embed code',
+      'ads.type' => 'source_url',
+      'ads.iframe_url' => 'http://example.com',
+      'ads.dimensions' => '300x250',
     ], []);
 
     $now = time();
@@ -76,6 +79,11 @@ class ContentEntityNormalizerTest extends UnitTestCase {
     $analytics = $children[0];
     $this->assertTrue($analytics instanceof Analytics);
     $this->assertEquals('analytics embed code', $analytics->getHtml()->ownerDocument->saveHTML($analytics->getHtml()));
+    $ads = $article->getHeader()->getAds();
+    $this->assertEquals(1, count($ads));
+    $this->assertEquals($ads[0]->getWidth(), 300);
+    $this->assertEquals($ads[0]->getHeight(), 250);
+    $this->assertEquals($ads[0]->getSource(), 'http://example.com');
   }
 
   /**
