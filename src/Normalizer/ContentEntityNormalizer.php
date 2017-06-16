@@ -35,8 +35,6 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
 
   protected $baseSettings;
 
-  protected $entityTypeManager;
-
   protected $entityFieldManager;
 
   /**
@@ -44,14 +42,11 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config
    *   Config factory service.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   Entity type manager service.
    * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
    *   Entity field manager service.
    */
-  public function __construct(ConfigFactoryInterface $config, EntityTypeManagerInterface $entity_type_manager, EntityFieldManagerInterface $entity_field_manager) {
+  public function __construct(ConfigFactoryInterface $config, EntityFieldManagerInterface $entity_field_manager) {
     $this->baseSettings = $config->get('fb_instant_articles.base_settings');
-    $this->entityTypeManager = $entity_type_manager;
     $this->entityFieldManager = $entity_field_manager;
   }
 
@@ -137,6 +132,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
     $header = $article->getHeader();
     if (!$header) {
       $header = Header::create();
+      $article->withHeader($header);
     }
     if ($label = $entity->label()) {
       $header->withTitle($label);
@@ -224,6 +220,10 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
       ->withWidth($width)
       ->withHeight($height);
     $header = $article->getHeader();
+    if (!$header) {
+      $header = Header::create();
+      $article->withHeader($header);
+    }
 
     switch ($ads_type) {
       case FB_INSTANT_ARTICLES_AD_TYPE_FBAN:
