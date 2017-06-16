@@ -45,7 +45,7 @@ class ImageFormatter extends DrupalImageFormatter implements InstantArticleForma
       'likes' => FALSE,
       'comments' => FALSE,
       'presentation' => '',
-    ] + parent::defaultSettings();
+    ];
   }
 
   /**
