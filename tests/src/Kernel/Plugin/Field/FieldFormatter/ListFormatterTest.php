@@ -46,14 +46,33 @@ class ListFormatterTest extends FormatterTestBase {
     $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
 
     $children = $article->getChildren();
-    $this->assertEquals(1, count($children));
-    $this->assertTrue($children[0] instanceof ListElement);
-
     /** @var \Facebook\InstantArticles\Elements\ListElement $list */
     $list = $children[0];
+    $this->assertEquals(1, count($children));
+    $this->assertTrue($list instanceof ListElement);
+    $this->assertFalse($list->isOrdered());
+
     $list_items = $list->getItems();
     $this->assertEquals(2, count($list_items));
     $this->assertEquals($value_alpha, $list_items[0]->getPlainText());
+
+    // Test an ordered list configuration.
+    $this->display->setComponent($this->fieldName, [
+      'type' => 'fbia_list',
+      'settings' => [
+        'is_ordered' => TRUE,
+      ],
+    ]);
+    $this->display->save();
+    /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
+    $formatter = $this->display->getRenderer($this->fieldName);
+    $article = InstantArticle::create();
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
+
+    $children = $article->getChildren();
+    /** @var \Facebook\InstantArticles\Elements\ListElement $list */
+    $list = $children[0];
+    $this->assertTrue($list->isOrdered());
   }
 
 }
