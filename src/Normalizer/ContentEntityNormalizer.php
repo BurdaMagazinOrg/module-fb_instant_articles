@@ -31,10 +31,23 @@ use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 class ContentEntityNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
   use StringTranslationTrait;
 
+  /**
+   * Name of the format that this normalizer deals with.
+   */
   const FORMAT = 'fbia';
 
+  /**
+   * Instant articles base settings config.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
   protected $baseSettings;
 
+  /**
+   * Entity field manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   */
   protected $entityFieldManager;
 
   /**

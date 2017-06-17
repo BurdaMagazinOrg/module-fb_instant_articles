@@ -30,7 +30,7 @@ class ListFormatterTest extends FormatterTestBase {
   }
 
   /**
-   * Test the instant article paragraph formatter.
+   * Test the instant article list formatter.
    */
   public function testListFormatter() {
     $value_alpha = 'I am a random value.';

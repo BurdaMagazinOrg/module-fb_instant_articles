@@ -31,8 +31,8 @@ class AdFormatter extends FormatterBase implements InstantArticleFormatterInterf
   public static function defaultSettings() {
     return [
       'source_type' => self::SOURCE_TYPE_URL,
-      'width' => 320,
-      'height' => 50,
+      'width' => 300,
+      'height' => 250,
     ] + parent::defaultSettings();
   }
 
