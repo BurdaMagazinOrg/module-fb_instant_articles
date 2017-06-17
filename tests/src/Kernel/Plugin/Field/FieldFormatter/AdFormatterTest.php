@@ -21,7 +21,7 @@ class AdFormatterTest extends FormatterTestBase {
   protected function setUp() {
     parent::setUp();
 
-    // Test an ad formatter with the default settings.
+    // Setup entity view display with default settings.
     $this->display->setComponent($this->fieldName, [
       'type' => 'fbia_ad',
       'settings' => [],
@@ -45,19 +45,10 @@ class AdFormatterTest extends FormatterTestBase {
 
     $ads = $article->getHeader()->getAds();
     $this->assertEquals(1, count($ads));
+    $this->assertTrue($ads[0] instanceof Ad);
     $this->assertEquals(300, $ads[0]->getWidth());
     $this->assertEquals(250, $ads[0]->getHeight());
-    $this->assertEquals('http://example.com/ad', $ads[0]->getSource());
-
-    $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
-
-    $children = $article->getChildren();
-    $this->assertEquals(1, count($children));
-    $this->assertTrue($children[0] instanceof Ad);
-    $this->assertEquals(300, $children[0]->getWidth());
-    $this->assertEquals(250, $children[0]->getHeight());
-    $this->assertEquals('http://example.com/ad', $children[0]->getSource());
+    $this->assertEquals($ad_url, $ads[0]->getSource());
 
     // Test an embedded HTML ad.
     $ad_html = '<script src="http://example.com/ad.js"></script>';

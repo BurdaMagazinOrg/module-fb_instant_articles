@@ -38,14 +38,11 @@ class CopyrightFormatter extends FormatterBase implements InstantArticleFormatte
       // object of type Small, in which case we can't append to it, so we just
       // replace it with a string.
       $copyright = $footer->getCopyright();
-      if (!$copyright) {
-        $copyright = '';
-      }
-      elseif (is_string($copyright)) {
-        $copyright .= ' ';
-      }
       if (is_string($copyright)) {
-        $copyright .= $item->value;
+        $copyright .= ' ' . $item->value;
+      }
+      else {
+        $copyright = $item->value;
       }
       $footer->withCopyright($copyright);
     }

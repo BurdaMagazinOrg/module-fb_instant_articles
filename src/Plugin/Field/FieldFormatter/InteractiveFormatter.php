@@ -29,8 +29,8 @@ class InteractiveFormatter extends FormatterBase implements InstantArticleFormat
   public static function defaultSettings() {
     return [
       'source_type' => self::SOURCE_TYPE_URL,
-      'width' => '',
-      'height' => '',
+      'width' => NULL,
+      'height' => NULL,
       'margin' => Interactive::NO_MARGIN,
     ] + parent::defaultSettings();
   }
