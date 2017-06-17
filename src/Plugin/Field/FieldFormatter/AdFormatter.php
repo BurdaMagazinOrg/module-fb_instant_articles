@@ -106,6 +106,7 @@ class AdFormatter extends FormatterBase implements InstantArticleFormatterInterf
         $header = $article->getHeader();
         if (!$header) {
           $header = Header::create();
+          $article->withHeader($header);
         }
         $header->addAd($ad);
       }

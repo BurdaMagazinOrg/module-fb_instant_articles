@@ -3,16 +3,17 @@
 namespace Drupal\Tests\fb_instant_articles\Kernel\Plugin\Field\FieldFormatter;
 
 use Drupal\entity_test\Entity\EntityTest;
+use Drupal\fb_instant_articles\Plugin\Field\FieldFormatter\FormatterBase;
 use Drupal\fb_instant_articles\Regions;
+use Facebook\InstantArticles\Elements\Analytics;
 use Facebook\InstantArticles\Elements\InstantArticle;
-use Facebook\InstantArticles\Elements\ListElement;
 
 /**
- * Tests the instant article list field formatter.
+ * Test instant articles analytics field formatter.
  *
  * @group fb_instant_articles
  */
-class ListFormatterTest extends FormatterTestBase {
+class AnalyticsFormatterTest extends FormatterTestBase {
 
   /**
    * {@inheritdoc}
@@ -22,22 +23,20 @@ class ListFormatterTest extends FormatterTestBase {
 
     // Setup entity view display with default settings.
     $this->display->setComponent($this->fieldName, [
-      'type' => 'fbia_list',
+      'type' => 'fbia_analytics',
       'settings' => [],
     ]);
     $this->display->save();
   }
 
   /**
-   * Test the instant article list formatter.
+   * Test the instant article analytics formatter.
    */
-  public function testListFormatter() {
-    $value_alpha = 'I am a random value.';
-    $value_beta = 'I am another random value.';
+  public function testAnalyticsFormatter() {
+    $value = 'http://example.com/analytics';
 
     $entity = EntityTest::create([]);
-    $entity->{$this->fieldName}[] = ['value' => $value_alpha];
-    $entity->{$this->fieldName}[] = ['value' => $value_beta];
+    $entity->{$this->fieldName}->value = $value;
 
     /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
     $formatter = $this->display->getRenderer($this->fieldName);
@@ -45,33 +44,29 @@ class ListFormatterTest extends FormatterTestBase {
     $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
 
     $children = $article->getChildren();
-    /** @var \Facebook\InstantArticles\Elements\ListElement $list */
-    $list = $children[0];
     $this->assertEquals(1, count($children));
-    $this->assertTrue($list instanceof ListElement);
-    $this->assertFalse($list->isOrdered());
+    $this->assertTrue($children[0] instanceof Analytics);
+    /** @var \Facebook\InstantArticles\Elements\Analytics $analytics */
+    $analytics = $children[0];
+    $this->assertEquals($value, $analytics->getSource());
 
-    $list_items = $list->getItems();
-    $this->assertEquals(2, count($list_items));
-    $this->assertEquals($value_alpha, $list_items[0]->getPlainText());
-
-    // Test an ordered list configuration.
+    // Test an embedded HTML ad.
+    $analytics_html = '<script src="http://example.com/analytics.js"></script>';
+    $entity->{$this->fieldName}->value = $analytics_html;
     $this->display->setComponent($this->fieldName, [
-      'type' => 'fbia_list',
+      'type' => 'fbia_analytics',
       'settings' => [
-        'is_ordered' => TRUE,
+        'source_type' => FormatterBase::SOURCE_TYPE_HTML,
       ],
     ]);
     $this->display->save();
     /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
     $formatter = $this->display->getRenderer($this->fieldName);
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER);
 
     $children = $article->getChildren();
-    /** @var \Facebook\InstantArticles\Elements\ListElement $list */
-    $list = $children[0];
-    $this->assertTrue($list->isOrdered());
+    $this->assertEquals($analytics_html, $children[0]->getHtml()->textContent);
   }
 
 }

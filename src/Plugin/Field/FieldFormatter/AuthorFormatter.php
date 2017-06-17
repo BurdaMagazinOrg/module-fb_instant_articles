@@ -33,6 +33,7 @@ class AuthorFormatter extends FormatterBase implements InstantArticleFormatterIn
       $header = $article->getHeader();
       if (!$header) {
         $header = Header::create();
+        $article->withHeader($header);
       }
       $header->addAuthor($author);
     }

@@ -69,7 +69,7 @@ class FormatterTestBase extends KernelTestBase {
     $field_storage = FieldStorageConfig::create([
       'field_name' => $this->fieldName,
       'entity_type' => $this->entityType,
-      'type' => 'string',
+      'type' => $this->getFieldType(),
     ]);
     $field_storage->save();
 
@@ -86,6 +86,19 @@ class FormatterTestBase extends KernelTestBase {
       'mode' => 'default',
       'status' => TRUE,
     ]);
+  }
+
+  /**
+   * Get the field type of the test field to create.
+   *
+   * Most of the field formatters apply to string type fields. There are a
+   * couple exceptions, so child classes can override this method if need be.
+   *
+   * @return string
+   *   Machine name of a field type.
+   */
+  protected function getFieldType() {
+    return 'string';
   }
 
 }
