@@ -6,6 +6,6 @@ services:
 
   serializer.fb_instant_articles_views.fbia.content_entity:
       class: Drupal\fb_instant_articles_views\Normalizer\ContentEntityNormalizer
-      arguments: ['@config.factory', '@entity_field.manager']
+      arguments: ['@config.factory', '@entity_field.manager', '@entity_type.manager']
       tags:
         - { name: normalizer, priority: 10 }

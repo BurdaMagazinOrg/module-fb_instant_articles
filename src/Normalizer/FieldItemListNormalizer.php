@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
  */
 class FieldItemListNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
 
-  const FORMAT = 'fbia';
+  const FORMAT = ['fbia', 'fbia_rss'];
 
   /**
    * {@inheritdoc}
@@ -20,7 +20,7 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
   public function supportsNormalization($data, $format = NULL) {
     // Only consider this normalizer if we are trying to normalize a field item
     // list into the 'fbia' format.
-    return $format === static::FORMAT && $data instanceof FieldItemListInterface;
+    return in_array($format, static::FORMAT) && $data instanceof FieldItemListInterface;
   }
 
   /**
