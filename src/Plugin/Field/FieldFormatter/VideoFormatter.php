@@ -33,7 +33,7 @@ class VideoFormatter extends GenericFileFormatter implements InstantArticleForma
       'likes' => FALSE,
       'comments' => FALSE,
       'controls' => FALSE,
-      'autoplay' => FALSE,
+      'autoplay' => TRUE,
       'feed_cover' => FALSE,
     ] + parent::defaultSettings();
   }
@@ -78,7 +78,7 @@ class VideoFormatter extends GenericFileFormatter implements InstantArticleForma
       '#type' => 'checkbox',
       '#title' => $this->t('Newsfeed cover'),
       '#description' => $this->t('Enable this setting to use this video as the cover when the article is shown in the newsfeed. If set, the first video in a multivalue field is used as the cover.'),
-      '#default_value' => $this->getSetting('autoplay'),
+      '#default_value' => $this->getSetting('feed_cover'),
     ];
     return $element;
   }
@@ -154,19 +154,34 @@ class VideoFormatter extends GenericFileFormatter implements InstantArticleForma
       if ($this->getSetting('likes')) {
         $video->enableLike();
       }
+      else {
+        $video->disableLike();
+      }
       if ($this->getSetting('comments')) {
         $video->enableComments();
+      }
+      else {
+        $video->disableComments();
       }
       if ($this->getSetting('controls')) {
         $video->enableControls();
       }
+      else {
+        $video->disableControls();
+      }
       if ($this->getSetting('autoplay')) {
         $video->enableAutoplay();
+      }
+      else {
+        $video->disableAutoplay();
       }
       // If this field is marked as the Newsfeed cover, use only the first video
       // in a multivalue field as the Newsfeed cover.
       if ($this->getSetting('feed_cover') && $delta === 0) {
         $video->enableFeedCover();
+      }
+      else {
+        $video->disableFeedCover();
       }
       // Finally add the video to the article, either as the cover, or in the
       // content of the article per the $region param.

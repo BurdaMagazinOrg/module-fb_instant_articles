@@ -41,7 +41,7 @@ class ImageFormatter extends DrupalImageFormatter implements InstantArticleForma
   public static function defaultSettings() {
     return [
       'image_style' => '',
-      'caption' => '',
+      'caption' => FALSE,
       'likes' => FALSE,
       'comments' => FALSE,
       'presentation' => '',
@@ -153,8 +153,14 @@ class ImageFormatter extends DrupalImageFormatter implements InstantArticleForma
       if ($this->getSetting('likes')) {
         $article_image->enableLike();
       }
+      else {
+        $article_image->disableLike();
+      }
       if ($this->getSetting('comments')) {
         $article_image->enableComments();
+      }
+      else {
+        $article_image->disableComments();
       }
       if ($presentation = $this->getSetting('presentation')) {
         $article_image->withPresentation($presentation);
