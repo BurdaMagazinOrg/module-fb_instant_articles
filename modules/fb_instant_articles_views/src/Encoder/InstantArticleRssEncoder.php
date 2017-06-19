@@ -36,6 +36,11 @@ class InstantArticleRssEncoder extends XmlEncoder {
    * {@inheritdoc}
    */
   public function encode($data, $format, array $context = []) {
+    // Force $data into an arry of numeric keys.
+    if (!ctype_digit(implode('', array_keys($data)))) {
+      $data = [$data];
+    }
+
     foreach ($data as $delta => $item) {
       if (!empty($item['content:encoded']) && $item['content:encoded'] instanceof InstantArticle) {
         $data[$delta]['content:encoded'] = $item['content:encoded']->render();
