@@ -1,0 +1,11 @@
+services:
+  serializer.fb_instant_articles_views.fbia_rss.encoder:
+    class: Drupal\fb_instant_articles_views\Encoder\InstantArticleRssEncoder
+    tags:
+      - { name: encoder, priority: 10, format: 'fbia_rss' }
+
+  serializer.fb_instant_articles_views.fbia.content_entity:
+      class: Drupal\fb_instant_articles_views\Normalizer\ContentEntityNormalizer
+      arguments: ['@config.factory', '@entity_field.manager']
+      tags:
+        - { name: normalizer, priority: 10 }
