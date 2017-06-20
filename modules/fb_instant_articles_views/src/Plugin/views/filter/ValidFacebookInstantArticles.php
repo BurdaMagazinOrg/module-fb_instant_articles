@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\views\Plugin\views\filter\ImplementsViewMode.
- */
-
 namespace Drupal\fb_instant_articles_views\Plugin\views\filter;
 
 use Drupal\views\Plugin\views\filter\FilterPluginBase;
@@ -14,7 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
- * Simple filter that checks if a node implements the FIA custom view mode
+ * Simple filter that checks if a node implements the FIA custom view mode.
  *
  * @ingroup views_filter_handlers
  *
@@ -34,15 +29,20 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function canExpose() { return FALSE; }
+  public function canExpose() {
+    return FALSE;
+  }
 
   /**
    * {@inheritdoc}
    */
-  public function canBuildGroup() { return FALSE; }
+  public function canBuildGroup() {
+    return FALSE;
+  }
 
   /**
    * Provide the basic form which calls through to subforms.
+   *
    * If overridden, it is best to call through to the parent,
    * or to at least make sure all of the functions in this form
    * are called.
@@ -73,8 +73,10 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
   }
 
   /**
-   * Set the values for this filter to all node bundles that implement custom
-   * settings for the view mode
+   * Set the values for this filter.
+   *
+   * This applies to all node bundles that implement custom settings for the
+   * view mode.
    *
    * This uses an unreliable method for detecting custom settings for node
    * bundles.  The method is to check for a config entity for the entity display
@@ -83,49 +85,49 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
    * considered FIA active.
    */
   protected function enabledNodeBundlesSetValues() {
-    /**
-     * @var \Drupal\Core\Entity\EntityTypeBundleInfo $entityBundleInfo
+    /*
+     * @var \Drupal\Core\Entity\EntityTypeBundleInfo $entity_bundle_info
      *  entity_type.bundle.info
      */
-    $entityBundleInfo = \Drupal::service('entity_type.bundle.info');
+    $entity_bundle_info = \Drupal::service('entity_type.bundle.info');
 
-    /**
-     * @var \Drupal\Core\Entity\EntityStorageInterface $entityStorage
+    /*
+     * @var \Drupal\Core\Entity\EntityStorageInterface $entity_storage
      *   View Mode entity storage handler
      */
-    $entityStorage = \Drupal::service('entity_type.manager')->getStorage('entity_view_display');
+    $entity_storage = \Drupal::service('entity_type.manager')->getStorage('entity_view_display');
 
-    /**
+    /*
      * @var string[] nodeTypes
      *   an array of node types that implement our custom view mode
      */
-    $nodeTypes = [];
-    foreach($entityBundleInfo->getBundleInfo('node') as $id=>$bundle) {
+    $node_types = [];
+    foreach ($entity_bundle_info->getBundleInfo('node') as $id => $bundle) {
 
-      /**
-       * @var string $viewModeId
+      /*
+       * @var string $view_mode_id
        *   the string id for the view mode entity
        */
-      $viewModeId = 'node.'.$id.'.'.static::FIA_VIEW_MODE;
+      $view_mode_id = 'node.' . $id . '.' . static::FIA_VIEW_MODE;
 
-      /**
-       * @var \Drupal\Core\Entity\EntityInterface|null $viewMode
+      /*
+       * @var \Drupal\Core\Entity\EntityInterface|null $view_mode
        *   Config entity for the view mode, if it exists
        */
-      $viewMode = $entityStorage->load($viewModeId);
+      $view_mode = $entity_storage->load($view_mode_id);
 
-      if ($viewMode instanceof EntityInterface) {
-        $nodeTypes[$id] = $id;
+      if ($view_mode instanceof EntityInterface) {
+        $node_types[$id] = $id;
       }
     }
 
-    if (count($nodeTypes)>0) {
-      /**
+    if (count($node_types) > 0) {
+      /*
        * Only set the value and operator if we have some valid node types, so
        * that we don't break the query.  Leaving them as they are will result
        * in an empty query, which is good
        */
-      $this->value = $nodeTypes;
+      $this->value = $node_types;
       $this->operator = "in";
     }
   }
