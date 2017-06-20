@@ -6,7 +6,7 @@ use Drupal\views\Plugin\views\filter\FilterPluginBase;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 
 /**
  * Simple filter that checks if a node implements the FIA custom view mode.
@@ -106,7 +106,7 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
        */
       $view_mode = $entity_storage->load($view_mode_id);
 
-      if ($view_mode instanceof EntityInterface) {
+      if ($view_mode instanceof EntityViewDisplayInterface) {
         $node_types[$id] = $id;
       }
     }
