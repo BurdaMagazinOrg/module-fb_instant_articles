@@ -22,7 +22,7 @@ use Drupal\Core\Entity\EntityInterface;
  */
 class ValidFacebookInstantArticles extends FilterPluginBase {
 
-  const FIA_VIEW_MODE = 'fb_instant_articles_views_rss';
+  const FIA_VIEW_MODE = 'fb_instant_articles';
 
   /**
    * {@inheritdoc}
@@ -35,10 +35,12 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
    * {@inheritdoc}
    */
   public function canExpose() { return FALSE; }
+
   /**
    * {@inheritdoc}
    */
   public function canBuildGroup() { return FALSE; }
+
   /**
    * Provide the basic form which calls through to subforms.
    * If overridden, it is best to call through to the parent,
@@ -64,22 +66,21 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
 
   /**
    * {@inheritdoc}
-   *
-   *
    */
   public function query() {
-
     $this->enabledNodeBundlesSetValues();
     parent::query();
   }
 
   /**
-   * Set the values for this filter to all node bundles that implement custom settings for the view mode
+   * Set the values for this filter to all node bundles that implement custom
+   * settings for the view mode
    *
-   * This uses an unreliable method for detecting custom settings for node bundles.  The method is to check for a config
-   * Entity for the entity display settings, for the bundle/view mode.  Essentially this looks for a yml file/record
-   * for the custom settings, and one is found, the bundle is considered FIA active.
-   *
+   * This uses an unreliable method for detecting custom settings for node
+   * bundles.  The method is to check for a config entity for the entity display
+   * settings, for the bundle/view mode.  Essentially this looks for a yml
+   * file/record for the custom settings, and one is found, the bundle is
+   * considered FIA active.
    */
   protected function enabledNodeBundlesSetValues() {
     /**
@@ -100,6 +101,7 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
      */
     $nodeTypes = [];
     foreach($entityBundleInfo->getBundleInfo('node') as $id=>$bundle) {
+
       /**
        * @var string $viewModeId
        *   the string id for the view mode entity
