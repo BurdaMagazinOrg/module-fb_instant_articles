@@ -1,25 +1,35 @@
 <?php
 
-namespace Drupal\Tests\fb_instant_articles\Unit;
+namespace Drupal\Tests\fb_instant_articles_views\Unit;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\fb_instant_articles\Normalizer\ContentEntityNormalizer;
+use Drupal\fb_instant_articles_views\Normalizer\ContentEntityNormalizer;
 use Drupal\node\NodeInterface;
-use Facebook\InstantArticles\Elements\Analytics;
+use Drupal\Tests\fb_instant_articles\Unit\ContentEntityNormalizerTestBase;
 use Facebook\InstantArticles\Elements\InstantArticle;
 
 /**
  * Tests the fbia content entity normalizer class.
  *
- * @coversDefaultClass \Drupal\fb_instant_articles\Normalizer\ContentEntityNormalizer
+ * @coversDefaultClass \Drupal\fb_instant_articles_views\Normalizer\ContentEntityNormalizer
  *
- * @group fb_instant_articles
+ * @group fb_instant_articles_views
  */
 class ContentEntityNormalizerTest extends ContentEntityNormalizerTestBase {
+
+  /**
+   * Helper function to get the content entity normalizer class name.
+   *
+   * @return string
+   *   Content entity normalizer class name.
+   */
+  protected function getContentEntityNormalizerClassName() {
+    return ContentEntityNormalizer::class;
+  }
 
   /**
    * Tests the supportsNormalization() method.
@@ -44,7 +54,8 @@ class ContentEntityNormalizerTest extends ContentEntityNormalizerTestBase {
       ->getMock();
 
     $normalizer = new ContentEntityNormalizer($config_factory, $entity_field_manager, $entity_type_manager);
-    $this->assertTrue($normalizer->supportsNormalization($content_entity, 'fbia'));
+    $this->assertFalse($normalizer->supportsNormalization($content_entity, 'fbia'));
+    $this->assertTrue($normalizer->supportsNormalization($content_entity, 'fbia_rss'));
     $this->assertFalse($normalizer->supportsNormalization($content_entity, 'json'));
     $this->assertFalse($normalizer->supportsNormalization($config_entity, 'fbia'));
   }
@@ -65,25 +76,17 @@ class ContentEntityNormalizerTest extends ContentEntityNormalizerTestBase {
     ], []);
 
     $now = time();
+    $now_date = \DateTime::createFromFormat('U', $now);
     $entity = $this->getContentEntity(NodeInterface::class, '/node/1', 'Test entity', $now, $now, 'Joe Mayo');
 
-    $article = $normalizer->normalize($entity, 'fbia');
-    $this->assertTrue($article instanceof InstantArticle);
-    $this->assertEquals('http://example.com/node/1', $article->getCanonicalURL());
-    $this->assertEquals('Test entity', $article->getHeader()->getTitle()->getPlainText());
-    $this->assertEquals($now, $article->getHeader()->getPublished()->getDatetime()->format('U'));
-    $this->assertEquals($now, $article->getHeader()->getModified()->getDatetime()->format('U'));
-    $this->assertEquals('Joe Mayo', $article->getHeader()->getAuthors()[0]->getName());
-    $children = $article->getChildren();
-    /** @var \Facebook\InstantArticles\Elements\Analytics $analytics */
-    $analytics = $children[0];
-    $this->assertTrue($analytics instanceof Analytics);
-    $this->assertEquals('analytics embed code', $analytics->getHtml()->ownerDocument->saveHTML($analytics->getHtml()));
-    $ads = $article->getHeader()->getAds();
-    $this->assertEquals(1, count($ads));
-    $this->assertEquals($ads[0]->getWidth(), 300);
-    $this->assertEquals($ads[0]->getHeight(), 250);
-    $this->assertEquals($ads[0]->getSource(), 'http://example.com');
+    $normalized = $normalizer->normalize($entity, 'fbia_rss');
+    $this->assertTrue(is_array($normalized));
+    $this->assertEquals('http://example.com/node/1', $normalized['link']);
+    $this->assertEquals('Test entity', $normalized['title']);
+    $this->assertEquals($now_date->format('c'), $normalized['created']);
+    $this->assertEquals($now_date->format('c'), $normalized['modified']);
+    $this->assertEquals('Joe Mayo', $normalized['author']);
+    $this->assertTrue($normalized['content:encoded'] instanceof InstantArticle);
   }
 
 }
