@@ -8,6 +8,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
@@ -51,16 +52,26 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
   protected $entityFieldManager;
 
   /**
+   * Entity type manager serivice.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * ContentEntityNormalizer constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config
    *   Config factory service.
    * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
    *   Entity field manager service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   Entity type manager service.
    */
-  public function __construct(ConfigFactoryInterface $config, EntityFieldManagerInterface $entity_field_manager) {
+  public function __construct(ConfigFactoryInterface $config, EntityFieldManagerInterface $entity_field_manager, EntityTypeManagerInterface $entity_type_manager) {
     $this->baseSettings = $config->get('fb_instant_articles.base_settings');
     $this->entityFieldManager = $entity_field_manager;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -88,8 +99,9 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
     ];
     // If we're given an entity_view_display object as context, use that as a
     // mapping to guide the normalization.
-    if (isset($context['entity_view_display'])) {
-      $components = $this->getApplicableComponents($context['entity_view_display']);
+    if ($display = $this->entityViewDisplay($data, $context)) {
+      $context['entity_view_display'] = $display;
+      $components = $this->getApplicableComponents($display);
       uasort($components, [SortArray::class, 'sortByWeightElement']);
       // @todo sort by region as well header, content, body
       foreach ($components as $name => $options) {
@@ -106,6 +118,26 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
   }
 
   /**
+   * Helper function to get the fb_instant_articles entity view display object.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   Content entity being normalized.
+   * @param array $context
+   *   Context array passed to the normalize method.
+   *
+   * @return \Drupal\Core\Entity\Entity\EntityViewDisplay
+   *   Default entity view display object with the mapping for the given entity.
+   */
+  protected function entityViewDisplay(ContentEntityInterface $entity, array $context) {
+    if (isset($context['entity_view_display'])) {
+      return $context['entity_view_display'];
+    }
+    elseif ($display = $this->entityTypeManager->getStorage('entity_view_display')->load($entity->getEntityTypeId() . '.' . $entity->bundle() . '.fb_instant_articles')) {
+      return $display;
+    }
+  }
+
+  /**
    * Normalize the canonical URL into the Instant Article object.
    *
    * @param \Facebook\InstantArticles\Elements\InstantArticle $article
@@ -118,13 +150,26 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    */
   public function normalizeCanonicalUrl(InstantArticle $article, ContentEntityInterface $entity) {
     // Set the canonical URL.
+    $article->withCanonicalURL($this->entityCanonicalUrl($entity));
+    return $article;
+  }
+
+  /**
+   * Helper function to compute the canonical URL for a given entity.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   Content entity being normalized.
+   *
+   * @return string
+   *   The canonical URL for the given entity.
+   */
+  protected function entityCanonicalUrl(ContentEntityInterface $entity) {
     if ($override = $this->baseSettings->get('canonical_url_override')) {
-      $article->withCanonicalURL($override . $entity->toUrl('canonical')->toString());
+      return $override . $entity->toUrl('canonical')->toString();
     }
     else {
-      $article->withCanonicalURL($entity->toUrl('canonical', ['absolute' => TRUE])->toString());
+      return $entity->toUrl('canonical', ['absolute' => TRUE])->toString();
     }
-    return $article;
   }
 
   /**
@@ -151,31 +196,77 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
       $header->withTitle($label);
     }
     // Set a created date if available.
-    if ($created = $entity->get('created')) {
+    if ($created = $this->entityCreatedTime($entity)) {
       $header->withPublishTime(
         Time::create(Time::PUBLISHED)
           ->withDatetime(
-            \DateTime::createFromFormat('U', $created->value)
+            $created
           )
       );
     }
     // Set a changed date if available.
-    if ($entity instanceof EntityChangedInterface && ($changed = $entity->getChangedTime())) {
+    if ($changed = $this->entityChangedTime($entity)) {
       $header->withModifyTime(
         Time::create(Time::MODIFIED)
           ->withDatetime(
-            \DateTime::createFromFormat('U', $changed)
+            $changed
           )
       );
     }
     // Default the article author to the username.
-    if ($entity instanceof EntityOwnerInterface && ($owner = $entity->getOwner())) {
+    if ($author = $this->entityAuthor($entity)) {
       $header->addAuthor(
         Author::create()
-          ->withName($owner->getDisplayName())
+          ->withName($author)
       );
     }
     return $article;
+  }
+
+  /**
+   * Helper function to get the created time of the given entity if applicable.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   Content entity being normalized.
+   *
+   * @return bool|\DateTime
+   *   Created time of the given entity.
+   */
+  protected function entityCreatedTime(ContentEntityInterface $entity) {
+    if ($created = $entity->get('created')) {
+      return \DateTime::createFromFormat('U', $created->value);
+    }
+  }
+
+  /**
+   * Helper function to get the changed time of the given entity if applicable.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   Content entity being normalized.
+   *
+   * @return bool|\DateTime
+   *   Changed time of the given entity.
+   */
+  protected function entityChangedTime(ContentEntityInterface $entity) {
+    if ($entity instanceof EntityChangedInterface && ($changed = $entity->getChangedTime())) {
+      return \DateTime::createFromFormat('U', $changed);
+    }
+  }
+
+  /**
+   * Helper function to pull the author name out of an entity.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   Content entity being normalized.
+   *
+   * @return string|null
+   *   Author name if there is one.
+   */
+  protected function entityAuthor(ContentEntityInterface $entity) {
+    // Default the article author to the username.
+    if ($entity instanceof EntityOwnerInterface && ($owner = $entity->getOwner())) {
+      return $owner->getDisplayName();
+    }
   }
 
   /**

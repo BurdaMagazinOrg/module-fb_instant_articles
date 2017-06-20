@@ -30,6 +30,10 @@ class InstantArticleEncoder implements EncoderInterface {
    * {@inheritdoc}
    */
   public function encode($data, $format, array $context = []) {
+    // This encoder strictly supports only a single Instant Article object.
+    if (is_array($data)) {
+      $data = reset($data);
+    }
     /** @var \Facebook\InstantArticles\Elements\InstantArticle $data */
     return $data->render();
   }

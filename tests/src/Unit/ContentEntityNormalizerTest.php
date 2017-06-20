@@ -6,6 +6,9 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Url;
 use Drupal\fb_instant_articles\Normalizer\ContentEntityNormalizer;
@@ -36,6 +39,9 @@ class ContentEntityNormalizerTest extends UnitTestCase {
     $entity_field_manager = $this->getMockBuilder(EntityFieldManagerInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
+    $entity_type_manager = $this->getMockBuilder(EntityTypeManagerInterface::class)
+      ->disableOriginalConstructor()
+      ->getMock();
     $content_entity = $this->getMockBuilder(ContentEntityInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
@@ -43,7 +49,7 @@ class ContentEntityNormalizerTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $normalizer = new ContentEntityNormalizer($config_factory, $entity_field_manager);
+    $normalizer = new ContentEntityNormalizer($config_factory, $entity_field_manager, $entity_type_manager);
     $this->assertTrue($normalizer->supportsNormalization($content_entity, 'fbia'));
     $this->assertFalse($normalizer->supportsNormalization($content_entity, 'json'));
     $this->assertFalse($normalizer->supportsNormalization($config_entity, 'fbia'));
@@ -104,8 +110,18 @@ class ContentEntityNormalizerTest extends UnitTestCase {
     $entity_field_manager = $this->getMockBuilder(EntityFieldManagerInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
+    $entity_storage = $this->getMock(EntityStorageInterface::class);
+    $entity_type_manager = $this->getMockBuilder(EntityTypeManagerInterface::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $entity_type_manager->method('getStorage')
+      ->willReturn($entity_storage);
     $content_entity_normalizer = $this->getMockBuilder(ContentEntityNormalizer::class)
-      ->setConstructorArgs([$config_factory, $entity_field_manager])
+      ->setConstructorArgs([
+        $config_factory,
+        $entity_field_manager,
+        $entity_type_manager,
+      ])
       ->setMethods(['getApplicableComponents'])
       ->getMock();
     $content_entity_normalizer->method('getApplicableComponents')

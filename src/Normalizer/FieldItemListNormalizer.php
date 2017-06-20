@@ -44,6 +44,7 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
         $component = $display->getComponent($object->getName());
         $renderer->viewInstantArticle($object, $article, $component['region']);
       }
+      // @todo should we try applying Transformer to the rendered output of non-fbia fields?
     }
     // @todo take a crack at doing the conversion without a mapping?
   }
