@@ -41,11 +41,7 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
   }
 
   /**
-   * Provide the basic form which calls through to subforms.
-   *
-   * If overridden, it is best to call through to the parent,
-   * or to at least make sure all of the functions in this form
-   * are called.
+   * {@inheritdoc}
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     $form['info'] = [
@@ -76,13 +72,7 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
    * Set the values for this filter.
    *
    * This applies to all node bundles that implement custom settings for the
-   * view mode.
-   *
-   * This uses an unreliable method for detecting custom settings for node
-   * bundles.  The method is to check for a config entity for the entity display
-   * settings, for the bundle/view mode.  Essentially this looks for a yml
-   * file/record for the custom settings, and one is found, the bundle is
-   * considered FIA active.
+   * fb_instant_articles view mode.
    */
   protected function enabledNodeBundlesSetValues() {
     /*
