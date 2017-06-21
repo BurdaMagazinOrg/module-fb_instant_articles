@@ -2,6 +2,7 @@
 
 namespace Drupal\fb_instant_articles_views\Plugin\views\filter;
 
+use Drupal\fb_instant_articles\Form\EntityViewDisplayEditForm;
 use Drupal\views\Plugin\views\filter\FilterPluginBase;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
@@ -20,10 +21,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ValidFacebookInstantArticles extends FilterPluginBase {
 
-  const FIA_VIEW_MODE = 'fb_instant_articles';
-
+  /**
+   * Entity type bundle info service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
+   */
   protected $entityTypeBundleInfo;
 
+  /**
+   * Entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
   protected $entityTypeManager;
 
   /**
@@ -40,7 +49,7 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   Entity type manager service.
    */
-  public function __construct($configuration,
+  public function __construct(array $configuration,
                               $plugin_id,
                               $plugin_definition,
                               EntityTypeBundleInfoInterface $entity_type_bundle_info,
@@ -122,7 +131,7 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
     $entity_storage = $this->entityTypeManager->getStorage('entity_view_display');
     $node_types = [];
     foreach ($this->entityTypeBundleInfo->getBundleInfo('node') as $id => $bundle) {
-      $view_mode_id = 'node.' . $id . '.' . static::FIA_VIEW_MODE;
+      $view_mode_id = 'node.' . $id . '.' . EntityViewDisplayEditForm::FBIA_VIEW_MODE;
       $view_mode = $entity_storage->load($view_mode_id);
 
       if ($view_mode instanceof EntityViewDisplayInterface) {
