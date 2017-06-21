@@ -9,9 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 
 /**
  * Simple filter that checks if a node implements the FIA custom view mode.
@@ -20,21 +18,34 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ViewsFilter("validfacebookinstantarticles")
  */
-class ValidFacebookInstantArticles extends FilterPluginBase implements ContainerFactoryPluginInterface{
+class ValidFacebookInstantArticles extends FilterPluginBase {
 
   const FIA_VIEW_MODE = 'fb_instant_articles';
+
+  protected $entityTypeBundleInfo;
+
+  protected $entityTypeManager;
 
   /**
    * ValidFacebookInstantArticles constructor.
    *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
    * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
+   *   Entity type bundle info service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   Entity type manager service.
    */
   public function __construct($configuration,
                               $plugin_id,
                               $plugin_definition,
                               EntityTypeBundleInfoInterface $entity_type_bundle_info,
                               EntityTypeManagerInterface $entity_type_manager) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityTypeBundleInfo = $entity_type_bundle_info;
     $this->entityTypeManager = $entity_type_manager;
   }
@@ -108,35 +119,10 @@ class ValidFacebookInstantArticles extends FilterPluginBase implements Container
    * fb_instant_articles view mode.
    */
   protected function enabledNodeBundlesSetValues() {
-    /*
-     * @var \Drupal\Core\Entity\EntityTypeBundleInfo $entity_bundle_info
-     *  entity_type.bundle.info
-     */
-    $entity_bundle_info = $this->entityTypeBundleInfo;
-
-    /*
-     * @var \Drupal\Core\Entity\EntityStorageInterface $entity_storage
-     *   View Mode entity storage handler
-     */
     $entity_storage = $this->entityTypeManager->getStorage('entity_view_display');
-
-    /*
-     * @var string[] nodeTypes
-     *   an array of node types that implement our custom view mode
-     */
     $node_types = [];
-    foreach ($entity_bundle_info->getBundleInfo('node') as $id => $bundle) {
-
-      /*
-       * @var string $view_mode_id
-       *   the string id for the view mode entity
-       */
+    foreach ($this->entityTypeBundleInfo->getBundleInfo('node') as $id => $bundle) {
       $view_mode_id = 'node.' . $id . '.' . static::FIA_VIEW_MODE;
-
-      /*
-       * @var \Drupal\Core\Entity\EntityInterface|null $view_mode
-       *   Config entity for the view mode, if it exists
-       */
       $view_mode = $entity_storage->load($view_mode_id);
 
       if ($view_mode instanceof EntityViewDisplayInterface) {
@@ -145,13 +131,8 @@ class ValidFacebookInstantArticles extends FilterPluginBase implements Container
     }
 
     if (count($node_types) > 0) {
-      /*
-       * Only set the value and operator if we have some valid node types, so
-       * that we don't break the query.  Leaving them as they are will result
-       * in an empty query, which is good
-       */
       $this->value = $node_types;
-      $this->operator = "in";
+      $this->operator = 'IN';
     }
   }
 
