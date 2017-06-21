@@ -3,6 +3,7 @@
 namespace Drupal\fb_instant_articles\Form;
 
 use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\fb_instant_articles\Regions;
 use Drupal\field_ui\Form\EntityViewDisplayEditForm as CoreEntityViewDisplayEditForm;
 
 /**
@@ -16,15 +17,15 @@ class EntityViewDisplayEditForm extends CoreEntityViewDisplayEditForm {
   public function getRegions() {
     $regions = parent::getRegions();
     if ($this->getEntity()->getOriginalMode() === 'fb_instant_articles') {
-      $new_regions['header'] = [
+      $new_regions[Regions::REGION_HEADER] = [
         'title' => $this->t('Header'),
         'message' => $this->t('No fields are displayed in this region.'),
       ];
-      $new_regions['content'] = [
+      $new_regions[Regions::REGION_CONTENT] = [
         'title' => $this->t('Body'),
         'message' => $this->t('No fields are displayed in this region.'),
       ];
-      $new_regions['footer'] = [
+      $new_regions[Regions::REGION_FOOTER] = [
         'title' => $this->t('Footer'),
         'message' => $this->t('No fields are displayed in this region.'),
       ];

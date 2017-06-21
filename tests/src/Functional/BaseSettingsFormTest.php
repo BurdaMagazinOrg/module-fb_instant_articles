@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\fb_instant_articles\Functional;
 
+use Drupal\fb_instant_articles\AdTypes;
 use Drupal\Tests\BrowserTestBase;
 
 /**
@@ -56,7 +57,7 @@ class BaseSettingsFormTest extends BrowserTestBase {
     $values = [
       'page_id' => 'test_page_id',
       'style' => 'test_style',
-      'ads_type' => FB_INSTANT_ARTICLES_AD_TYPE_FBAN,
+      'ads_type' => AdTypes::AD_TYPE_FBAN,
       'ads_an_placement_id' => '1234_',
       'ads_dimensions' => '300x250',
       'analytics_embed_code' => 'test_analytics_embed_code',
@@ -70,7 +71,7 @@ class BaseSettingsFormTest extends BrowserTestBase {
     $assert = $this->assertSession();
     $assert->fieldValueEquals('page_id', 'test_page_id');
     $assert->fieldValueEquals('style', 'test_style');
-    $assert->fieldValueEquals('ads_type', FB_INSTANT_ARTICLES_AD_TYPE_FBAN);
+    $assert->fieldValueEquals('ads_type', AdTypes::AD_TYPE_FBAN);
     $assert->fieldValueEquals('ads_an_placement_id', '1234_');
     $assert->fieldValueEquals('ads_dimensions', '300x250');
     $assert->fieldValueEquals('analytics_embed_code', 'test_analytics_embed_code');
@@ -84,14 +85,14 @@ class BaseSettingsFormTest extends BrowserTestBase {
     $assert->pageTextContains('You must specify a valid Placement ID');
 
     // Test invalid ads source URL.
-    $values['ads_type'] = FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL;
+    $values['ads_type'] = AdTypes::AD_TYPE_SOURCE_URL;
     $values['ads_iframe_url'] = 'invalid';
     $this->drupalPostForm(NULL, $values, t('Save configuration'));
     $assert = $this->assertSession();
     $assert->pageTextContains('You must specify a valid source URL');
 
     // Test invalid ads embed code.
-    $values['ads_type'] = FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE;
+    $values['ads_type'] = AdTypes::AD_TYPE_EMBED_CODE;
     $this->drupalPostForm(NULL, $values, t('Save configuration'));
     $assert = $this->assertSession();
     $assert->pageTextContains('You must specify Embed Code');

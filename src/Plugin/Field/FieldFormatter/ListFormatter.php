@@ -1,7 +1,13 @@
 <?php
 
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
+
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
+use Facebook\InstantArticles\Elements\InstantArticle;
+use Facebook\InstantArticles\Elements\ListElement;
+use Facebook\InstantArticles\Elements\ListItem;
 
 /**
  * Plugin implementation of the 'fbia_list' formatter.
@@ -10,13 +16,15 @@ use Drupal\Core\Form\FormStateInterface;
  *   id = "fbia_list",
  *   label = @Translation("FBIA List"),
  *   field_types = {
+ *     "string",
+ *     "string_long",
  *     "list_string",
  *     "list_integer",
  *     "list_float",
  *   }
  * )
  */
-class ListFormatter extends FormatterBase {
+class ListFormatter extends FormatterBase implements InstantArticleFormatterInterface {
 
   /**
    * {@inheritdoc}
@@ -45,6 +53,29 @@ class ListFormatter extends FormatterBase {
    */
   public function settingsSummary() {
     return [$this->getSetting('is_ordered') ? $this->t('Ordered') : $this->t('Unordered')];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+    if (!$items->isEmpty()) {
+      if ($this->getSetting('is_ordered')) {
+        $list = ListElement::createOrdered();
+      }
+      else {
+        $list = ListElement::createUnordered();
+      }
+      foreach ($items as $delta => $item) {
+        $list->addItem(
+          ListItem::create()
+            ->appendText($item->value)
+        );
+      }
+      // Lists can only be added to the content part of an instant article, so
+      // we ignore $region.
+      $article->addChild($list);
+    }
   }
 
 }

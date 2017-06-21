@@ -2,7 +2,11 @@
 
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\FieldItemInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
+use Facebook\InstantArticles\Elements\InstantArticle;
 use Facebook\InstantArticles\Elements\Interactive;
 
 /**
@@ -12,13 +16,12 @@ use Facebook\InstantArticles\Elements\Interactive;
  *   id = "fbia_interactive",
  *   label = @Translation("FBIA Interactive"),
  *   field_types = {
- *     "text",
- *     "text_long",
- *     "text_with_summary",
+ *     "string",
+ *     "string_long"
  *   }
  * )
  */
-class InteractiveFormatter extends FormatterBase {
+class InteractiveFormatter extends FormatterBase implements InstantArticleFormatterInterface {
 
   /**
    * {@inheritdoc}
@@ -26,8 +29,8 @@ class InteractiveFormatter extends FormatterBase {
   public static function defaultSettings() {
     return [
       'source_type' => self::SOURCE_TYPE_URL,
-      'width' => '',
-      'height' => '',
+      'width' => NULL,
+      'height' => NULL,
       'margin' => Interactive::NO_MARGIN,
     ] + parent::defaultSettings();
   }
@@ -88,6 +91,45 @@ class InteractiveFormatter extends FormatterBase {
     $margin = $this->getSetting('margin');
     $summary[] = $this->t('Margin setting: @margin', ['@margin' => $margin === Interactive::NO_MARGIN ? $this->t('No margin') : $this->t('Column width')]);
     return $summary;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+    foreach ($items as $delta => $item) {
+      // Create the interactive object per the field settings.
+      $interactive = Interactive::create();
+      if ($width = $this->getSetting('width')) {
+        $interactive->withWidth((int) $width);
+      }
+      if ($height = $this->getSetting('height')) {
+        $interactive->withHeight((int) $height);
+      }
+      if ($this->getSetting('source_type') === self::SOURCE_TYPE_HTML) {
+        $interactive->withHTML($this->getItemValue($item));
+      }
+      else {
+        $interactive->withSource($this->getItemValue($item));
+      }
+      // Interactive elements can only be added to the content of the article,
+      // ignore $region setting and add to the Body.
+      $article->addChild($interactive);
+    }
+  }
+
+  /**
+   * Return the value for the interactive embed that we are interested in.
+   *
+   * @param \Drupal\Core\Field\FieldItemInterface $item
+   *   Field item.
+   *
+   * @return mixed
+   *   The value of the given field item that stores the Ad value we're
+   *   interested in.
+   */
+  protected function getItemValue(FieldItemInterface $item) {
+    return $item->value;
   }
 
 }

@@ -5,6 +5,7 @@ namespace Drupal\fb_instant_articles\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\UrlHelper;
+use Drupal\fb_instant_articles\AdTypes;
 
 /**
  * Facebook Instant Articles base settings form.
@@ -66,8 +67,13 @@ class BaseSettingsForm extends ConfigFormBase {
     $form['ads']['ads_type'] = [
       '#type' => 'select',
       '#title' => t('Ad Type'),
-      '#default_value' => $config->get('ads.type') ? $config->get('ads.type') : FB_INSTANT_ARTICLES_AD_TYPE_NONE,
-      '#options' => fb_instant_articles_get_ad_types(),
+      '#default_value' => $config->get('ads.type') ? $config->get('ads.type') : AdTypes::AD_TYPE_NONE,
+      '#options' => [
+        AdTypes::AD_TYPE_NONE => t('None'),
+        AdTypes::AD_TYPE_FBAN => t('Facebook Audience Network'),
+        AdTypes::AD_TYPE_SOURCE_URL => t('Source URL'),
+        AdTypes::AD_TYPE_EMBED_CODE => t('Embed Code'),
+      ],
       '#description' => t('<strong>Note:</strong> this module will automatically place the ads within your articles.'),
       '#attributes' => ['class' => ['ad-type']],
     ];
@@ -83,7 +89,7 @@ class BaseSettingsForm extends ConfigFormBase {
       ],
       '#states' => [
         'visible' => [
-          '[name=ads_type]' => ['value' => FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL],
+          '[name=ads_type]' => ['value' => AdTypes::AD_TYPE_SOURCE_URL],
         ],
       ],
     ];
@@ -99,7 +105,7 @@ class BaseSettingsForm extends ConfigFormBase {
       ],
       '#states' => [
         'visible' => [
-          '[name=ads_type]' => ['value' => FB_INSTANT_ARTICLES_AD_TYPE_FBAN],
+          '[name=ads_type]' => ['value' => AdTypes::AD_TYPE_FBAN],
         ],
       ],
     ];
@@ -115,7 +121,7 @@ class BaseSettingsForm extends ConfigFormBase {
       ],
       '#states' => [
         'visible' => [
-          '[name=ads_type]' => ['value' => FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE],
+          '[name=ads_type]' => ['value' => AdTypes::AD_TYPE_EMBED_CODE],
         ],
       ],
     ];
@@ -129,7 +135,7 @@ class BaseSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('ads.dimensions'),
       '#states' => [
         'invisible' => [
-          '[name=ads_type]' => ['value' => FB_INSTANT_ARTICLES_AD_TYPE_NONE],
+          '[name=ads_type]' => ['value' => AdTypes::AD_TYPE_NONE],
         ],
       ],
     ];
@@ -179,7 +185,7 @@ class BaseSettingsForm extends ConfigFormBase {
    */
   public function validateAdSourceUrl(array &$form, FormStateInterface $form_state) {
     // Only validate if Source URL is selected as ad type.
-    if ($form_state->getValue('ads_type') != FB_INSTANT_ARTICLES_AD_TYPE_SOURCE_URL) {
+    if ($form_state->getValue('ads_type') != AdTypes::AD_TYPE_SOURCE_URL) {
       return;
     }
 
@@ -188,7 +194,7 @@ class BaseSettingsForm extends ConfigFormBase {
       $form_state->setErrorByName('ads_iframe_url', $this->t('You must specify a valid source URL for your Ads when using the Source URL ad type.'));
     }
 
-    if (UrlHelper::isValid($ads_iframe_url, $absolute = FALSE)) {
+    if (!UrlHelper::isValid($ads_iframe_url, TRUE)) {
       $form_state->setErrorByName('ads_iframe_url', $this->t('You must specify a valid source URL for your Ads when using the Source URL ad type.'));
     }
   }
@@ -203,7 +209,7 @@ class BaseSettingsForm extends ConfigFormBase {
    */
   public function validateAnPlacementId(array &$form, FormStateInterface $form_state) {
     // Only validate if Audience Network is selected as ad type.
-    if ($form_state->getValue('ads_type') != FB_INSTANT_ARTICLES_AD_TYPE_FBAN) {
+    if ($form_state->getValue('ads_type') != AdTypes::AD_TYPE_FBAN) {
       return;
     }
 
@@ -227,7 +233,7 @@ class BaseSettingsForm extends ConfigFormBase {
    */
   public function validateAdEmbedCode(array &$form, FormStateInterface $form_state) {
     // Only validate if Embed Code is selected as ad type.
-    if ($form_state->getValue('ads_type') != FB_INSTANT_ARTICLES_AD_TYPE_EMBED_CODE) {
+    if ($form_state->getValue('ads_type') != AdTypes::AD_TYPE_EMBED_CODE) {
       return;
     }
 

@@ -1,0 +1,24 @@
+services:
+  serializer.fb_instant_articles.fbia.encoder:
+    class: Drupal\fb_instant_articles\Encoder\InstantArticleEncoder
+    tags:
+      - { name: encoder, priority: 10, format: 'fbia' }
+
+  serializer.fb_instant_articles.fbia.content_entity:
+    class: Drupal\fb_instant_articles\Normalizer\ContentEntityNormalizer
+    arguments: ['@config.factory', '@entity_field.manager', '@entity_type.manager']
+    tags:
+      - { name: normalizer, priority: 10 }
+
+  serializer.fb_instant_articles.fbia.field_item_list:
+    class: Drupal\fb_instant_articles\Normalizer\FieldItemListNormalizer
+    tags:
+      - { name: normalizer, priority: 10 }
+
+  fb_instant_articles.transformer:
+    class: Drupal\fb_instant_articles\Transformer
+    arguments: ['@fb_instant_articles.transformer_rules_manager']
+
+  fb_instant_articles.transformer_rules_manager:
+    class: Drupal\fb_instant_articles\TransformerRulesManager
+    arguments: ['@module_handler']

@@ -43,6 +43,129 @@ fb_instant_articles.base_settings:
       type: uri
       label: 'Canonical URL override'
 
+field.formatter.settings.fbia_ad:
+  type: mapping
+  label: 'Instant articles ad element formatter settings'
+  mapping:
+    source_type:
+      type: string
+      label: 'Source type'
+    width:
+      type: integer
+      label: 'Width'
+    height:
+      type: integer
+      label: 'Height'
+
+field.formatter.settings.fbia_ad_link:
+  type: mapping
+  label: 'Instant articles ad element formatter settings'
+  mapping:
+    width:
+      type: integer
+      label: 'Width'
+    height:
+      type: integer
+      label: 'Height'
+
+field.formatter.settings.fbia_analytics:
+  type: mapping
+  label: 'Instant articles analytics element formatter settings'
+  mapping:
+    source_type:
+      type: string
+      label: 'Source type'
+
+field.formatter.settings.fbia_author_reference:
+  type: mapping
+  label: 'Instant articles author element formatter settings'
+  mapping:
+    link:
+      type: boolean
+      label: 'Link the author'
+
+field.formatter.settings.fbia_image:
+  type: mapping
+  label: 'Instant articles image element formatter settings'
+  mapping:
+    image_style:
+      type: string
+      label: 'Image style'
+    caption:
+      type: boolean
+      label: 'Caption'
+    likes:
+      type: boolean
+      label: 'Likes'
+    comments:
+      type: boolean
+      label: 'Comments'
+    presentation:
+      type: string
+      label: 'Presentation'
+
+field.formatter.settings.fbia_interactive:
+  type: mapping
+  label: 'Instant articles interactive element formatter settings'
+  mapping:
+    source_type:
+      type: string
+      label: 'Source type'
+    width:
+      type: integer
+      label: 'Width'
+    height:
+      type: integer
+      label: 'Height'
+    margin:
+      type: string
+      label: 'Margin'
+
+field.formatter.settings.fbia_interactive_link:
+  type: mapping
+  label: 'Instant articles interactive element formatter settings'
+  mapping:
+    width:
+      type: integer
+      label: 'Width'
+    height:
+      type: integer
+      label: 'Height'
+    margin:
+      type: string
+      label: 'Margin'
+
+field.formatter.settings.fbia_list:
+  type: mapping
+  label: 'Instant articles list element formatter settings'
+  mapping:
+    is_ordered:
+      type: boolean
+      label: 'Ordered list'
+
+field.formatter.settings.fbia_video:
+  type: mapping
+  label: 'Instant articles video element formatter settings'
+  mapping:
+    presentation:
+      type: string
+      label: 'Presentation'
+    likes:
+      type: boolean
+      label: 'Likes'
+    comments:
+      type: boolean
+      label: 'Comments'
+    controls:
+      type: boolean
+      label: 'Controls'
+    autoplay:
+      type: boolean
+      label: 'Autoplay'
+    feed_cover:
+      type: boolean
+      label: 'Feed cover'
+
 node.type.*.third_party.fb_instant_articles:
   type: mapping
   label: 'Facebook Instant Articles'

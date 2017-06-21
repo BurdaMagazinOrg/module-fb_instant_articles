@@ -8,34 +8,34 @@ use Facebook\InstantArticles\Elements\Header;
 use Facebook\InstantArticles\Elements\InstantArticle;
 
 /**
- * Plugin implementation of the 'fbia_kicker' formatter.
+ * Plugin implementation of the 'fbia_subtitle' formatter.
  *
  * @FieldFormatter(
- *   id = "fbia_kicker",
- *   label = @Translation("FBIA Kicker"),
+ *   id = "fbia_subtitle",
+ *   label = @Translation("FBIA Subtitle"),
  *   field_types = {
  *     "string",
  *     "string_long"
  *   }
  * )
  */
-class KickerFormatter extends FormatterBase implements InstantArticleFormatterInterface {
+class SubTitleFormatter extends FormatterBase implements InstantArticleFormatterInterface {
 
   /**
    * {@inheritdoc}
    */
   public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
-    // Kickers are only added to the header. Get the header, creating it if need
-    // be.
+    // Subtitles only go in the header. Create one if it doesn't exist yet and
+    // ignore the given $region.
     $header = $article->getHeader();
     if (!$header) {
       $header = Header::create();
       $article->withHeader($header);
     }
-    // Note that there can only be one kicker. We use the first value as the
-    // kicker.
+    // Note that there can only be one subtitle. We use the first value as the
+    // subtitle.
     if ($item = $items->get(0)) {
-      $header->withKicker($items->get(0)->value);
+      $header->withSubTitle($items->get(0)->value);
     }
   }
 
