@@ -1,6 +1,7 @@
 services:
   serializer.fb_instant_articles_views.fbia_rss.encoder:
     class: Drupal\fb_instant_articles_views\Encoder\InstantArticleRssEncoder
+    arguments: ['@request_stack']
     tags:
       - { name: encoder, priority: 10, format: 'fbia_rss' }
 

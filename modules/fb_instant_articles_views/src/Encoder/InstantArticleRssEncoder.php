@@ -2,14 +2,17 @@
 
 namespace Drupal\fb_instant_articles_views\Encoder;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\serialization\Encoder\XmlEncoder;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Serializer\Encoder\XmlEncoder as BaseXmlEncoder;
 
 /**
  * Facebook instant articles FBIA RSS encoder.
  */
 class InstantArticleRssEncoder extends XmlEncoder {
+  use StringTranslationTrait;
 
   /**
    * The format that this encoder supports.
@@ -19,10 +22,21 @@ class InstantArticleRssEncoder extends XmlEncoder {
   protected static $format = ['fbia_rss'];
 
   /**
-   * Create a Roku Universal Search Encoder.
+   * The current request object.
+   *
+   * @var \Symfony\Component\HttpFoundation\Request
    */
-  public function __construct() {
+  protected $currentRequest;
+
+  /**
+   * Create a Instant Article RSS encoder.
+   *
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   Request stack.
+   */
+  public function __construct(RequestStack $request_stack) {
     $this->setBaseEncoder(new BaseXmlEncoder('rss'));
+    $this->currentRequest = $request_stack->getCurrentRequest();
   }
 
   /**
@@ -41,20 +55,35 @@ class InstantArticleRssEncoder extends XmlEncoder {
       $data = [$data];
     }
 
+    // Render all each InstantArticle object.
     foreach ($data as $delta => $item) {
       if (!empty($item['content:encoded']) && $item['content:encoded'] instanceof InstantArticle) {
         $data[$delta]['content:encoded'] = $item['content:encoded']->render();
       }
     }
     // Wrapping tags.
-    $data = [
+    $feed_title = $feed_description = '';
+    if (isset($context['views_style_plugin'])) {
+      /** @var \Drupal\rest\Plugin\views\style\Serializer $style */
+      $style = $context['views_style_plugin'];
+      $feed_title = $style->view->getTitle();
+      $feed_description = $style->view->storage->get('description');
+    }
+    $feed_title = !empty($feed_title) ? $feed_title : $this->t('Facebook Instant Articles RSS Feed');
+    $encoded = [
       '@version' => '2.0',
       '@xmlns:content' => 'http://purl.org/rss/1.0/modules/content/',
       'channel' => [
-        'item' => $data,
+        'title' => $feed_title,
+        'link' => $this->currentRequest->getSchemeAndHttpHost(),
+        'lastBuildDate' => date('c', time()),
       ],
     ];
-    return parent::encode($data, $format, $context);
+    if (!empty($feed_description)) {
+      $encoded['channel']['description'] = $feed_description;
+    }
+    $encoded['channel']['item'] = $data;
+    return parent::encode($encoded, $format, $context);
   }
 
 }
