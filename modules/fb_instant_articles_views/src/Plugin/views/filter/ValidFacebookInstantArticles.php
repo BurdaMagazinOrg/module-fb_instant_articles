@@ -1,20 +1,19 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\views\Plugin\views\filter\ImplementsViewMode.
- */
-
 namespace Drupal\fb_instant_articles_views\Plugin\views\filter;
 
+use Drupal\fb_instant_articles\Form\EntityViewDisplayEditForm;
 use Drupal\views\Plugin\views\filter\FilterPluginBase;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Simple filter that checks if a node implements the FIA custom view mode
+ * Simple filter that checks if a node implements the FIA custom view mode.
  *
  * @ingroup views_filter_handlers
  *
@@ -22,7 +21,56 @@ use Drupal\Core\Entity\EntityInterface;
  */
 class ValidFacebookInstantArticles extends FilterPluginBase {
 
-  const FIA_VIEW_MODE = 'fb_instant_articles_views_rss';
+  /**
+   * Entity type bundle info service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
+   */
+  protected $entityTypeBundleInfo;
+
+  /**
+   * Entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * ValidFacebookInstantArticles constructor.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
+   *   Entity type bundle info service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   Entity type manager service.
+   */
+  public function __construct(array $configuration,
+                              $plugin_id,
+                              $plugin_definition,
+                              EntityTypeBundleInfoInterface $entity_type_bundle_info,
+                              EntityTypeManagerInterface $entity_type_manager) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->entityTypeBundleInfo = $entity_type_bundle_info;
+    $this->entityTypeManager = $entity_type_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.bundle.info'),
+      $container->get('entity_type.manager')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -34,16 +82,19 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function canExpose() { return FALSE; }
+  public function canExpose() {
+    return FALSE;
+  }
+
   /**
    * {@inheritdoc}
    */
-  public function canBuildGroup() { return FALSE; }
+  public function canBuildGroup() {
+    return FALSE;
+  }
+
   /**
-   * Provide the basic form which calls through to subforms.
-   * If overridden, it is best to call through to the parent,
-   * or to at least make sure all of the functions in this form
-   * are called.
+   * {@inheritdoc}
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     $form['info'] = [
@@ -64,67 +115,33 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
 
   /**
    * {@inheritdoc}
-   *
-   *
    */
   public function query() {
-
     $this->enabledNodeBundlesSetValues();
     parent::query();
   }
 
   /**
-   * Set the values for this filter to all node bundles that implement custom settings for the view mode
+   * Set the values for this filter.
    *
-   * This uses an unreliable method for detecting custom settings for node bundles.  The method is to check for a config
-   * Entity for the entity display settings, for the bundle/view mode.  Essentially this looks for a yml file/record
-   * for the custom settings, and one is found, the bundle is considered FIA active.
-   *
+   * This applies to all node bundles that implement custom settings for the
+   * fb_instant_articles view mode.
    */
   protected function enabledNodeBundlesSetValues() {
-    /**
-     * @var \Drupal\Core\Entity\EntityTypeBundleInfo $entityBundleInfo
-     *  entity_type.bundle.info
-     */
-    $entityBundleInfo = \Drupal::service('entity_type.bundle.info');
+    $entity_storage = $this->entityTypeManager->getStorage('entity_view_display');
+    $node_types = [];
+    foreach ($this->entityTypeBundleInfo->getBundleInfo('node') as $id => $bundle) {
+      $view_mode_id = 'node.' . $id . '.' . EntityViewDisplayEditForm::FBIA_VIEW_MODE;
+      $view_mode = $entity_storage->load($view_mode_id);
 
-    /**
-     * @var \Drupal\Core\Entity\EntityStorageInterface $entityStorage
-     *   View Mode entity storage handler
-     */
-    $entityStorage = \Drupal::service('entity_type.manager')->getStorage('entity_view_display');
-
-    /**
-     * @var string[] nodeTypes
-     *   an array of node types that implement our custom view mode
-     */
-    $nodeTypes = [];
-    foreach($entityBundleInfo->getBundleInfo('node') as $id=>$bundle) {
-      /**
-       * @var string $viewModeId
-       *   the string id for the view mode entity
-       */
-      $viewModeId = 'node.'.$id.'.'.static::FIA_VIEW_MODE;
-
-      /**
-       * @var \Drupal\Core\Entity\EntityInterface|null $viewMode
-       *   Config entity for the view mode, if it exists
-       */
-      $viewMode = $entityStorage->load($viewModeId);
-
-      if ($viewMode instanceof EntityInterface) {
-        $nodeTypes[$id] = $id;
+      if ($view_mode instanceof EntityViewDisplayInterface) {
+        $node_types[$id] = $id;
       }
     }
 
-    if (count($nodeTypes)>0) {
-      /**
-       * Only set the value and operator if we have some valid node types, so
-       * that we don't break the query.  Leaving them as they are will result
-       * in an empty query, which is good
-       */
-      $this->value = $nodeTypes;
-      $this->operator = "in";
+    if (count($node_types) > 0) {
+      $this->value = $node_types;
+      $this->operator = 'IN';
     }
   }
 

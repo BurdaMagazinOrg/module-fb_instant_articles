@@ -12,6 +12,11 @@ use Drupal\field_ui\Form\EntityViewDisplayEditForm as CoreEntityViewDisplayEditF
 class EntityViewDisplayEditForm extends CoreEntityViewDisplayEditForm {
 
   /**
+   * Name of the FBIA view mode.
+   */
+  const FBIA_VIEW_MODE = 'fb_instant_articles';
+
+  /**
    * {@inheritdoc}
    */
   public function getRegions() {
