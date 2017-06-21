@@ -7,6 +7,11 @@ use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 
 /**
  * Simple filter that checks if a node implements the FIA custom view mode.
@@ -15,9 +20,37 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
  *
  * @ViewsFilter("validfacebookinstantarticles")
  */
-class ValidFacebookInstantArticles extends FilterPluginBase {
+class ValidFacebookInstantArticles extends FilterPluginBase implements ContainerFactoryPluginInterface{
 
   const FIA_VIEW_MODE = 'fb_instant_articles';
+
+  /**
+   * ValidFacebookInstantArticles constructor.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   */
+  public function __construct($configuration,
+                              $plugin_id,
+                              $plugin_definition,
+                              EntityTypeBundleInfoInterface $entity_type_bundle_info,
+                              EntityTypeManagerInterface $entity_type_manager) {
+    $this->entityTypeBundleInfo = $entity_type_bundle_info;
+    $this->entityTypeManager = $entity_type_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.bundle.info'),
+      $container->get('entity_type.manager')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -79,13 +112,13 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
      * @var \Drupal\Core\Entity\EntityTypeBundleInfo $entity_bundle_info
      *  entity_type.bundle.info
      */
-    $entity_bundle_info = \Drupal::service('entity_type.bundle.info');
+    $entity_bundle_info = $this->entityTypeBundleInfo;
 
     /*
      * @var \Drupal\Core\Entity\EntityStorageInterface $entity_storage
      *   View Mode entity storage handler
      */
-    $entity_storage = \Drupal::service('entity_type.manager')->getStorage('entity_view_display');
+    $entity_storage = $this->entityTypeManager->getStorage('entity_view_display');
 
     /*
      * @var string[] nodeTypes
