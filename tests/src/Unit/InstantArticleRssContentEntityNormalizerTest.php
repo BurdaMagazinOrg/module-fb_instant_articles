@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\fb_instant_articles_views\Unit;
+namespace Drupal\Tests\fb_instant_articles\Unit;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
@@ -9,15 +9,14 @@ use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\fb_instant_articles\Normalizer\InstantArticleRssContentEntityNormalizer;
 use Drupal\node\NodeInterface;
-use Drupal\Tests\fb_instant_articles\Unit\ContentEntityNormalizerTestBase;
 use Facebook\InstantArticles\Elements\InstantArticle;
 
 /**
  * Tests the fbia content entity normalizer class.
  *
- * @coversDefaultClass \Drupal\fb_instant_articles_views\Normalizer\InstantArticleRssContentEntityNormalizer
+ * @coversDefaultClass \Drupal\fb_instant_articles\Normalizer\InstantArticleRssContentEntityNormalizer
  *
- * @group fb_instant_articles_views
+ * @group fb_instant_articles
  */
 class InstantArticleRssContentEntityNormalizerTest extends ContentEntityNormalizerTestBase {
 

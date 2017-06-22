@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\fb_instant_articles_api\Form;
+namespace Drupal\fb_instant_articles\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
@@ -25,7 +25,7 @@ class ApiSettingsForm extends ConfigFormBase {
   protected $currentRequest;
 
   /**
-   * Constructs a \Drupal\fb_instant_articles_api\ApiSettingsForm object.
+   * Constructs a \Drupal\fb_instant_articles\ApiSettingsForm object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
@@ -52,8 +52,7 @@ class ApiSettingsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'fb_instant_articles_api.settings',
-      'fb_instant_articles.base_settings',
+      'fb_instant_articles.settings',
     ];
   }
 
@@ -98,15 +97,14 @@ class ApiSettingsForm extends ConfigFormBase {
       $edit_state = $edit;
     }
 
-    $base_config = $this->config('fb_instant_articles.base_settings');
-    $api_config = $this->config('fb_instant_articles_api.settings');
+    $config = $this->config('fb_instant_articles.settings');
 
     // Grab the current module settings from the database to determine where
     // the person is in the configuration state.
-    $app_id = $api_config->get('app_id');
-    $app_secret = $api_config->get('app_secret');
-    $access_token = trim($api_config->get('access_token'));
-    $page_id = $base_config->get('page_id');
+    $app_id = $config->get('app_id');
+    $app_secret = $config->get('app_secret');
+    $access_token = trim($config->get('access_token'));
+    $page_id = $config->get('page_id');
 
     // If the App ID or App Secret haven't been configured for the module yet,
     // drop the person into the initial state.
@@ -207,22 +205,19 @@ class ApiSettingsForm extends ConfigFormBase {
    *   Form state.
    */
   public function fbAppDetailsSubmit(array &$form, FormStateInterface $form_state) {
-    $this->config('fb_instant_articles_api.settings')
+    $this->config('fb_instant_articles.settings')
       // Save the FB app details.
       ->set('app_id', $form_state->getValue('app_id'))
       ->set('app_secret', $form_state->getValue('app_secret'))
       // Clear out the token if there was one since it's invalid now.
       ->set('access_token', '')
       ->set('page_access_token', '')
-      ->save();
-
-    // Clear out FB page if there was one it's invalid now.
-    $this->config('fb_instant_articles.base_settings')
+      // Clear out FB page if there was one it's invalid now.
       ->set('page_id', '')
       ->set('page_name', '')
       ->save();
 
-    $form_state->setRedirect('fb_instant_articles_api.settings_form');
+    $form_state->setRedirect('fb_instant_articles.api_settings_form');
   }
 
   /**
@@ -248,7 +243,7 @@ class ApiSettingsForm extends ConfigFormBase {
     $permissions = ['pages_show_list', 'pages_manage_instant_articles'];
     $helper = $fb->getRedirectLoginHelper();
 
-    $redirect_uri = Url::fromRoute('fb_instant_articles_api.login_callback', [], ['absolute' => TRUE])->toString();
+    $redirect_uri = Url::fromRoute('fb_instant_articles.login_callback', [], ['absolute' => TRUE])->toString();
     $login_url = $helper->getLoginUrl($redirect_uri, $permissions);
 
     $form['module_activation'] = [
@@ -342,10 +337,9 @@ class ApiSettingsForm extends ConfigFormBase {
    *   Form state.
    */
   public function fbPageSubmit(array &$form, FormStateInterface $form_state) {
-    $base_config = $this->config('fb_instant_articles.base_settings');
-    $api_config = $this->config('fb_instant_articles_api.settings');
-    $app_id = $api_config->get('app_id');
-    $app_secret = $api_config->get('app_secret');
+    $config = $this->config('fb_instant_articles.settings');
+    $app_id = $config->get('app_id');
+    $app_secret = $config->get('app_secret');
 
     $fb = new Facebook([
       'app_id' => $app_id,
@@ -353,7 +347,7 @@ class ApiSettingsForm extends ConfigFormBase {
       'default_graph_version' => 'v2.5',
     ]);
 
-    $access_token = $api_config->get('access_token');
+    $access_token = $config->get('access_token');
     $expires = time() + 60 * 60 * 2;
     $access_token = new AccessToken($access_token, $expires);
 
@@ -368,16 +362,16 @@ class ApiSettingsForm extends ConfigFormBase {
         break;
       }
     }
-    if ($page_name && $page_access_token) {
-      $base_config
+    if (isset($page_name) && isset($page_access_token)) {
+      $config
         ->set('page_id', $page_id)
         ->set('page_name', $page_name)
         ->save();
-      $api_config
+      $config
         ->set('page_access_token', $page_access_token)
         ->save();
       drupal_set_message('Success! This Instant Articles module has been activated.');
-      $form_state->setRedirect('fb_instant_articles_api.settings_form');
+      $form_state->setRedirect('fb_instant_articles.api_settings_form');
     }
     else {
       drupal_set_message('There was an error connecting with your Facebook page. Try again.', 'error');
@@ -398,7 +392,7 @@ class ApiSettingsForm extends ConfigFormBase {
    *   FAPI array.
    */
   protected function moduleActivationSummary(array $form, $app_id, $page_id) {
-    $page_name = $this->config('fb_instant_articles.base_settings')->get('page_name');
+    $page_name = $this->config('fb_instant_articles.settings')->get('page_name');
 
     $form['module_activation'] = [
       '#type' => 'details',
@@ -442,7 +436,7 @@ class ApiSettingsForm extends ConfigFormBase {
     $form['module_config']['publishing']['development_mode'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Development Mode'),
-      '#default_value' => $this->config('fb_instant_articles_api.settings')->get('development_mode'),
+      '#default_value' => $this->config('fb_instant_articles.settings')->get('development_mode'),
       '#description' => $this->t('When publishing in development, none of your articles will be made live, and they will be saved as drafts you can edit in the Instant Articles library on your Facebook Page. Whether in development mode or not, articles will not be published live until you have submitted a sample batch to Facebook and passed a one-time review.'),
     ];
 
@@ -453,7 +447,7 @@ class ApiSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('fb_instant_articles_api.settings')
+    $this->config('fb_instant_articles.settings')
       ->set('development_mode', $form_state->getValue('development_mode'))
       ->save();
 

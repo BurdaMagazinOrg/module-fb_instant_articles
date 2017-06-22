@@ -1,7 +1,0 @@
-services:
-  fb_instant_articles.drupal_client:
-    class:  Drupal\fb_instant_articles_api\DrupalClient
-    arguments: ['@config.factory']
-    factory: fb_instant_articles.drupal_client_factory:create
-  fb_instant_articles.drupal_client_factory:
-    class: Drupal\fb_instant_articles_api\DrupalClientFactory

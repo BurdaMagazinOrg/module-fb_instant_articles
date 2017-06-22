@@ -23,7 +23,7 @@ function fb_instant_articles_help($route_name, RouteMatchInterface $route_match)
       return $output;
 
     case 'fb_instant_articles.base_settings_form':
-      $page_id = \Drupal::config('fb_instant_articles.base_settings')->get('page_id');
+      $page_id = \Drupal::config('fb_instant_articles.settings')->get('page_id');
       $output = '';
       $output .= '<h2>' . t('Setup') . '</h2>';
       $output .= '<p>' . t("Once you've activated this Drupal module, set up your Instant Articles and submit them to Facebook for a one-time review. The review is required before you can begin publishing. Follow these steps to get started:") . '</p>';
@@ -68,7 +68,7 @@ function fb_instant_articles_help($route_name, RouteMatchInterface $route_match)
  * Implements hook_page_attachments_alter().
  */
 function fb_instant_articles_page_attachments_alter(array &$page) {
-  $config = \Drupal::config('fb_instant_articles.base_settings');
+  $config = \Drupal::config('fb_instant_articles.settings');
   $path_matcher = \Drupal::service('path.matcher');
 
   if ($path_matcher->isFrontPage() && $page_id = $config->get('page_id')) {

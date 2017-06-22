@@ -1,4 +1,4 @@
-fb_instant_articles.base_settings:
+fb_instant_articles.settings:
   type: config_object
   mapping:
     page_id:
@@ -42,6 +42,18 @@ fb_instant_articles.base_settings:
     canonical_url_override:
       type: uri
       label: 'Canonical URL override'
+    app_id:
+      type: string
+      label: 'App ID'
+    app_secret:
+      type: string
+      label: 'App secret'
+    access_token:
+      type: string
+      label: 'Access token'
+    page_access_token:
+      type: string
+      label: 'Page access token'
 
 field.formatter.settings.fbia_ad:
   type: mapping

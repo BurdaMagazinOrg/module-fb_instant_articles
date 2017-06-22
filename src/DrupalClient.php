@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\fb_instant_articles_api;
+namespace Drupal\fb_instant_articles;
 
 use Facebook\InstantArticles\Client\Client as FbiaClient;
 use Facebook\Exceptions\FacebookResponseException;

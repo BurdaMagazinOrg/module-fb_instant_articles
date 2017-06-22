@@ -18,11 +18,11 @@ class Transformer extends FbiaTransformer {
   protected $transformerRulesManager;
 
   /**
-   * Base settings for the module.
+   * Settings for the module.
    *
    * @var \Drupal\Core\Config\ImmutableConfig
    */
-  protected $baseSettings;
+  protected $config;
 
   /**
    * Transformer constructor.
@@ -44,7 +44,7 @@ class Transformer extends FbiaTransformer {
   public function __construct(TransformerRulesManager $transformer_rules_manager, ConfigFactoryInterface $config_factory) {
     $this->transformerRulesManager = $transformer_rules_manager;
     $this->addRules($this->transformerRulesManager->getRules());
-    $this->baseSettings = $config_factory->get('fb_instant_articles.base_settings');
+    $this->config = $config_factory->get('fb_instant_articles.settings');
     $this->transformerLogging();
   }
 
@@ -80,7 +80,7 @@ class Transformer extends FbiaTransformer {
    */
   protected function transformerLogging() {
     $appender = [
-      'class' => $this->baseSettings->get('enable_logging') ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
+      'class' => $this->config->get('enable_logging') ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
       'layout' => [
         'class' => 'LoggerLayoutSimple',
       ],

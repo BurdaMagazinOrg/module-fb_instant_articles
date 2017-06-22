@@ -29,7 +29,7 @@ class ContentEntityNormalizerTestBase extends UnitTestCase {
    */
   protected function getContentEntityNormalizer(array $settings, array $components) {
     $config_factory = $this->getConfigFactoryStub([
-      'fb_instant_articles.base_settings' => $settings,
+      'fb_instant_articles.settings' => $settings,
     ]);
     $entity_field_manager = $this->getMockBuilder(EntityFieldManagerInterface::class)
       ->disableOriginalConstructor()
