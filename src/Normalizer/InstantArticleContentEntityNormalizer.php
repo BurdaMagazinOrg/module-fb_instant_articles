@@ -29,7 +29,7 @@ use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
  * Takes a content entity and normalizes it into a
  * \Facebook\InstantArticles\Elements\InstantArticle object.
  */
-class ContentEntityNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
+class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
   use StringTranslationTrait;
 
   /**

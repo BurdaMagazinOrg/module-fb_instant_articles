@@ -7,7 +7,7 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\fb_instant_articles_views\Normalizer\ContentEntityNormalizer;
+use Drupal\fb_instant_articles\Normalizer\InstantArticleRssContentEntityNormalizer;
 use Drupal\node\NodeInterface;
 use Drupal\Tests\fb_instant_articles\Unit\ContentEntityNormalizerTestBase;
 use Facebook\InstantArticles\Elements\InstantArticle;
@@ -15,11 +15,11 @@ use Facebook\InstantArticles\Elements\InstantArticle;
 /**
  * Tests the fbia content entity normalizer class.
  *
- * @coversDefaultClass \Drupal\fb_instant_articles_views\Normalizer\ContentEntityNormalizer
+ * @coversDefaultClass \Drupal\fb_instant_articles_views\Normalizer\InstantArticleRssContentEntityNormalizer
  *
  * @group fb_instant_articles_views
  */
-class ContentEntityNormalizerTest extends ContentEntityNormalizerTestBase {
+class InstantArticleRssContentEntityNormalizerTest extends ContentEntityNormalizerTestBase {
 
   /**
    * Helper function to get the content entity normalizer class name.
@@ -28,7 +28,7 @@ class ContentEntityNormalizerTest extends ContentEntityNormalizerTestBase {
    *   Content entity normalizer class name.
    */
   protected function getContentEntityNormalizerClassName() {
-    return ContentEntityNormalizer::class;
+    return InstantArticleRssContentEntityNormalizer::class;
   }
 
   /**
@@ -53,7 +53,7 @@ class ContentEntityNormalizerTest extends ContentEntityNormalizerTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $normalizer = new ContentEntityNormalizer($config_factory, $entity_field_manager, $entity_type_manager);
+    $normalizer = new InstantArticleRssContentEntityNormalizer($config_factory, $entity_field_manager, $entity_type_manager);
     $this->assertFalse($normalizer->supportsNormalization($content_entity, 'fbia'));
     $this->assertTrue($normalizer->supportsNormalization($content_entity, 'fbia_rss'));
     $this->assertFalse($normalizer->supportsNormalization($content_entity, 'json'));

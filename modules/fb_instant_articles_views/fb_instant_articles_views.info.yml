@@ -4,7 +4,8 @@ description: Views module for Facebook Instant Articles.
 core: 8.x
 package: Facebook Instant Articles
 dependencies:
-    0: fb_instant_articles
-    1: node
-    2: user
-    3: views
+ - fb_instant_articles
+ - views
+ - node
+ - user
+ - rest

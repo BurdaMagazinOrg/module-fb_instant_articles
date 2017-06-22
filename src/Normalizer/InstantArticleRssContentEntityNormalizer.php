@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\fb_instant_articles_views\Normalizer;
+namespace Drupal\fb_instant_articles\Normalizer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\fb_instant_articles\Normalizer\ContentEntityNormalizer as BaseContentEntityNormalizer;
+use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer as BaseContentEntityNormalizer;
 
 /**
  * Extends the content entity normalizer that ships with the base module.
  *
  * Supports the wrapping RSS scafolding for outputing an RSS feed.
  */
-class ContentEntityNormalizer extends BaseContentEntityNormalizer {
+class InstantArticleRssContentEntityNormalizer extends BaseContentEntityNormalizer {
 
   /**
    * Name of the format that this normalizer deals with.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\fb_instant_articles_views\Encoder;
+namespace Drupal\fb_instant_articles\Encoder;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\serialization\Encoder\XmlEncoder;
