@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Views hooks.
+ */
+
+/**
  * Implements hook_views_data_alter().
  */
 function fb_instant_articles_views_views_data_alter(array &$data) {

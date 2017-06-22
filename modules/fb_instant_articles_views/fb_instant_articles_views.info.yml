@@ -3,7 +3,6 @@ type: module
 description: Views module for Facebook Instant Articles.
 core: 8.x
 package: Facebook Instant Articles
-features: true
 dependencies:
     0: fb_instant_articles
     1: node

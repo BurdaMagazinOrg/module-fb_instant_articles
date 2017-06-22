@@ -84,32 +84,6 @@ function fb_instant_articles_page_attachments_alter(array &$page) {
 }
 
 /**
- * Implements hook_init().
- */
-function fb_instant_articles_init() {
-  $enable_transformer_logging = \Drupal::config('fb_instant_articles.base_settings')->get('enable_logging');
-  $appender = [
-    'class' => $enable_transformer_logging ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
-    'layout' => [
-      'class' => 'LoggerLayoutSimple',
-    ],
-  ];
-  $configuration = [
-    'rootLogger' => [
-      'appenders' => [
-        'facebook-instantarticles-transformer',
-        'facebook-instantarticles-client',
-      ],
-    ],
-    'appenders' => [
-      'facebook-instantarticles-transformer' => $appender,
-      'facebook-instantarticles-client' => $appender,
-    ],
-  ];
-  \Logger::configure($configuration);
-}
-
-/**
  * Implements hook_form_FORM_ID_alter() for \Drupal\node\NodeTypeForm.
  *
  * @see fb_instant_articles_form_node_type_form_builder()
