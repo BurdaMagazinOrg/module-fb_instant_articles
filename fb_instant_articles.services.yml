@@ -40,7 +40,13 @@ services:
     arguments: ['@config.factory']
     calls:
      - [setSerializer, ['@serializer']]
+     - [setLogger, ['@logger.channel.fbia']]
+     - [setIaNormalizer, ['@serializer.fb_instant_articles.fbia.content_entity']]
     factory: fb_instant_articles.drupal_client_factory:create
 
   fb_instant_articles.drupal_client_factory:
     class: Drupal\fb_instant_articles\DrupalClientFactory
+
+  logger.channel.fbia:
+    parent: logger.channel_base
+    arguments: ['fbia']

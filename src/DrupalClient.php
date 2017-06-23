@@ -4,10 +4,12 @@ namespace Drupal\fb_instant_articles;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer;
 use Facebook\InstantArticles\Client\Client as FbiaClient;
 use Facebook\Exceptions\FacebookResponseException;
+use Facebook\InstantArticles\Client\InstantArticleStatus;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -34,6 +36,20 @@ class DrupalClient extends FbiaClient {
   protected $serializer;
 
   /**
+   * Logger channel.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  protected $logger;
+
+  /**
+   * Instant article content entity normalizer.
+   *
+   * @var \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer
+   */
+  protected $iaNormalizer;
+
+  /**
    * Set the serializer.
    *
    * @param \Symfony\Component\Serializer\Normalizer\NormalizerInterface $serializer
@@ -43,6 +59,26 @@ class DrupalClient extends FbiaClient {
    */
   public function setSerializer(NormalizerInterface $serializer) {
     $this->serializer = $serializer;
+  }
+
+  /**
+   * Set the logger.
+   *
+   * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
+   *   Logger channel.
+   */
+  public function setLogger(LoggerChannelInterface $logger) {
+    $this->logger = $logger;
+  }
+
+  /**
+   * Set the instant article content entity normalizer.
+   *
+   * @param \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer $ia_normalizer
+   *   Instant article normalizer object.
+   */
+  public function setIaNormalizer(InstantArticleContentEntityNormalizer $ia_normalizer) {
+    $this->iaNormalizer = $ia_normalizer;
   }
 
   /**
@@ -94,6 +130,24 @@ class DrupalClient extends FbiaClient {
       $published = $entity->isPublished();
     }
     $this->importArticle($article, $published);
+    $this->logger->info($this->t('Imported %label (@entity_id) into Facebook Instant Articles.', ['%label' => $entity->label(), '@entity_id' => $entity->id()]));
+  }
+
+  /**
+   * Remove a content entity from Instant Articles.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   Entity to import into Instant Articles.
+   *
+   * @return \Facebook\InstantArticles\Client\InstantArticleStatus
+   *   Status of the response.
+   */
+  public function removeEntity(ContentEntityInterface $entity) {
+    $status = $this->removeArticle($this->iaNormalizer->entityCanonicalUrl($entity));
+    if ($status->getStatus() === InstantArticleStatus::SUCCESS) {
+      $this->logger->info($this->t('Removed %label (@entity_id) from Facebook Instant Articles.', ['%label' => $entity->label(), '@entity_id' => $entity->id()]));
+    }
+    return $status;
   }
 
 }

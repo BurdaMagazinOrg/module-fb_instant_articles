@@ -55,11 +55,8 @@ function fb_instant_articles_api_entity_delete(EntityInterface $entity) {
   // instant articles.
   $display_id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . EntityViewDisplayEditForm::FBIA_VIEW_MODE;
   if (\Drupal::entityTypeManager()->getStorage('entity_view_display')->load($display_id)) {
-    /** @var \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer $fbia_normalizer */
-    $fbia_normalizer = \Drupal::service('serializer.fb_instant_articles.fbia.content_entity');
-    $url = $fbia_normalizer->entityCanonicalUrl($entity);
     /** @var \Drupal\fb_instant_articles\DrupalClient $client */
     $client = \Drupal::service('fb_instant_articles.drupal_client');
-    $client->removeArticle($url);
+    $client->removeEntity($entity);
   }
 }
