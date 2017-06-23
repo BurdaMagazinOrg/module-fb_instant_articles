@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\Tests\fb_instant_articles_api\Functional;
+namespace Drupal\Tests\fb_instant_articles\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 
 /**
  * Tests the FBIA API settings form.
  *
- * @group fb_instant_articles_api
+ * @group fb_instant_articles
  */
 class ApiSettingsFormTest extends BrowserTestBase {
 
@@ -16,7 +16,7 @@ class ApiSettingsFormTest extends BrowserTestBase {
    */
   public static $modules = [
     'node',
-    'fb_instant_articles_api',
+    'fb_instant_articles',
   ];
 
   /**
@@ -61,10 +61,8 @@ class ApiSettingsFormTest extends BrowserTestBase {
 
     // Set an access_token and page_id in order to test the summary page.
     $page_id = '1234';
-    \Drupal::configFactory()->getEditable('fb_instant_articles.base_settings')
+    \Drupal::configFactory()->getEditable('fb_instant_articles.settings')
       ->set('page_id', $page_id)
-      ->save();
-    \Drupal::configFactory()->getEditable('fb_instant_articles_api.settings')
       ->set('access_token', 'token')
       ->save();
     $this->drupalGet('/admin/config/services/fb_instant_articles/api_settings');

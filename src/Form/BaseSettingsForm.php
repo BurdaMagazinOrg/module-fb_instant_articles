@@ -17,7 +17,7 @@ class BaseSettingsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'fb_instant_articles.base_settings',
+      'fb_instant_articles.settings',
     ];
   }
 
@@ -32,7 +32,7 @@ class BaseSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('fb_instant_articles.base_settings');
+    $config = $this->config('fb_instant_articles.settings');
 
     // Add the page id configuration.
     $args = [
@@ -247,7 +247,7 @@ class BaseSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('fb_instant_articles.base_settings')
+    $this->config('fb_instant_articles.settings')
       ->set('page_id', $form_state->getValue('page_id'))
       ->set('style', $form_state->getValue('style'))
       ->set('ads.type', $form_state->getValue('ads_type'))

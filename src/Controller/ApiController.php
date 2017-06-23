@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\fb_instant_articles_api\Controller;
+namespace Drupal\fb_instant_articles\Controller;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
@@ -24,7 +24,7 @@ class ApiController extends ControllerBase {
   protected $configFactory;
 
   /**
-   * Creates a new \Drupal\fb_instant_articles_api\Controller\ApiController.
+   * Creates a new \Drupal\fb_instant_articles\Controller\ApiController.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Config factory service.
@@ -46,7 +46,7 @@ class ApiController extends ControllerBase {
    * Handle Facebook login callback.
    */
   public function facebookLogin() {
-    $config = $this->configFactory->getEditable('fb_instant_articles_api.settings');
+    $config = $this->configFactory->getEditable('fb_instant_articles.settings');
     $fb = new Facebook([
       'app_id' => $config->get('app_id'),
       'app_secret' => $config->get('app_secret'),
@@ -96,7 +96,7 @@ class ApiController extends ControllerBase {
       drupal_set_message($error_msg, 'error');
     }
 
-    return new RedirectResponse(Url::fromRoute('fb_instant_articles_api.settings_form')->toString());
+    return new RedirectResponse(Url::fromRoute('fb_instant_articles.api_settings_form')->toString());
   }
 
 }

@@ -29,7 +29,7 @@ use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
  * Takes a content entity and normalizes it into a
  * \Facebook\InstantArticles\Elements\InstantArticle object.
  */
-class ContentEntityNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
+class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
   use StringTranslationTrait;
 
   /**
@@ -38,11 +38,11 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
   const FORMAT = 'fbia';
 
   /**
-   * Instant articles base settings config.
+   * Instant articles config.
    *
    * @var \Drupal\Core\Config\ImmutableConfig
    */
-  protected $baseSettings;
+  protected $config;
 
   /**
    * Entity field manager service.
@@ -69,7 +69,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    *   Entity type manager service.
    */
   public function __construct(ConfigFactoryInterface $config, EntityFieldManagerInterface $entity_field_manager, EntityTypeManagerInterface $entity_type_manager) {
-    $this->baseSettings = $config->get('fb_instant_articles.base_settings');
+    $this->config = $config->get('fb_instant_articles.settings');
     $this->entityFieldManager = $entity_field_manager;
     $this->entityTypeManager = $entity_type_manager;
   }
@@ -164,7 +164,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    *   The canonical URL for the given entity.
    */
   protected function entityCanonicalUrl(ContentEntityInterface $entity) {
-    if ($override = $this->baseSettings->get('canonical_url_override')) {
+    if ($override = $this->config->get('canonical_url_override')) {
       return $override . $entity->toUrl('canonical')->toString();
     }
     else {
@@ -280,7 +280,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    */
   public function analyticsFromSettings(InstantArticle $article) {
     // Add analytics from settings.
-    if ($analytics_embed_code = $this->baseSettings->get('analytics_embed_code')) {
+    if ($analytics_embed_code = $this->config->get('analytics_embed_code')) {
       $document = new \DOMDocument();
       $fragment = $document->createDocumentFragment();
       $valid_html = @$fragment->appendXML($analytics_embed_code);
@@ -307,14 +307,14 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
    *   Modified instant article.
    */
   protected function adsFromSettings(InstantArticle $article) {
-    $ads_type = $this->baseSettings->get('ads.type');
+    $ads_type = $this->config->get('ads.type');
     if (!$ads_type || $ads_type === AdTypes::AD_TYPE_NONE) {
       return $article;
     }
     $width = 300;
     $height = 250;
     $dimensions_match = [];
-    $dimensions_raw = $this->baseSettings->get('ads.dimensions');
+    $dimensions_raw = $this->config->get('ads.dimensions');
     if (preg_match('/^(?:\s)*(\d+)x(\d+)(?:\s)*$/', $dimensions_raw, $dimensions_match)) {
       $width = intval($dimensions_match[1]);
       $height = intval($dimensions_match[2]);
@@ -331,7 +331,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
 
     switch ($ads_type) {
       case AdTypes::AD_TYPE_FBAN:
-        $an_placement_id = $this->baseSettings->get('ads.an_placement_id');
+        $an_placement_id = $this->config->get('ads.an_placement_id');
         if ($an_placement_id) {
           $ad->withSource(
             Url::fromUri('https://www.facebook.com/adnw_request', [
@@ -346,7 +346,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
         break;
 
       case AdTypes::AD_TYPE_SOURCE_URL:
-        $iframe_url = $this->baseSettings->get('ads.iframe_url');
+        $iframe_url = $this->config->get('ads.iframe_url');
         if ($iframe_url) {
           $ad->withSource(
             $iframe_url
@@ -356,7 +356,7 @@ class ContentEntityNormalizer extends SerializerAwareNormalizer implements Norma
         break;
 
       case AdTypes::AD_TYPE_EMBED_CODE:
-        $embed_code = $this->baseSettings->get('ads.embed_code');
+        $embed_code = $this->config->get('ads.embed_code');
         if ($embed_code) {
           $document = new \DOMDocument();
           $fragment = $document->createDocumentFragment();

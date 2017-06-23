@@ -5,13 +5,25 @@ services:
       - { name: encoder, priority: 10, format: 'fbia' }
 
   serializer.fb_instant_articles.fbia.content_entity:
-    class: Drupal\fb_instant_articles\Normalizer\ContentEntityNormalizer
+    class: Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer
     arguments: ['@config.factory', '@entity_field.manager', '@entity_type.manager']
     tags:
       - { name: normalizer, priority: 10 }
 
   serializer.fb_instant_articles.fbia.field_item_list:
     class: Drupal\fb_instant_articles\Normalizer\FieldItemListNormalizer
+    tags:
+      - { name: normalizer, priority: 10 }
+
+  serializer.fb_instant_articles.fbia_rss.encoder:
+    class: Drupal\fb_instant_articles\Encoder\InstantArticleRssEncoder
+    arguments: ['@request_stack']
+    tags:
+      - { name: encoder, priority: 10, format: 'fbia_rss' }
+
+  serializer.fb_instant_articles.fbia_rss.content_entity:
+    class: Drupal\fb_instant_articles\Normalizer\InstantArticleRssContentEntityNormalizer
+    arguments: ['@config.factory', '@entity_field.manager', '@entity_type.manager']
     tags:
       - { name: normalizer, priority: 10 }
 
@@ -22,3 +34,11 @@ services:
   fb_instant_articles.transformer_rules_manager:
     class: Drupal\fb_instant_articles\TransformerRulesManager
     arguments: ['@module_handler']
+
+  fb_instant_articles.drupal_client:
+    class:  Drupal\fb_instant_articles\DrupalClient
+    arguments: ['@config.factory']
+    factory: fb_instant_articles.drupal_client_factory:create
+
+  fb_instant_articles.drupal_client_factory:
+    class: Drupal\fb_instant_articles\DrupalClientFactory

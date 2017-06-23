@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Url;
-use Drupal\fb_instant_articles\Normalizer\ContentEntityNormalizer;
+use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer;
 use Drupal\Tests\UnitTestCase;
 use Drupal\user\UserInterface;
 
@@ -24,12 +24,12 @@ class ContentEntityNormalizerTestBase extends UnitTestCase {
    * @param array $components
    *   Entity view display components.
    *
-   * @return \Drupal\fb_instant_articles\Normalizer\ContentEntityNormalizer
+   * @return \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer
    *   Content entity normalizer object to test against.
    */
   protected function getContentEntityNormalizer(array $settings, array $components) {
     $config_factory = $this->getConfigFactoryStub([
-      'fb_instant_articles.base_settings' => $settings,
+      'fb_instant_articles.settings' => $settings,
     ]);
     $entity_field_manager = $this->getMockBuilder(EntityFieldManagerInterface::class)
       ->disableOriginalConstructor()
@@ -61,7 +61,7 @@ class ContentEntityNormalizerTestBase extends UnitTestCase {
    *   Content entity normalizer class name.
    */
   protected function getContentEntityNormalizerClassName() {
-    return ContentEntityNormalizer::class;
+    return InstantArticleContentEntityNormalizer::class;
   }
 
   /**

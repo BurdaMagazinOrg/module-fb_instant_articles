@@ -1,4 +1,0 @@
-fb_instant_articles_api.settings_tab:
-  route_name: fb_instant_articles_api.settings_form
-  title: 'API settings'
-  base_route: fb_instant_articles.base_settings_form
