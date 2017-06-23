@@ -13,6 +13,7 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\fb_instant_articles\AdTypes;
+use Drupal\fb_instant_articles\Form\EntityViewDisplayEditForm;
 use Drupal\user\EntityOwnerInterface;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
@@ -129,10 +130,11 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
    *   Default entity view display object with the mapping for the given entity.
    */
   protected function entityViewDisplay(ContentEntityInterface $entity, array $context) {
+    $display_id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . EntityViewDisplayEditForm::FBIA_VIEW_MODE;
     if (isset($context['entity_view_display'])) {
       return $context['entity_view_display'];
     }
-    elseif ($display = $this->entityTypeManager->getStorage('entity_view_display')->load($entity->getEntityTypeId() . '.' . $entity->bundle() . '.fb_instant_articles')) {
+    elseif ($display = $this->entityTypeManager->getStorage('entity_view_display')->load($display_id)) {
       return $display;
     }
   }
@@ -163,7 +165,7 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
    * @return string
    *   The canonical URL for the given entity.
    */
-  protected function entityCanonicalUrl(ContentEntityInterface $entity) {
+  public function entityCanonicalUrl(ContentEntityInterface $entity) {
     if ($override = $this->config->get('canonical_url_override')) {
       return $override . $entity->toUrl('canonical')->toString();
     }

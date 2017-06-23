@@ -2,5 +2,64 @@
 
 /**
  * @file
- * Hook implemetations for Facebook Instant Articles API module.
+ * Hook imlementations.
  */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\fb_instant_articles\Form\EntityViewDisplayEditForm;
+
+/**
+ * Implements hook_entity_insert().
+ */
+function fb_instant_articles_api_entity_insert(EntityInterface $entity) {
+  fb_instant_articles_api_entity_save($entity);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function fb_instant_articles_api_entity_update(EntityInterface $entity) {
+  fb_instant_articles_api_entity_save($entity);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function fb_instant_articles_api_entity_save(EntityInterface $entity) {
+  // We're only interested in content entities.
+  if (!$entity instanceof ContentEntityInterface) {
+    return;
+  }
+
+  // Only attempt import if this entity is of a bundle that is enabled for
+  // instant articles.
+  $display_id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . EntityViewDisplayEditForm::FBIA_VIEW_MODE;
+  if (\Drupal::entityTypeManager()->getStorage('entity_view_display')->load($display_id)) {
+    /** @var \Drupal\fb_instant_articles\DrupalClient $client */
+    $client = \Drupal::service('fb_instant_articles.drupal_client');
+    $client->importEntity($entity);
+  }
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function fb_instant_articles_api_entity_delete(EntityInterface $entity) {
+  // We're only interested in content entities.
+  if (!$entity instanceof ContentEntityInterface) {
+    return;
+  }
+
+  // Only attempt delete if this entity is of a bundle that is enabled for
+  // instant articles.
+  $display_id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . EntityViewDisplayEditForm::FBIA_VIEW_MODE;
+  if (\Drupal::entityTypeManager()->getStorage('entity_view_display')->load($display_id)) {
+    /** @var \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer $fbia_normalizer */
+    $fbia_normalizer = \Drupal::service('serializer.fb_instant_articles.fbia.content_entity');
+    $url = $fbia_normalizer->entityCanonicalUrl($entity);
+    /** @var \Drupal\fb_instant_articles\DrupalClient $client */
+    $client = \Drupal::service('fb_instant_articles.drupal_client');
+    $client->removeArticle($url);
+  }
+}

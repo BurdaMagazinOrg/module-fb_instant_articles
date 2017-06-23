@@ -37,7 +37,7 @@ services:
 
   fb_instant_articles.drupal_client:
     class:  Drupal\fb_instant_articles\DrupalClient
-    arguments: ['@config.factory']
+    arguments: ['@config.factory', '@serializer']
     factory: fb_instant_articles.drupal_client_factory:create
 
   fb_instant_articles.drupal_client_factory:

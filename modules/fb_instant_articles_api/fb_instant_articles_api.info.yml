@@ -1,6 +1,6 @@
 name: Facebook Instant Articles API
 type: module
-description: API module for Facebook Instant Articles.
+description: Implements entity hooks that use the Instant Articles API to delver articles to the Instant Article platform.
 core: 8.x
 package: Facebook Instant Articles
 dependencies:
