@@ -78,7 +78,7 @@ class DrupalClient extends FbiaClient {
    */
   public function importEntity(ContentEntityInterface $entity) {
     // Ensure that we have the services we need.
-    if (!isset($this->serializer) || !isset($this->entityTypeManager)) {
+    if (!isset($this->serializer)) {
       throw new \LogicException($this->t('Error importing entity to Facebook Instant Articles. Serializer is not defined.'));
     }
 

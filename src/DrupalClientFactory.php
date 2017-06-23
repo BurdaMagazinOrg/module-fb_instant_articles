@@ -15,13 +15,11 @@ class DrupalClientFactory {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Config factory service.
-   * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-   *   Serializer service.
    *
    * @return \Drupal\fb_instant_articles\DrupalClient
    *   Instance of DrupalClient.
    */
-  public static function create(ConfigFactoryInterface $config_factory, SerializerInterface $serializer) {
+  public static function create(ConfigFactoryInterface $config_factory) {
     $config = $config_factory->get('fb_instant_articles.settings');
 
     $client = DrupalClient::create(
@@ -29,9 +27,8 @@ class DrupalClientFactory {
       $config->get('app_secret'),
       $config->get('access_token'),
       $config->get('page_id'),
-      $config->get('development_mode') ?? FALSE
+      $config->get('development_mode') ? TRUE : FALSE
     );
-    $client->setSerializer($serializer);
 
     return $client;
   }
