@@ -8,6 +8,7 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\fb_instant_articles\Form\EntityViewDisplayEditForm;
+use Facebook\InstantArticles\Client\InstantArticleStatus;
 
 /**
  * Implements hook_entity_insert().
@@ -39,6 +40,7 @@ function fb_instant_articles_api_entity_save(EntityInterface $entity) {
     /** @var \Drupal\fb_instant_articles\DrupalClient $client */
     $client = \Drupal::service('fb_instant_articles.drupal_client');
     $client->importEntity($entity);
+    drupal_set_message(t('%label published to Facebook Instant Articles.', ['%label' => $entity->label()]));
   }
 }
 
@@ -57,6 +59,9 @@ function fb_instant_articles_api_entity_delete(EntityInterface $entity) {
   if (\Drupal::entityTypeManager()->getStorage('entity_view_display')->load($display_id)) {
     /** @var \Drupal\fb_instant_articles\DrupalClient $client */
     $client = \Drupal::service('fb_instant_articles.drupal_client');
-    $client->removeEntity($entity);
+    $status = $client->removeEntity($entity);
+    if ($status->getStatus() === InstantArticleStatus::SUCCESS) {
+      drupal_set_message(t('%label deleted from Facebook Instant Articles.', ['%label' => $entity->label()]));
+    }
   }
 }
