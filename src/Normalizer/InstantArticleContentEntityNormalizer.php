@@ -103,8 +103,7 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
     if ($display = $this->entityViewDisplay($data, $context)) {
       $context['entity_view_display'] = $display;
       $components = $this->getApplicableComponents($display);
-      uasort($components, [SortArray::class, 'sortByWeightElement']);
-      // @todo sort by region as well header, content, body
+      uasort($components, [$this, 'sortComponents']);
       foreach ($components as $name => $options) {
         $this->serializer->normalize($data->get($name), $format, $context);
       }
@@ -412,6 +411,48 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
     $extra_fields = isset($extra_fields['display']) ? $extra_fields['display'] : [];
 
     return array_diff_key($components, $fields_to_exclude, $extra_fields);
+  }
+
+  /**
+   * Sorts a structured array by region then by weight elements.
+   *
+   * @param array $a
+   *   First item for comparison. The compared items should be associative
+   *   arrays that include a 'region' element and optionally include a 'weight'
+   *   element. For items without a 'weight' element, a default value of 0 will
+   *   be used.
+   * @param array $b
+   *   Second item for comparison.
+   *
+   * @return int
+   *   The comparison result for uasort().
+   */
+  public static function sortComponents(array $a, array $b) {
+    $regions = [
+      'header' => 0,
+      'content' => 1,
+      'footer' => 2,
+    ];
+    $a_region = $a['region'];
+    $b_region = $b['region'];
+    $a_weight = isset($a['weight']) ? $a['weight'] : 0;
+    $b_weight = isset($b['weight']) ? $b['weight'] : 0;
+
+    // Element $a's region comes before element $b.
+    if ($regions[$a_region] < $regions[$b_region]) {
+      return -1;
+    }
+    // Element $a's region comes after element $b.
+    elseif ($regions[$a_region] > $regions[$b_region]) {
+      return 1;
+    }
+    // Elements are in the same region.
+    else {
+      if ($a_weight == $b_weight) {
+        return 0;
+      }
+      return ($a_weight < $b_weight) ? -1 : 1;
+    }
   }
 
 }

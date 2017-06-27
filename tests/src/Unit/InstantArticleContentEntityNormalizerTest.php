@@ -86,4 +86,88 @@ class InstantArticleContentEntityNormalizerTest extends ContentEntityNormalizerT
     $this->assertEquals($ads[0]->getSource(), 'http://example.com');
   }
 
+  /**
+   * Tests the sortComponents() method.
+   *
+   * @dataProvider sortComponentsProvider
+   * @covers ::sortComponents
+   */
+  public function testSortComponents($components, $expected) {
+    uasort($components, [InstantArticleContentEntityNormalizer::class, 'sortComponents']);
+    // Re-key the array for equality check.
+    $components = array_values($components);
+    $this->assertEquals($expected, $components);
+  }
+
+  /**
+   * Data provider for testSortComponents.
+   *
+   * @return array
+   *   Return an array or arrays of arguments to testSortComponents.
+   */
+  public function sortComponentsProvider() {
+    return [
+      [
+        [
+          ['region' => 'header', 'weight' => 0],
+          ['region' => 'content', 'weight' => 1],
+          ['region' => 'footer', 'weigth' => 2],
+        ],
+        [
+          ['region' => 'header', 'weight' => 0],
+          ['region' => 'content', 'weight' => 1],
+          ['region' => 'footer', 'weigth' => 2],
+        ],
+      ],
+      [
+        [
+          ['region' => 'header', 'weight' => 0],
+          ['region' => 'footer', 'weight' => 2],
+          ['region' => 'content', 'weight' => 1],
+        ],
+        [
+          ['region' => 'header', 'weight' => 0],
+          ['region' => 'content', 'weight' => 1],
+          ['region' => 'footer', 'weight' => 2],
+        ],
+      ],
+      [
+        [
+          ['region' => 'footer', 'weight' => 2],
+          ['region' => 'header', 'weight' => 0],
+          ['region' => 'content', 'weight' => 1],
+        ],
+        [
+          ['region' => 'header', 'weight' => 0],
+          ['region' => 'content', 'weight' => 1],
+          ['region' => 'footer', 'weight' => 2],
+        ],
+      ],
+      [
+        [
+          ['region' => 'header', 'weight' => 100],
+          ['region' => 'content', 'weight' => -100],
+          ['region' => 'footer', 'weight' => 0],
+        ],
+        [
+          ['region' => 'header', 'weight' => 100],
+          ['region' => 'content', 'weight' => -100],
+          ['region' => 'footer', 'weight' => 0],
+        ],
+      ],
+      [
+        [
+          ['region' => 'footer'],
+          ['region' => 'content'],
+          ['region' => 'header'],
+        ],
+        [
+          ['region' => 'header'],
+          ['region' => 'content'],
+          ['region' => 'footer'],
+        ],
+      ],
+    ];
+  }
+
 }
