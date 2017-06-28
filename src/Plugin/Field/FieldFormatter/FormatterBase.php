@@ -18,6 +18,11 @@ class FormatterBase extends DrupalFormatterBase implements ContainerFactoryPlugi
 
   const SOURCE_TYPE_HTML = 'html';
 
+  /**
+   * Renderer service.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
   protected $renderer;
 
   /**
