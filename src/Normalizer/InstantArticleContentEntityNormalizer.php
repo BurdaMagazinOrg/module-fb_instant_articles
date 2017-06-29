@@ -108,11 +108,6 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
         $this->serializer->normalize($data->get($name), $format, $context);
       }
     }
-    else {
-      foreach ($data as $name => $field) {
-        $this->serializer->normalize($field, $format, $context);
-      }
-    }
 
     return $article;
   }
