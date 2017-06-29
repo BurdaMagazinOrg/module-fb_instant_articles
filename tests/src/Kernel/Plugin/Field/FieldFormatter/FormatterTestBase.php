@@ -23,6 +23,7 @@ class FormatterTestBase extends KernelTestBase {
     'fb_instant_articles',
     'entity_test',
     'system',
+    'serialization',
   ];
 
   /**

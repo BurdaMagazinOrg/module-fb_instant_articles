@@ -115,7 +115,7 @@ function fb_instant_articles_form_node_type_form_alter(&$form, FormStateInterfac
 /**
  * Entity builder for the node type form with the FBIA toggle.
  *
- * @see fb_instant_articles_display_form_node_type_form_alter()
+ * @see fb_instant_articles_form_node_type_form_alter()
  */
 function fb_instant_articles_form_node_type_form_builder($entity_type, NodeTypeInterface $type, &$form, FormStateInterface $form_state) {
   if ($form_state->getValue('fb_instant_articles_enabled') === 1) {

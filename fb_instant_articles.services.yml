@@ -17,7 +17,7 @@ services:
 
   serializer.fb_instant_articles.fbia_rss.encoder:
     class: Drupal\fb_instant_articles\Encoder\InstantArticleRssEncoder
-    arguments: ['@request_stack']
+    arguments: ['@request_stack', '@config.factory']
     tags:
       - { name: encoder, priority: 10, format: 'fbia_rss' }
 
@@ -38,7 +38,15 @@ services:
   fb_instant_articles.drupal_client:
     class:  Drupal\fb_instant_articles\DrupalClient
     arguments: ['@config.factory']
+    calls:
+     - [setSerializer, ['@serializer']]
+     - [setLogger, ['@logger.channel.fbia']]
+     - [setIaNormalizer, ['@serializer.fb_instant_articles.fbia.content_entity']]
     factory: fb_instant_articles.drupal_client_factory:create
 
   fb_instant_articles.drupal_client_factory:
     class: Drupal\fb_instant_articles\DrupalClientFactory
+
+  logger.channel.fbia:
+    parent: logger.channel_base
+    arguments: ['fbia']

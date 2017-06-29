@@ -2,6 +2,7 @@
 
 namespace Drupal\fb_instant_articles\Encoder;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\serialization\Encoder\XmlEncoder;
 use Facebook\InstantArticles\Elements\InstantArticle;
@@ -29,14 +30,24 @@ class InstantArticleRssEncoder extends XmlEncoder {
   protected $currentRequest;
 
   /**
+   * Instant articles settings.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $config;
+
+  /**
    * Create a Instant Article RSS encoder.
    *
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   Request stack.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config
+   *   Config factory interface.
    */
-  public function __construct(RequestStack $request_stack) {
+  public function __construct(RequestStack $request_stack, ConfigFactoryInterface $config_factory) {
     $this->setBaseEncoder(new BaseXmlEncoder('rss'));
     $this->currentRequest = $request_stack->getCurrentRequest();
+    $this->config = $config_factory->get('fb_instant_articles.settings');
   }
 
   /**
@@ -75,7 +86,7 @@ class InstantArticleRssEncoder extends XmlEncoder {
       '@xmlns:content' => 'http://purl.org/rss/1.0/modules/content/',
       'channel' => [
         'title' => $feed_title,
-        'link' => $this->currentRequest->getSchemeAndHttpHost(),
+        'link' => $this->getLink(),
         'lastBuildDate' => date('c', time()),
       ],
     ];
@@ -84,6 +95,21 @@ class InstantArticleRssEncoder extends XmlEncoder {
     }
     $encoded['channel']['item'] = $data;
     return parent::encode($encoded, $format, $context);
+  }
+
+  /**
+   * Helper function to get the URL of the site for the RSS feed <link> tag.
+   *
+   * @return string
+   *   URL of the site.
+   */
+  protected function getLink() {
+    if ($override = $this->config->get('canonical_url_override')) {
+      return $override;
+    }
+    else {
+      return $this->currentRequest->getSchemeAndHttpHost();
+    }
   }
 
 }
