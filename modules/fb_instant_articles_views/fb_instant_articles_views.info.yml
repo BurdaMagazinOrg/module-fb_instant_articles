@@ -1,6 +1,6 @@
 name: Facebook Instant Articles Views
 type: module
-description: Views module for Facebook Instant Articles.
+description: Exposes an RSS feed of Instant Articles via Views module. For use with the RSS feed method of delivering content to Facebook Instant Articles.
 core: 8.x
 package: Facebook Instant Articles
 dependencies:
