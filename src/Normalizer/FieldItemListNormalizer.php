@@ -92,7 +92,6 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
         }
       }
     }
-    // @todo take a crack at doing the conversion without a mapping?
   }
 
 }
