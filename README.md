@@ -1,19 +1,83 @@
-# Facebook Instant Articles
+# Drupal Facebook Instant Articles
 
-A custom module to produce an RSS field that is compatible with the
-Facebook Instant Articles program.
+The Facebook Instant Articles modules allow administrators to add content from a
+Drupal site to Facebook, to be viewed on mobile devices as Instant Articles.
 
-## To use
+## About the Facebook Instant Articles service
 
-First install the module into your application using the standard approach: https://www.drupal.org/documentation/install/modules-themes/modules-8
+Facebook has [introductory information for publishers](https://instantarticles.fb.com/)
+as well as [in-depth documentation for developers](https://developers.facebook.com/docs/instant-articles).
 
-Then make sure to configure the module as described below.
+## About Drupal integration
 
-## to configure
+Before installing this module or packaged sub-modules, there are two methods to
+choose from for how to add your content to Facebook as Instant Articles (either
+via a RSS feed or Facebook's API).
 
-There is an administration page located at /admin/config/fb_instant_articles/adminconfig
+### 1. RSS Feed method
 
-In this page you can set
+On a basic Drupal site, with one or more article-like content types that you 
+wish to post to Facebook as Instant Articles, the simplest way is to create a
+feed from your Drupal site and then have your Facebook page admin configure
+the Instant Articles options to point to your website to ingest the feed.
 
-- pages id: A facebook provide id, that is used to insert a <meta> tag
-into all Drupal pages that will look like <meta property="fb:pages" content="{id goes here}" />
+You'll need to configure which content types you want to be allowable as Instant
+Articles, then configure a view mode to specify which fields you want to map to
+which region of the Instant Article format, then you're all ready to create the
+feed.
+
+To create the actual feed, simple enable the Facebook Instant Articles Views 
+module. This module ships with a default view which creates an RSS feed of your 
+content accessible at /instant-articles.rss. If you require more customized 
+filtering, simply edit the view.
+
+### 2. API method
+  
+If you're a publisher who wants more control over exact timing of publishing -
+editing, modifying public access, or removing content from your Facebook Instant
+Articles library - the API approach allows for greater control.
+
+Simply enable the Facebook Instant Articles API module. After enabling, 
+configure your API settings on the configuration page at 
+/admin/config/services/fb_instant_articles/api_settings. After that, the module 
+will begin creating/editing/deleting content in Instant Articles as you 
+create/edit/delete your Facebook Instant Articles enabled content types.
+
+## Dependencies
+
+[Facebook Instant Articles PHP SDK](https://github.com/facebook/facebook-instant-articles-sdk-php)
+Provides necessary support for ensuring Drupal content is added to Facebook in
+the required format for Instant Articles. The module ships with a composer.json
+file covering this dependency.
+
+## Installation
+
+Before installing the Drupal Facebook Instant Articles modules, see  "About
+Drupal integration" above to help choose which modules are right for you. Then
+see "Dependencies" above. Then:
+
+- Install Composer dependencies. See [Installing modules' composer dependencies](https://www.drupal.org/docs/8/extending-drupal-8/installing-modules-composer-dependencies).
+- Install the submodules you choose as you would normally install a contributed
+  Drupal module. See [Installing modules](https://www.drupal.org/docs/8/extending-drupal-8/installing-modules) 
+  for further information.
+
+## Configuration
+
+All configuration for the module is made available by the base module, including
+configuration for delivery via the Facebook API. API configuration is only 
+necessary when using the Facebook Instant Articles API module, or another custom
+module that uses the fb_instant_articles.drupal_client service. Thus it can be
+safely ignored if you are using the RSS feed method.
+
+Configuration can be found at /admin/config/services/fb_instant_articles. There
+are a number of options there with ample documentation, please follow the
+descriptions on the form to guide you.
+
+## Issues and Development
+
+- Issues should be made in the project's issue queue on Drupal.org.
+- All development is happening via PRs in [GitHub](https://github.com/BurdaMagazinOrg/module-fb_instant_articles).
+
+## Maintainers
+
+This module is maintained by the [Drupal community](https://www.drupal.org/node/2676800/committers).
