@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Hook imlementations.
+ * Hook implementations.
  */
 
 use Drupal\Core\Entity\EntityInterface;
@@ -27,7 +27,14 @@ function fb_instant_articles_api_entity_update(EntityInterface $entity) {
 }
 
 /**
- * Implements hook_entity_update().
+ * Save the given entity to Instant Articles via the API.
+ *
+ * When an entity is inserted or updated, import the content into Instant
+ * Articles via the API.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *   Entity to import into Instant Articles. In practice we only send content
+ *   entities.
  */
 function fb_instant_articles_api_entity_save(EntityInterface $entity) {
   // We're only interested in content entities.
