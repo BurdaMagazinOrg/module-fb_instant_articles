@@ -2,13 +2,14 @@
 
 namespace Drupal\fb_instant_articles\Normalizer;
 
-use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\InfoParserInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
@@ -60,6 +61,20 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
   protected $entityTypeManager;
 
   /**
+   * Infor parser.
+   *
+   * @var \Drupal\Core\Extension\InfoParserInterface
+   */
+  protected $infoParser;
+
+  /**
+   * Module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * ContentEntityNormalizer constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config
@@ -68,11 +83,17 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
    *   Entity field manager service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   Entity type manager service.
+   * @param \Drupal\Core\Extension\InfoParserInterface $info_parser
+   *   Info parser.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   Module handler.
    */
-  public function __construct(ConfigFactoryInterface $config, EntityFieldManagerInterface $entity_field_manager, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(ConfigFactoryInterface $config, EntityFieldManagerInterface $entity_field_manager, EntityTypeManagerInterface $entity_type_manager, InfoParserInterface $info_parser, ModuleHandlerInterface $module_handler) {
     $this->config = $config->get('fb_instant_articles.settings');
     $this->entityFieldManager = $entity_field_manager;
     $this->entityTypeManager = $entity_type_manager;
+    $this->infoParser = $info_parser;
+    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -89,7 +110,12 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
    */
   public function normalize($data, $format = NULL, array $context = []) {
     /** @var \Drupal\Core\Entity\ContentEntityInterface $data */
-    $article = InstantArticle::create();
+    $article = InstantArticle::create()
+      ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
+      ->addMetaProperty('op:generator:application:version', $this->getApplicationVersion());
+    if ($style = $this->config->get('style')) {
+      $article->withStyle($style);
+    }
     $this->normalizeCanonicalUrl($article, $data);
     $this->normalizeDefaultHeader($article, $data);
     $this->analyticsFromSettings($article);
@@ -452,6 +478,23 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
         return 0;
       }
       return ($a_weight < $b_weight) ? -1 : 1;
+    }
+  }
+
+  /**
+   * Pull out the module version from the info file.
+   *
+   * @return string
+   *   Module version.
+   */
+  protected function getApplicationVersion() {
+    $path = $this->moduleHandler->getModule('fb_instant_articles')->getPath();
+    $info = $this->infoParser->parse($path . '/fb_instant_articles.info.yml');
+    if (isset($info['version'])) {
+      return $info['version'];
+    }
+    else {
+      return '8.x-2.x-dev';
     }
   }
 

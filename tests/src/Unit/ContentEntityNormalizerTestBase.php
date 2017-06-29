@@ -5,6 +5,8 @@ namespace Drupal\Tests\fb_instant_articles\Unit;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\InfoParserInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Url;
 use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer;
@@ -40,16 +42,22 @@ class ContentEntityNormalizerTestBase extends UnitTestCase {
       ->getMock();
     $entity_type_manager->method('getStorage')
       ->willReturn($entity_storage);
+    $info_parser = $this->getMock(InfoParserInterface::class);
+    $module_handler = $this->getMock(ModuleHandlerInterface::class);
     $content_entity_normalizer = $this->getMockBuilder($this->getContentEntityNormalizerClassName())
       ->setConstructorArgs([
         $config_factory,
         $entity_field_manager,
         $entity_type_manager,
+        $info_parser,
+        $module_handler,
       ])
-      ->setMethods(['getApplicableComponents'])
+      ->setMethods(['getApplicableComponents', 'getApplicationVersion'])
       ->getMock();
     $content_entity_normalizer->method('getApplicableComponents')
       ->willReturn($components);
+    $content_entity_normalizer->method('getApplicationVersion')
+      ->willReturn('8.x-2.x');
 
     return $content_entity_normalizer;
   }
