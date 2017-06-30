@@ -6,7 +6,7 @@ services:
 
   serializer.fb_instant_articles.fbia.content_entity:
     class: Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer
-    arguments: ['@config.factory', '@entity_field.manager', '@entity_type.manager']
+    arguments: ['@config.factory', '@entity_field.manager', '@entity_type.manager', '@info_parser', '@module_handler']
     tags:
       - { name: normalizer, priority: 10 }
 
@@ -23,7 +23,7 @@ services:
 
   serializer.fb_instant_articles.fbia_rss.content_entity:
     class: Drupal\fb_instant_articles\Normalizer\InstantArticleRssContentEntityNormalizer
-    arguments: ['@config.factory', '@entity_field.manager', '@entity_type.manager']
+    arguments: ['@config.factory', '@entity_field.manager', '@entity_type.manager', '@info_parser', '@module_handler']
     tags:
       - { name: normalizer, priority: 10 }
 

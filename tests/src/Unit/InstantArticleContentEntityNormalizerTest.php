@@ -7,6 +7,8 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\InfoParserInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer;
 use Drupal\node\NodeInterface;
 use Facebook\InstantArticles\Elements\Analytics;
@@ -42,8 +44,10 @@ class InstantArticleContentEntityNormalizerTest extends ContentEntityNormalizerT
     $config_entity = $this->getMockBuilder(ConfigEntityInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
+    $info_parser = $this->getMock(InfoParserInterface::class);
+    $module_handler = $this->getMock(ModuleHandlerInterface::class);
 
-    $normalizer = new InstantArticleContentEntityNormalizer($config_factory, $entity_field_manager, $entity_type_manager);
+    $normalizer = new InstantArticleContentEntityNormalizer($config_factory, $entity_field_manager, $entity_type_manager, $info_parser, $module_handler);
     $this->assertTrue($normalizer->supportsNormalization($content_entity, 'fbia'));
     $this->assertFalse($normalizer->supportsNormalization($content_entity, 'json'));
     $this->assertFalse($normalizer->supportsNormalization($config_entity, 'fbia'));
