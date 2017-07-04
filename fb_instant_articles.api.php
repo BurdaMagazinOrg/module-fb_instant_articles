@@ -8,6 +8,9 @@
 /**
  * Alter the list of rules used by the FBIA PHP SDK Transformer.
  *
+ * The transformer is used by the FBIA Transformer field formatter to transform
+ * artbitrary HTML markup into distinct FBIA elements.
+ *
  * You can use this hook to add/update/remove rules for the transformer. The
  * module ships with a default set of rules, but it's very likely that you'll
  * have custom markup for elements of your design that do not map to the
@@ -27,6 +30,7 @@
  *   - properties: Associative array or properties for the rules and how to
  *     get their values.
  *
+ * @see https://developers.facebook.com/docs/instant-articles/reference#elements
  * @see https://developers.facebook.com/docs/instant-articles/sdk/transformer-rules
  * @see \Drupal\fb_instant_articles\TransformerRulesManager::defaultRules()
  */
