@@ -4,8 +4,8 @@ description: Exposes an RSS feed of Instant Articles via Views module. For use w
 core: 8.x
 package: Facebook Instant Articles
 dependencies:
- - fb_instant_articles
- - views
- - node
- - user
- - rest
+ - fb_instant_articles:fb_instant_articles
+ - drupal:views
+ - drupal:node
+ - drupal:user
+ - drupal:rest

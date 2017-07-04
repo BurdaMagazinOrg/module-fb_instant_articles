@@ -6,4 +6,4 @@ package: Facebook Instant Articles
 configure: fb_instant_articles.base_settings_form
 dependencies:
   - drupal:system (>= 8.3.x)
-  - serialization
+  - drupal:serialization
