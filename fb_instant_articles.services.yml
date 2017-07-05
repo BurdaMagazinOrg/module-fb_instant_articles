@@ -12,6 +12,7 @@ services:
 
   serializer.fb_instant_articles.fbia.field_item_list:
     class: Drupal\fb_instant_articles\Normalizer\FieldItemListNormalizer
+    arguments: ['@renderer', '@fb_instant_articles.transformer']
     tags:
       - { name: normalizer, priority: 10 }
 

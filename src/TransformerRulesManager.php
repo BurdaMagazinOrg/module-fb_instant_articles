@@ -90,9 +90,21 @@ class TransformerRulesManager {
         'class' => PassThroughRule::class,
         'selector' => 'span',
       ],
+      // The Facebook Transformer doesn't handle nested div's very well, which
+      // ends up being a problem when using non-FBIA prefixed fields, b/c fields
+      // use a lot of divs. This rule matches div's with a child element,
+      // passing them through to continue transforming their children. Note the
+      // more specific rule below which will match any div with a non-empty
+      // text child node, which will match before this, and start a Paragraph.
+      [
+        'class' => PassThroughRule::class,
+        'selector' => '//div[*]',
+      ],
+      // Match any div with a child text node that is non-empty of length
+      // greater than 0.
       [
         'class' => ParagraphRule::class,
-        'selector' => 'div',
+        'selector' => '//div[string-length(normalize-space(text())) > 0]',
       ],
       [
         'class' => ParagraphRule::class,

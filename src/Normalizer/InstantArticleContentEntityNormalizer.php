@@ -134,11 +134,6 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
         $this->serializer->normalize($data->get($name), $format, $context);
       }
     }
-    else {
-      foreach ($data as $name => $field) {
-        $this->serializer->normalize($field, $format, $context);
-      }
-    }
 
     return $article;
   }
@@ -155,11 +150,21 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
    *   Default entity view display object with the mapping for the given entity.
    */
   protected function entityViewDisplay(ContentEntityInterface $entity, array $context) {
-    $display_id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . EntityViewDisplayEditForm::FBIA_VIEW_MODE;
+    $fbia_display_id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . EntityViewDisplayEditForm::FBIA_VIEW_MODE;
+    $default_display_id = $entity->getEntityTypeId() . '.' . $entity->bundle() . '.default';
+    $storage = $this->entityTypeManager->getStorage('entity_view_display');
+
+    /** @var \Drupal\Core\Entity\Entity\EntityViewDisplay $display */
+    // If there is a display passed via $context, use that one.
     if (isset($context['entity_view_display'])) {
       return $context['entity_view_display'];
     }
-    elseif ($display = $this->entityTypeManager->getStorage('entity_view_display')->load($display_id)) {
+    // Try loading the fb_instant_articles entity view display.
+    elseif (($display = $storage->load($fbia_display_id)) && $display->status()) {
+      return $display;
+    }
+    // Try loading the default entity view display.
+    elseif ($display = $storage->load($default_display_id)) {
       return $display;
     }
   }

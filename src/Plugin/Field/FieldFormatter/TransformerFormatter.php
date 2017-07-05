@@ -26,6 +26,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class TransformerFormatter extends FormatterBase implements InstantArticleFormatterInterface {
 
+  /**
+   * FBIA SDK transformer object.
+   *
+   * @var \Drupal\fb_instant_articles\Transformer
+   */
   protected $transformer;
 
   /**
