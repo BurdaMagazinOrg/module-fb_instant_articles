@@ -144,13 +144,14 @@ function fb_instant_articles_form_node_type_form_submit(&$form, FormStateInterfa
         ->save();
     }
     else {
-      $display = new EntityViewDisplay([
+      // Create a new view mode if it's not already created.
+      $display = EntityViewDisplay::create([
         'id' => 'node.' . $entity_type . '.fb_instant_articles',
         'targetEntityType' => 'node',
         'bundle' => $entity_type,
         'mode' => 'fb_instant_articles',
         'status' => TRUE,
-      ], 'entity_view_display');
+      ]);
       $display->save();
     }
   }
