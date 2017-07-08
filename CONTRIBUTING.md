@@ -4,8 +4,13 @@ Contributing
 We encourage collaboration with anyone interested. By contributing to this
 project, you agree to abide by the [Drupal Code of Conduct](https://www.drupal.org/dcoc).
 
-Also note that this project uses issues on Drupal.org, but opts to use a GitHub
-PR workflow rather than a traditional patch workflow.
+This project uses issues on Drupal.org, but opts to use a GitHub PR workflow 
+rather than a traditional patch workflow.
+
+Active development and support is currently focused on 8.x-2.x by the 
+maintainers. It is preferred that any new features be written against the 
+8.x-2.x branch and then back-ported to the 7.x-2.x branch. Similarily for bug 
+fixes applying to both versions.
 
 1. Ensure there is an issue in the Drupal.org
  [project issue queue](https://www.drupal.org/project/issues/fb_instant_articles)
@@ -22,7 +27,7 @@ PR workflow rather than a traditional patch workflow.
     git clone git@github.com:YOUR_USERNAME/module-fb_instant_articles.git
     cd module-fb_instant_articles
     # Check out the correct core branch you are contributing to.
-    # Example: `7.x-2.x` or `8.x-2.x`:
+    # Example: `8.x-2.x`:
     git checkout 8.x-2.x
     # Create and checkout a local topic branch for the issue you're working on,
     # following this naming convention: [issue-number]-[short-description].
