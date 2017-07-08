@@ -2,10 +2,10 @@ Contributing
 ------------
 
 We encourage collaboration with anyone interested. By contributing to this
- project, you agree to abide by the [Drupal Code of Conduct](https://www.drupal.org/dcoc).
+project, you agree to abide by the [Drupal Code of Conduct](https://www.drupal.org/dcoc).
 
 Also note that this project uses issues on Drupal.org, but opts to use a GitHub
- PR workflow rather than a traditional patch workflow.
+PR workflow rather than a traditional patch workflow.
 
 1. Ensure there is an issue in the Drupal.org
  [project issue queue](https://www.drupal.org/project/issues/fb_instant_articles)
@@ -23,7 +23,7 @@ Also note that this project uses issues on Drupal.org, but opts to use a GitHub
     cd module-fb_instant_articles
     # Check out the correct core branch you are contributing to.
     # Example: `7.x-2.x` or `8.x-2.x`:
-    git checkout 7.x-2.x
+    git checkout 8.x-2.x
     # Create and checkout a local topic branch for the issue you're working on,
     # following this naming convention: [issue-number]-[short-description].
     # Example: If the issue is at http://drupal.org/node/123456 is 123456.
@@ -31,9 +31,9 @@ Also note that this project uses issues on Drupal.org, but opts to use a GitHub
     ```
 
 3. Make your changes, and then commit with a messaging following Drupal's
- [commit message standards](https://www.drupal.org/node/52287). Note that we
- recommend contributors squash their PR commits into sensible chunks of
- additions, with two goals:
+[commit message standards](https://www.drupal.org/node/52287). Note that we
+recommend contributors squash their PR commits into sensible chunks of
+additions, with two goals:
  - To make it clear why each change was added via the commit message.
  - In the case of a large PR, to make commits easier for later reverting (if
    needed) than one monolithic, squashed PR.
@@ -60,10 +60,9 @@ Also note that this project uses issues on Drupal.org, but opts to use a GitHub
     [documentation standards](https://www.drupal.org/node/1354).
 
 4. [Open a GitHub PR](https://help.github.com/articles/creating-a-pull-request)
- against the correct branch (example: `7.x-2.x` or `8.x-2.x`).
+against the correct branch (example: `7.x-2.x` or `8.x-2.x`).
 
 5. Mark your corresponding Drupal.org issue with the status
- [Needs review](https://www.drupal.org/issue-queue/status#needs-review) and
- unassign yourself, so someone else knows they can feel free to review. At this
- point, use the Drupal.org issue queue as normal.
-
+[Needs review](https://www.drupal.org/issue-queue/status#needs-review) and
+unassign yourself, so someone else knows they can feel free to review. At this
+point, use the Drupal.org issue queue as normal.
