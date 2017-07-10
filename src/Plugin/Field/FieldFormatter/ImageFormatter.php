@@ -2,8 +2,12 @@
 
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Drupal\fb_instant_articles\Regions;
 use Drupal\image\Plugin\Field\FieldFormatter\ImageFormatter as DrupalImageFormatter;
@@ -11,6 +15,7 @@ use Facebook\InstantArticles\Elements\Caption;
 use Facebook\InstantArticles\Elements\Header;
 use Facebook\InstantArticles\Elements\Image;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Plugin implementation of the 'fbia_image' formatter.
@@ -24,6 +29,39 @@ use Facebook\InstantArticles\Elements\InstantArticle;
  * )
  */
 class ImageFormatter extends DrupalImageFormatter implements InstantArticleFormatterInterface {
+
+  /**
+   * Base settings.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $config;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, AccountInterface $current_user, EntityStorageInterface $image_style_storage, ConfigFactoryInterface $config_factory) {
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings, $current_user, $image_style_storage);
+    $this->config = $config_factory->get('fb_instant_articles.settings');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $plugin_id,
+      $plugin_definition,
+      $configuration['field_definition'],
+      $configuration['settings'],
+      $configuration['label'],
+      $configuration['view_mode'],
+      $configuration['third_party_settings'],
+      $container->get('current_user'),
+      $container->get('entity.manager')->getStorage('image_style'),
+      $container->get('config.factory')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -142,6 +180,11 @@ class ImageFormatter extends DrupalImageFormatter implements InstantArticleForma
     foreach ($images as $delta => $image) {
       $image_uri = $image->getFileUri();
       $url = $image_style ? $image_style->buildUrl($image_uri) : file_create_url($image_uri);
+      // Use the canonical URL override if set.
+      if ($canonical_url = $this->config->get('canonical_url_override')) {
+        $url = preg_replace('~^https?://.*?(?=/)~', rtrim($canonical_url, '/'), $url);
+      }
+
       $article_image = Image::create()
         ->withURL($url);
       if ($this->getSetting('caption') && isset($image->_referringItem) && ($caption = $image->_referringItem->alt)) {
