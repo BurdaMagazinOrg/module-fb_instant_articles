@@ -76,6 +76,7 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
         $formatter->viewInstantArticle($object, $article, $component['region']);
       }
       elseif ($formatter instanceof FormatterInterface) {
+        $formatter->prepareView([$object->getEntity()->id() => $object]);
         $render_array = $formatter->view($object);
         if ($markup = (string) $this->renderer->renderPlain($render_array)) {
 
