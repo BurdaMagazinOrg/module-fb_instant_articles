@@ -215,7 +215,7 @@ class TransformerRulesManager {
       ],
       [
         'class' => H2Rule::class,
-        'selector' => 'h2',
+        'selector' => '//h2|//h3|//h4|//h5|//h6',
       ],
       [
         'class' => InteractiveRule::class,
