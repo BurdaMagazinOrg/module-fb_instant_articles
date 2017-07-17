@@ -73,6 +73,25 @@ Configuration can be found at /admin/config/services/fb_instant_articles. There
 are a number of options there with ample documentation, please follow the
 descriptions on the form to guide you.
 
+## Behat tests
+
+This module ships with a bunch of Behat tests, found in `tests/src/Behat`. Here
+are the steps to set up your local environment to run them:
+
+1. Ensure you've installed the composer dev dependencies of the module. 
+2. In the module, copy `tests/src/Behat/example.behat.local.yml` to 
+`tests/src/Behat/behat.local.yml` and edit as needed. At the least, IP addresses
+and URL's need to be changed.
+3. Download Selenium 3 and run it (changing the path as needed). The jar is available in Homebrew for OS X:
+```
+$ java -jar /usr/local/Cellar/selenium-server-standalone/3.4.0/libexec/selenium-server-standalone-3.4.0.jar
+```
+4. Run tests
+```
+$ cd <path to web root>/modules/contrib/fb_instant_articles
+$ ../../../vendor/bin/behat -c tests/src/Behat/behat.local.yml tests/src/Behat/features
+```
+
 ## Issues and Development
 
 - Issues should be made in the project's issue queue on Drupal.org.
