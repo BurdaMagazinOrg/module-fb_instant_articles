@@ -100,6 +100,11 @@ class TransformerRulesManager {
         'class' => PassThroughRule::class,
         'selector' => '//div[*]',
       ],
+      // Match any div with inline element children and start a paragraph.
+      [
+        'class' => ParagraphRule::class,
+        'selector' => '//div[a|b|strong|i|em]',
+      ],
       // Match any div with a child text node that is non-empty of length
       // greater than 0.
       [

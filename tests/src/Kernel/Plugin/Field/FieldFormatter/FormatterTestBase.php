@@ -19,6 +19,7 @@ class FormatterTestBase extends KernelTestBase {
    * @var array
    */
   public static $modules = [
+    'user',
     'field',
     'fb_instant_articles',
     'entity_test',
@@ -61,6 +62,7 @@ class FormatterTestBase extends KernelTestBase {
     parent::setUp();
 
     $this->installConfig(['system', 'field']);
+    $this->installEntitySchema('user');
     $this->installEntitySchema('entity_test');
 
     $this->entityType = 'entity_test';
