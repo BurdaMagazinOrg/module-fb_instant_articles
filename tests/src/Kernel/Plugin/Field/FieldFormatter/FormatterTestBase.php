@@ -24,6 +24,7 @@ class FormatterTestBase extends KernelTestBase {
     'entity_test',
     'system',
     'serialization',
+    'user',
   ];
 
   /**
@@ -62,6 +63,7 @@ class FormatterTestBase extends KernelTestBase {
 
     $this->installConfig(['system', 'field']);
     $this->installEntitySchema('entity_test');
+    $this->installEntitySchema('user');
 
     $this->entityType = 'entity_test';
     $this->bundle = $this->entityType;
