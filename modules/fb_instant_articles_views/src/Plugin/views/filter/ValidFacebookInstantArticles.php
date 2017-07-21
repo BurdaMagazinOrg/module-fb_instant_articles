@@ -134,7 +134,7 @@ class ValidFacebookInstantArticles extends FilterPluginBase {
       $view_mode_id = 'node.' . $id . '.' . EntityViewDisplayEditForm::FBIA_VIEW_MODE;
       $view_mode = $entity_storage->load($view_mode_id);
 
-      if ($view_mode instanceof EntityViewDisplayInterface) {
+      if ($view_mode instanceof EntityViewDisplayInterface && $view_mode->status()) {
         $node_types[$id] = $id;
       }
     }
