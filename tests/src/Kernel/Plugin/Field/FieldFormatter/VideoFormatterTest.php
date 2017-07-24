@@ -11,6 +11,8 @@ use Facebook\InstantArticles\Elements\Video;
  * Tests for the VideoFormatter.
  *
  * @group fb_instant_articles
+ *
+ * @coversDefaultClass \Drupal\fb_instant_articles\Plugin\Field\FieldFormatter\VideoFormatter
  */
 class VideoFormatterTest extends FormatterTestBase {
 
@@ -47,6 +49,8 @@ class VideoFormatterTest extends FormatterTestBase {
 
   /**
    * Tests the instant article video formatter.
+   *
+   * @covers ::viewInstantArticle
    */
   public function testVideoFormatter() {
     $entity = EntityTest::create([]);
@@ -104,6 +108,29 @@ class VideoFormatterTest extends FormatterTestBase {
     $children = $article->getChildren();
     $this->assertEquals(2, count($children));
     $this->assertTrue($children[0] instanceof Video);
+  }
+
+  /**
+   * Tests the instant article video formatter when a canonical URL is in play.
+   *
+   * @covers ::viewInstantArticle
+   */
+  function testVideoFormatterCanonicalUrl() {
+    $entity = EntityTest::create([]);
+    // Handy method to populate the field with a real value.
+    // @see FileItem::generateSampleValue()
+    $entity->{$this->fieldName}->generateSampleItems(1);
+
+    // Test with a canonical URL set.
+    $config = $this->config('fb_instant_articles.settings');
+    $config->set('canonical_url_override', 'http://example.com')
+      ->save();
+    /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
+    $formatter = $this->display->getRenderer($this->fieldName);
+    $article = InstantArticle::create();
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
+    $children = $article->getChildren();
+    $this->assertStringStartsWith('http://example.com', $children[0]->getUrl());
   }
 
 }
