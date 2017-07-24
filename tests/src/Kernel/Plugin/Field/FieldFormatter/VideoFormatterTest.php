@@ -123,14 +123,14 @@ class VideoFormatterTest extends FormatterTestBase {
 
     // Test with a canonical URL set.
     $config = $this->config('fb_instant_articles.settings');
-    $config->set('canonical_url_override', 'http://example.com')
+    $config->set('canonical_url_override', 'http://example.com/override')
       ->save();
     /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
     $formatter = $this->display->getRenderer($this->fieldName);
     $article = InstantArticle::create();
     $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
     $children = $article->getChildren();
-    $this->assertStringStartsWith('http://example.com', $children[0]->getUrl());
+    $this->assertStringStartsWith('http://example.com/override', $children[0]->getUrl());
   }
 
 }
