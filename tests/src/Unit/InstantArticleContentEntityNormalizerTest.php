@@ -82,6 +82,19 @@ class InstantArticleContentEntityNormalizerTest extends ContentEntityNormalizerT
   }
 
   /**
+   * Tests the normalize method on an RTL site.
+   *
+   * @covers ::normalize
+   */
+  public function testNormalizeRtl() {
+    $normalizer = $this->getContentEntityNormalizer([], [], LanguageInterface::DIRECTION_RTL);
+    $now = time();
+    $entity = $this->getContentEntity(NodeInterface::class, '/node/1', 'Test entity', $now, $now, 'Joe Mayo');
+    $article = $normalizer->normalize($entity, 'fbia');
+    $this->assertTrue($article->isRTLEnabled());
+  }
+
+  /**
    * Tests the sortComponents() method.
    *
    * @dataProvider sortComponentsProvider
