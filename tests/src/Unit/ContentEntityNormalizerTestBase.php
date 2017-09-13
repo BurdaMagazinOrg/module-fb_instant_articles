@@ -31,7 +31,7 @@ class ContentEntityNormalizerTestBase extends UnitTestCase {
    * @return \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer
    *   Content entity normalizer object to test against.
    */
-  protected function getContentEntityNormalizer(array $settings, array $components) {
+  protected function getContentEntityNormalizer(array $settings = [], array $components = []) {
     $config_factory = $this->getConfigFactoryStub([
       'fb_instant_articles.settings' => $settings,
     ]);

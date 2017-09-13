@@ -31,33 +31,14 @@ class InstantArticleContentEntityNormalizerTest extends ContentEntityNormalizerT
    * @covers ::supportsNormalization
    */
   public function testSupportsNormalization() {
-    $config_factory = $this->getMockBuilder(ConfigFactoryInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $entity_field_manager = $this->getMockBuilder(EntityFieldManagerInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $entity_type_manager = $this->getMockBuilder(EntityTypeManagerInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
     $content_entity = $this->getMockBuilder(ContentEntityInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
     $config_entity = $this->getMockBuilder(ConfigEntityInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
-    $info_parser = $this->getMock(InfoParserInterface::class);
-    $module_handler = $this->getMock(ModuleHandlerInterface::class);
-    $current_language = $this->getMock(LanguageInterface::class);
-    $language_manager = $this->getMockBuilder(LanguageManager::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['getCurrentLanguage'])
-      ->getMock();
-    $language_manager->expects($this->once())
-      ->method('getCurrentLanguage')
-      ->willReturn($current_language);
 
-    $normalizer = new InstantArticleContentEntityNormalizer($config_factory, $entity_field_manager, $entity_type_manager, $info_parser, $module_handler, $language_manager);
+    $normalizer = $this->getContentEntityNormalizer();
     $this->assertTrue($normalizer->supportsNormalization($content_entity, 'fbia'));
     $this->assertFalse($normalizer->supportsNormalization($content_entity, 'json'));
     $this->assertFalse($normalizer->supportsNormalization($config_entity, 'fbia'));
