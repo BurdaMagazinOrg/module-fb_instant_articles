@@ -2,13 +2,9 @@
 
 namespace Drupal\Tests\fb_instant_articles\Unit;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\InfoParserInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer;
 use Drupal\node\NodeInterface;
 use Facebook\InstantArticles\Elements\Analytics;
@@ -29,25 +25,14 @@ class InstantArticleContentEntityNormalizerTest extends ContentEntityNormalizerT
    * @covers ::supportsNormalization
    */
   public function testSupportsNormalization() {
-    $config_factory = $this->getMockBuilder(ConfigFactoryInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $entity_field_manager = $this->getMockBuilder(EntityFieldManagerInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $entity_type_manager = $this->getMockBuilder(EntityTypeManagerInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
     $content_entity = $this->getMockBuilder(ContentEntityInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
     $config_entity = $this->getMockBuilder(ConfigEntityInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
-    $info_parser = $this->getMock(InfoParserInterface::class);
-    $module_handler = $this->getMock(ModuleHandlerInterface::class);
 
-    $normalizer = new InstantArticleContentEntityNormalizer($config_factory, $entity_field_manager, $entity_type_manager, $info_parser, $module_handler);
+    $normalizer = $this->getContentEntityNormalizer();
     $this->assertTrue($normalizer->supportsNormalization($content_entity, 'fbia'));
     $this->assertFalse($normalizer->supportsNormalization($content_entity, 'json'));
     $this->assertFalse($normalizer->supportsNormalization($config_entity, 'fbia'));
@@ -88,6 +73,19 @@ class InstantArticleContentEntityNormalizerTest extends ContentEntityNormalizerT
     $this->assertEquals($ads[0]->getWidth(), 300);
     $this->assertEquals($ads[0]->getHeight(), 250);
     $this->assertEquals($ads[0]->getSource(), 'http://example.com');
+  }
+
+  /**
+   * Tests the normalize method on an RTL site.
+   *
+   * @covers ::normalize
+   */
+  public function testNormalizeRtl() {
+    $normalizer = $this->getContentEntityNormalizer([], [], LanguageInterface::DIRECTION_RTL);
+    $now = time();
+    $entity = $this->getContentEntity(NodeInterface::class, '/node/1', 'Test entity', $now, $now, 'Joe Mayo');
+    $article = $normalizer->normalize($entity, 'fbia');
+    $this->assertTrue($article->isRTLEnabled());
   }
 
   /**

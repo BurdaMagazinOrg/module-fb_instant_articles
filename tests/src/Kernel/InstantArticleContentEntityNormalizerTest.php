@@ -7,7 +7,7 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\token\Kernel\KernelTestBase;
+use Drupal\KernelTests\KernelTestBase;
 use Drupal\user\Entity\User;
 use Facebook\InstantArticles\Elements\Blockquote;
 use Facebook\InstantArticles\Elements\Paragraph;
@@ -15,7 +15,7 @@ use Facebook\InstantArticles\Elements\Paragraph;
 /**
  * Test the Drupal Client wrapper.
  *
- * @group fb_instant_articles_temp
+ * @group fb_instant_articles
  *
  * @coversDefaultClass \Drupal\fb_instant_articles\Normalizer\InstantArticleRssContentEntityNormalizer
  */

@@ -8,6 +8,9 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\InfoParserInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Language\Language;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Language\LanguageManager;
 use Drupal\Core\Url;
 use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer;
 use Drupal\Tests\UnitTestCase;
@@ -17,6 +20,13 @@ use Drupal\user\UserInterface;
  * Base class for Instant Articles content entity normalizers.
  */
 class ContentEntityNormalizerTestBase extends UnitTestCase {
+
+  /**
+   * Mock current language.
+   *
+   * @var \Drupal\Core\Language\Language
+   */
+  protected $currentLanguage;
 
   /**
    * Helper function to create a new ContentEntityNormalizer for testing.
@@ -29,7 +39,7 @@ class ContentEntityNormalizerTestBase extends UnitTestCase {
    * @return \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer
    *   Content entity normalizer object to test against.
    */
-  protected function getContentEntityNormalizer(array $settings, array $components) {
+  protected function getContentEntityNormalizer(array $settings = [], array $components = [], $language_direction = LanguageInterface::DIRECTION_LTR) {
     $config_factory = $this->getConfigFactoryStub([
       'fb_instant_articles.settings' => $settings,
     ]);
@@ -44,6 +54,20 @@ class ContentEntityNormalizerTestBase extends UnitTestCase {
       ->willReturn($entity_storage);
     $info_parser = $this->getMock(InfoParserInterface::class);
     $module_handler = $this->getMock(ModuleHandlerInterface::class);
+    $this->currentLanguage = $this->getMockBuilder(Language::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['getDirection'])
+      ->getMock();
+    $this->currentLanguage->expects($this->any())
+      ->method('getDirection')
+      ->willReturn($language_direction);
+    $language_manager = $this->getMockBuilder(LanguageManager::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['getCurrentLanguage'])
+      ->getMock();
+    $language_manager->expects($this->once())
+      ->method('getCurrentLanguage')
+      ->willReturn($this->currentLanguage);
     $content_entity_normalizer = $this->getMockBuilder($this->getContentEntityNormalizerClassName())
       ->setConstructorArgs([
         $config_factory,
@@ -51,6 +75,7 @@ class ContentEntityNormalizerTestBase extends UnitTestCase {
         $entity_type_manager,
         $info_parser,
         $module_handler,
+        $language_manager
       ])
       ->setMethods(['getApplicableComponents', 'getApplicationVersion'])
       ->getMock();
