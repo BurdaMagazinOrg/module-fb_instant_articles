@@ -11,6 +11,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\InfoParserInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\fb_instant_articles\AdTypes;
@@ -75,6 +77,13 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
   protected $moduleHandler;
 
   /**
+   * Current language.
+   *
+   * @var \Drupal\Core\Language\LanguageInterface
+   */
+  protected $currentLanguage;
+
+  /**
    * ContentEntityNormalizer constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config
@@ -87,13 +96,16 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
    *   Info parser.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   Module handler.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   Language manager interface.
    */
-  public function __construct(ConfigFactoryInterface $config, EntityFieldManagerInterface $entity_field_manager, EntityTypeManagerInterface $entity_type_manager, InfoParserInterface $info_parser, ModuleHandlerInterface $module_handler) {
+  public function __construct(ConfigFactoryInterface $config, EntityFieldManagerInterface $entity_field_manager, EntityTypeManagerInterface $entity_type_manager, InfoParserInterface $info_parser, ModuleHandlerInterface $module_handler, LanguageManagerInterface $language_manager) {
     $this->config = $config->get('fb_instant_articles.settings');
     $this->entityFieldManager = $entity_field_manager;
     $this->entityTypeManager = $entity_type_manager;
     $this->infoParser = $info_parser;
     $this->moduleHandler = $module_handler;
+    $this->currentLanguage = $language_manager->getCurrentLanguage();
   }
 
   /**
@@ -113,6 +125,11 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
     $article = InstantArticle::create()
       ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
       ->addMetaProperty('op:generator:application:version', $this->getApplicationVersion());
+    // RTL support.
+    if ($this->currentLanguage->getDirection() === LanguageInterface::DIRECTION_RTL) {
+      $article->enableRTL();
+    }
+    // Configured style.
     if ($style = $this->config->get('style')) {
       $article->withStyle($style);
     }
