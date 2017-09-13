@@ -9,6 +9,8 @@ use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\InfoParserInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Language\LanguageManager;
 use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer;
 use Drupal\node\NodeInterface;
 use Facebook\InstantArticles\Elements\Analytics;
@@ -46,8 +48,16 @@ class InstantArticleContentEntityNormalizerTest extends ContentEntityNormalizerT
       ->getMock();
     $info_parser = $this->getMock(InfoParserInterface::class);
     $module_handler = $this->getMock(ModuleHandlerInterface::class);
+    $current_language = $this->getMock(LanguageInterface::class);
+    $language_manager = $this->getMockBuilder(LanguageManager::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['getCurrentLanguage'])
+      ->getMock();
+    $language_manager->expects($this->once())
+      ->method('getCurrentLanguage')
+      ->willReturn($current_language);
 
-    $normalizer = new InstantArticleContentEntityNormalizer($config_factory, $entity_field_manager, $entity_type_manager, $info_parser, $module_handler);
+    $normalizer = new InstantArticleContentEntityNormalizer($config_factory, $entity_field_manager, $entity_type_manager, $info_parser, $module_handler, $language_manager);
     $this->assertTrue($normalizer->supportsNormalization($content_entity, 'fbia'));
     $this->assertFalse($normalizer->supportsNormalization($content_entity, 'json'));
     $this->assertFalse($normalizer->supportsNormalization($config_entity, 'fbia'));
