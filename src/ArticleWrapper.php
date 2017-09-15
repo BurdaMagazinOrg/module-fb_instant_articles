@@ -54,7 +54,7 @@ class ArticleWrapper {
       ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
       ->addMetaProperty('op:generator:application:version', self::getApplicationVersion())
       ->withStyle(variable_get('fb_instant_articles_style', 'default'));
-    if ($language_direction === LANGUAGE_RTL) {
+    if ($language_direction == LANGUAGE_RTL) {
       $this->instantArticle->enableRTL();
     }
     drupal_alter('fb_instant_articles_article', $this->instantArticle, $context);
