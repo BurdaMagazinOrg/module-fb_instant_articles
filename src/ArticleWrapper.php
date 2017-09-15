@@ -38,6 +38,8 @@ class ArticleWrapper {
    * @param array $context
    *   An associative array of contextual information altering the
    *   InstantArticle object.
+   * @param int $language_direction
+   *   Language direction currently in use, one of LANGUAGE_LTR or LANGUAGE_RTL.
    *
    * @see hook_fb_instant_articles_article_alter()
    *
@@ -47,11 +49,14 @@ class ArticleWrapper {
    * InstantArticle->withCanonicalUrl($url);
    * @endcode
    */
-  private function __construct($context = array()) {
+  private function __construct($context = array(), $language_direction = LANGUAGE_LTR) {
     $this->instantArticle = InstantArticle::create()
       ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
       ->addMetaProperty('op:generator:application:version', self::getApplicationVersion())
       ->withStyle(variable_get('fb_instant_articles_style', 'default'));
+    if ($language_direction == LANGUAGE_RTL) {
+      $this->instantArticle->enableRTL();
+    }
     drupal_alter('fb_instant_articles_article', $this->instantArticle, $context);
   }
 
@@ -65,7 +70,8 @@ class ArticleWrapper {
    * @return \Drupal\fb_instant_articles\ArticleWrapper
    */
   public static function create($context) {
-    return new ArticleWrapper($context);
+    global $language;
+    return new ArticleWrapper($context, $language->direction);
   }
 
   /**
