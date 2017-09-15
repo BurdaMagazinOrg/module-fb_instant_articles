@@ -75,7 +75,14 @@ class views_plugin_row_fiafields extends views_plugin_row {
       $nids[] = $row->{$this->field_alias};
     }
     if (!empty($nids)) {
-      $this->nodes = node_load_multiple($nids);
+     // Get a fresh copy of the node to bypass Entity cache module, preventing
+     // getting corrupted Ads/Analytics DOMDocument.
+     if (module_exists('entitycache')) {
+       $this->nodes = node_load_multiple($nids, array(), TRUE);
+     }
+     else {
+       $this->nodes = node_load_multiple($nids);
+     }
     }
   }
 

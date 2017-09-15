@@ -50,9 +50,9 @@ class DrupalClient extends Client {
    *   if the page has passed review. This may in fact be the best way, but that
    *   is still in discussion by the Facebook team.
    */
-  public function importArticle($article, $takeLive = FALSE) {
+  public function importArticle($article, $takeLive = FALSE, $forceRescrape = false, $formatOutput = false) {
     try {
-      parent::importArticle($article, $takeLive);
+      parent::importArticle($article, $takeLive, $forceRescrape, $formatOutput);
     }
     catch(FacebookResponseException $e) {
       // If this was an authorization exception and the error code indicates
