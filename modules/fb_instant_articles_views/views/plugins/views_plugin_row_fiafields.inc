@@ -77,7 +77,7 @@ class views_plugin_row_fiafields extends views_plugin_row {
     if (!empty($nids)) {
      // Get a fresh copy of the node to bypass Entity cache module, preventing
      // getting corrupted Ads/Analytics DOMDocument.
-     if(module_exists('entitycache')) {
+     if (module_exists('entitycache')) {
        $this->nodes = node_load_multiple($nids, array(), TRUE);
      }
      else {

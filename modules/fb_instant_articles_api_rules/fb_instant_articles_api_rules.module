@@ -39,7 +39,7 @@ function fb_instant_articles_api_rules_action_info() {
  */
 function facebook_instant_articles_api_import_action($node, $context = array()) {
   $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $node->type);
-  if($fb_instant_enabled) {
+  if ($fb_instant_enabled) {
     fb_instant_articles_api_rules_import_article($node);
   }
 }
@@ -51,7 +51,7 @@ function facebook_instant_articles_api_import_action($node, $context = array()) 
  */
 function facebook_instant_articles_api_remove_action($node, $context = array()) {
   $fb_instant_enabled = fb_instant_articles_display_is_article_type('node', $node->type);
-  if($fb_instant_enabled) {
+  if ($fb_instant_enabled) {
     fb_instant_articles_api_rules_remove_article($node);
   }
 }
@@ -96,9 +96,7 @@ function fb_instant_articles_api_rules_remove_article($node) {
       $url = entity_uri('node', $node);
     }
 
-    /**
-     * @See \Drupal\fb_instant_articles_display\EntityPropertyMapper\addCanonicalURL()
-     */
+    // @see \Drupal\fb_instant_articles_display\EntityPropertyMapper\addCanonicalURL()
     $canonical_override = variable_get('fb_instant_articles_canonical_url_override', '');
     if (!empty($canonical_override)) {
       $url['options']['base_url'] = $canonical_override;
