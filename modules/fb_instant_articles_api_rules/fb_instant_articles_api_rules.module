@@ -64,9 +64,15 @@ function facebook_instant_articles_api_remove_action($node, $context = array()) 
 function fb_instant_articles_api_rules_import_article($node) {
   if (isset($node->nid)) {
     // We duplicate this because hook_node_load() is not triggered during node_insert().
-    $layout_settings = fb_instant_articles_display_get_node_layout_settings($node->type);
-    $node->fb_instant_articles_display_wrapper = \Drupal\fb_instant_articles_display\DrupalInstantArticleDisplay::create($node, $layout_settings);
-    node_build_content($node, $view_mode = 'fb_instant_article');
+    $context = array(
+      'entity_type' => 'node',
+      'entity' => $node,
+    );
+    $node->fb_instant_article = \Drupal\fb_instant_articles\ArticleWrapper::create($context)->getArticle();
+
+    // Run node_view and other field formatter hooks.
+    node_build_content($node, 'fb_instant_article');
+
     $client = \Drupal\fb_instant_articles_api\DrupalClient::get();
     $client->importArticle($node->fb_instant_article, $node->status === NODE_PUBLISHED);
   }
@@ -79,8 +85,29 @@ function fb_instant_articles_api_rules_import_article($node) {
  */
 function fb_instant_articles_api_rules_remove_article($node) {
   if (isset($node->nid)) {
-    $url = url(drupal_get_path_alias("node/" . $node->nid), array('absolute' => TRUE));
+    $url = array();
+
+    // We try to depend on $node->path since entity_uri may not be able to
+    // get the alias if the alias is deleted first.
+    if (!empty($node->path['alias'])) {
+      $url['path'] = $node->path['alias'];
+    }
+    else {
+      $url = entity_uri('node', $node);
+    }
+
+    /**
+     * @See \Drupal\fb_instant_articles_display\EntityPropertyMapper\addCanonicalURL()
+     */
+    $canonical_override = variable_get('fb_instant_articles_canonical_url_override', '');
+    if (!empty($canonical_override)) {
+      $url['options']['base_url'] = $canonical_override;
+    }
+
+    $url['options']['absolute'] = TRUE;
+    $canonical_url = url($url['path'], $url['options']);
+
     $client = \Drupal\fb_instant_articles_api\DrupalClient::get();
-    $client->removeArticle($url);
+    $client->removeArticle($canonical_url);
   }
 }
