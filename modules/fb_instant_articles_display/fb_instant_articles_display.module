@@ -290,6 +290,9 @@ function fb_instant_articles_display_set_entity_type($type, $bundle) {
     ->execute();
   // Allow other modules to perform actions.
   module_invoke_all('fb_instant_articles_display_set_type', $type, $bundle);
+  // Clear entity info cache, since this setting influences it. Also clear the
+  // menu cache.
+  entity_info_cache_clear();
 }
 
 /**
