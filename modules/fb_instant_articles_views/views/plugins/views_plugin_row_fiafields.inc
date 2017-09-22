@@ -18,52 +18,10 @@ class views_plugin_row_fiafields extends views_plugin_row {
   var $nodes = array();
 
   /**
-   * Add to the base class' options for the row.
-   */
-  function option_definition() {
-    $options = parent::option_definition();
-    $options['view_mode'] = array('fb_instant_article' => 'fb_instant_article');
-    return $options;
-  }
-
-  /**
-   * Alter the options form for the row to add our options.
-   *
-   * @param array $form
-   * @param array $form_state
-   */
-  function options_form(&$form, &$form_state) {
-    parent::options_form($form, $form_state);
-
-    $form['view_mode'] = array(
-      '#type' => 'select',
-      '#title' => t('View mode'),
-      '#options' => $this->options_form_summary_options(),
-      '#default_value' => $this->options['view_mode'],
-    );
-  }
-
-  /**
-   * Helper function to return a list of available view modes for use in the
-   * row settings.
-   */
-  function options_form_summary_options() {
-    $entity_info = entity_get_info('node');
-    $options = array();
-    if (!empty($entity_info['view modes'])) {
-      foreach ($entity_info['view modes'] as $mode => $settings) {
-        $options[$mode] = $settings['label'];
-      }
-    }
-    return $options;
-  }
-
-  /**
    * {@inheritdoc}
    */
-  function summary_title() {
-    $options = $this->options_form_summary_options();
-    return check_plain($options[$this->options['view_mode']]);
+  function options_form(&$form, &$form_state) {
+    return FALSE;
   }
 
   /**
@@ -110,8 +68,7 @@ class views_plugin_row_fiafields extends views_plugin_row {
     $node->link = url($uri['path'], $uri['options'] + array('absolute' => TRUE));
 
     // Build output for node.
-    $view_mode = $this->options['view_mode'];
-    $node_view = node_view($node, $view_mode);
+    $node_view = node_view($node, 'fb_instant_article');
 
     $item = new stdClass();
     // Required elements

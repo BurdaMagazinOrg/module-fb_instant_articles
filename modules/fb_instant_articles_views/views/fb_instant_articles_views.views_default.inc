@@ -64,7 +64,6 @@ function fb_instant_articles_views_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'rss';
   $handler->display->display_options['style_options']['description'] = 'Facebook Instant Articles feed';
   $handler->display->display_options['row_plugin'] = 'fiafields';
-  $handler->display->display_options['row_options']['view_mode'] = 'fb_instant_article';
   $handler->display->display_options['path'] = 'fia/nodes.rss';
 
   $export['fb_instant_articles_views'] = $view;
