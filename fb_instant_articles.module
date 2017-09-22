@@ -275,17 +275,13 @@ function fb_instant_articles_fb_instant_articles_transformer_rules() {
       ),
     ),
     array(
-      'class' => 'ImageRule',
-      'selector' => '//p[img]',
+      'class' => 'ImageInsideParagraphRule',
+      'selector' => 'img',
       'properties' => array(
         'image.url' => array(
           'type' => 'string',
           'selector' => 'img',
           'attribute' => 'src',
-        ),
-        'image.caption' => array(
-          'type' => 'element',
-          'selector' => 'img',
         ),
       ),
     ),
@@ -297,10 +293,6 @@ function fb_instant_articles_fb_instant_articles_transformer_rules() {
           'type' => 'string',
           'selector' => 'img',
           'attribute' => 'src',
-        ),
-        'image.caption' => array(
-          'type' => 'element',
-          'selector' => 'img[@alt]',
         ),
       ),
     ),
@@ -419,10 +411,6 @@ function fb_instant_articles_fb_instant_articles_transformer_rules() {
           'type' => 'string',
           'selector' => 'img',
           'attribute' => 'src',
-        ),
-        'image.caption' => array(
-          'type' => 'element',
-          'selector' => 'img[@alt]',
         ),
       ),
     ),
