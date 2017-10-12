@@ -16,8 +16,6 @@ use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
  */
 class FieldItemListNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
 
-  const FORMAT = ['fbia', 'fbia_rss'];
-
   /**
    * Renderer service.
    *
@@ -49,9 +47,14 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
    * {@inheritdoc}
    */
   public function supportsNormalization($data, $format = NULL) {
+    $supported_formats = [
+      InstantArticleContentEntityNormalizer::FORMAT,
+      InstantArticleRssContentEntityNormalizer::FORMAT,
+    ];
+
     // Only consider this normalizer if we are trying to normalize a field item
-    // list into the 'fbia' format.
-    return in_array($format, static::FORMAT) && $data instanceof FieldItemListInterface;
+    // list into the 'fbia' or 'fbia_rss' format.
+    return in_array($format, $supported_formats) && $data instanceof FieldItemListInterface;
   }
 
   /**
