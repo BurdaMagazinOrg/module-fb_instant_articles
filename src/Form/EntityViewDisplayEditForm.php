@@ -5,6 +5,8 @@ namespace Drupal\fb_instant_articles\Form;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\fb_instant_articles\Regions;
 use Drupal\field_ui\Form\EntityViewDisplayEditForm as CoreEntityViewDisplayEditForm;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Extends the core EntityViewDisplayEditForm to support multiple regions.
@@ -55,6 +57,15 @@ class EntityViewDisplayEditForm extends CoreEntityViewDisplayEditForm {
       }
     }
     return $options;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function save(array $form, FormStateInterface $form_state) {
+    // Way to get the fbia rss cache tag dynamically from here?
+    Cache::invalidateTags(['config:views.view.facebook_instant_articles_rss']);
+    return parent::save($form, $form_state);
   }
 
 }
