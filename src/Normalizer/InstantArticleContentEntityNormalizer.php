@@ -144,6 +144,11 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
     // If we're given an entity_view_display object as context, use that as a
     // mapping to guide the normalization.
     if ($display = $this->entityViewDisplay($data, $context)) {
+      // Declare a dependency on the view mode configuration if we are rendering
+      // in the context of a views REST export.
+      if (isset($context['views_style_plugin'])) {
+        $context['views_style_plugin']->displayHandler->display['cache_metadata']['tags'] = array_merge($context['views_style_plugin']->displayHandler->display['cache_metadata']['tags'], $display->getCacheTags());
+      }
       $context['entity_view_display'] = $display;
       $components = $this->getApplicableComponents($display);
       uasort($components, [$this, 'sortComponents']);
