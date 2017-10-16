@@ -2,6 +2,7 @@
 
 namespace Drupal\fb_instant_articles\Normalizer;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
@@ -147,7 +148,7 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
       // Declare a dependency on the view mode configuration if we are rendering
       // in the context of a views REST export.
       if (isset($context['views_style_plugin'])) {
-        $context['views_style_plugin']->displayHandler->display['cache_metadata']['tags'] = array_merge($context['views_style_plugin']->displayHandler->display['cache_metadata']['tags'], $display->getCacheTags());
+        $context['views_style_plugin']->displayHandler->display['cache_metadata']['tags'] = Cache::mergeTags($context['views_style_plugin']->displayHandler->display['cache_metadata']['tags'], $display->getCacheTags());
       }
       $context['entity_view_display'] = $display;
       $components = $this->getApplicableComponents($display);
