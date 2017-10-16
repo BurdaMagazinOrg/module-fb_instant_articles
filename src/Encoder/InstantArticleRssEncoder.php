@@ -45,9 +45,21 @@ class InstantArticleRssEncoder extends XmlEncoder {
    *   Config factory interface.
    */
   public function __construct(RequestStack $request_stack, ConfigFactoryInterface $config_factory) {
-    $this->setBaseEncoder(new BaseXmlEncoder('rss'));
     $this->currentRequest = $request_stack->getCurrentRequest();
     $this->config = $config_factory->get('fb_instant_articles.settings');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBaseEncoder() {
+    // Overridden to set rss as the type.
+    if (!isset($this->baseEncoder)) {
+      $this->baseEncoder = new BaseXmlEncoder('rss');
+      $this->baseEncoder->setSerializer($this->serializer);
+    }
+
+    return $this->baseEncoder;
   }
 
   /**
