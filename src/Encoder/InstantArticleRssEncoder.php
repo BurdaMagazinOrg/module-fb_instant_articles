@@ -61,7 +61,7 @@ class InstantArticleRssEncoder extends XmlEncoder {
    * {@inheritdoc}
    */
   public function encode($data, $format, array $context = []) {
-    // Force $data into an arry of numeric keys.
+    // Force $data into an array of numeric keys.
     if (!ctype_digit(implode('', array_keys($data)))) {
       $data = [$data];
     }
@@ -73,14 +73,14 @@ class InstantArticleRssEncoder extends XmlEncoder {
       }
     }
     // Wrapping tags.
-    $feed_title = $feed_description = '';
+    $feed_title = $this->t('Facebook Instant Articles RSS Feed');
+    $feed_description = '';
     if (isset($context['views_style_plugin'])) {
       /** @var \Drupal\rest\Plugin\views\style\Serializer $style */
       $style = $context['views_style_plugin'];
       $feed_title = $style->view->getTitle();
       $feed_description = $style->view->storage->get('description');
     }
-    $feed_title = !empty($feed_title) ? $feed_title : $this->t('Facebook Instant Articles RSS Feed');
     $encoded = [
       '@version' => '2.0',
       '@xmlns:content' => 'http://purl.org/rss/1.0/modules/content/',
