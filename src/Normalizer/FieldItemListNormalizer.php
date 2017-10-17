@@ -95,14 +95,14 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
           @$document->loadHTML(Html::decodeEntities($markup));
 
           // Determine correct context for transformation.
-          $context = $article;
+          $transformer_context = $article;
           if ($component['region'] === Regions::REGION_HEADER) {
             $header = $article->getHeader();
             if (!$header) {
               $header = Header::create();
               $article->withHeader($header);
             }
-            $context = $header;
+            $transformer_context = $header;
           }
           elseif ($component['region'] === Regions::REGION_FOOTER) {
             $footer = $article->getFooter();
@@ -110,11 +110,11 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
               $footer = Footer::create();
               $article->withFooter($footer);
             }
-            $context = $footer;
+            $transformer_context = $footer;
           }
 
           // Region-aware transformation of rendered markup.
-          $this->transformer->transform($context, $document);
+          $this->transformer->transform($transformer_context, $document);
         }
       }
     }
