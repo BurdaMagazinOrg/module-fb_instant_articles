@@ -335,7 +335,7 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
    */
   public function analyticsFromSettings(InstantArticle $article) {
     // Add analytics from settings.
-    if ($analytics_embed_code = $this->config->get('analytics_embed_code')) {
+    if ($analytics_embed_code = $this->config->get('analytics.embed_code')) {
       $document = new \DOMDocument();
       $fragment = $document->createDocumentFragment();
       $valid_html = @$fragment->appendXML($analytics_embed_code);
