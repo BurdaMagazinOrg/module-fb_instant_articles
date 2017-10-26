@@ -7,7 +7,10 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
+use Drupal\fb_instant_articles\Regions;
 use Drupal\fb_instant_articles\Transformer;
+use Facebook\InstantArticles\Elements\Footer;
+use Facebook\InstantArticles\Elements\Header;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
@@ -74,8 +77,8 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
       /** @var \Drupal\Core\Entity\Entity\EntityViewDisplay $display */
       $display = $context['entity_view_display'];
       $formatter = $display->getRenderer($object->getName());
+      $component = $display->getComponent($object->getName());
       if ($formatter instanceof InstantArticleFormatterInterface) {
-        $component = $display->getComponent($object->getName());
         $formatter->viewInstantArticle($object, $article, $component['region']);
       }
       elseif ($formatter instanceof FormatterInterface) {
@@ -91,8 +94,27 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
           $markup = '<!doctype html><html><head><meta charset="utf-8" /></head><body>' . $markup . '</body></html>';
           @$document->loadHTML(Html::decodeEntities($markup));
 
-          // Note that we are putting the content of these fields into the body.
-          $this->transformer->transform($article, $document);
+          // Determine correct context for transformation.
+          $transformer_context = $article;
+          if ($component['region'] === Regions::REGION_HEADER) {
+            $header = $article->getHeader();
+            if (!$header) {
+              $header = Header::create();
+              $article->withHeader($header);
+            }
+            $transformer_context = $header;
+          }
+          elseif ($component['region'] === Regions::REGION_FOOTER) {
+            $footer = $article->getFooter();
+            if (!$footer) {
+              $footer = Footer::create();
+              $article->withFooter($footer);
+            }
+            $transformer_context = $footer;
+          }
+
+          // Region-aware transformation of rendered markup.
+          $this->transformer->transform($transformer_context, $document);
         }
       }
     }
