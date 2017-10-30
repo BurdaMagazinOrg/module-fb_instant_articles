@@ -2,7 +2,8 @@ default:
   suites:
     default:
       contexts:
-        - FbInstantArticlesFeatureContext
+        - FeatureContext
+        - InstantArticlesContext
         - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\MinkContext
         - Drupal\DrupalExtension\Context\MessageContext
