@@ -85,10 +85,12 @@ function fb_instant_articles_display_preprocess(&$variables, $hook) {
     // which case do not process. Also account that #theme may be a hook
     // suggestion itself. For example. #theme = 'comment__node_type' and
     // $hook = 'comment'.
-    $theme_keys = is_string($variables['elements']['#theme']) ? array($variables['elements']['#theme']) : $variables['elements']['#theme'];
-    foreach ($theme_keys as $theme) {
-      if ($theme != $hook && strpos($theme, $hook . '__') !== 0) {
-        return;
+    if (isset($variables['elements']['#theme'])) {
+      $theme_keys = is_string($variables['elements']['#theme']) ? array($variables['elements']['#theme']) : $variables['elements']['#theme'];
+      foreach ($theme_keys as $theme) {
+        if ($theme != $hook && strpos($theme, $hook . '__') !== 0) {
+          return;
+        }
       }
     }
 
@@ -290,6 +292,9 @@ function fb_instant_articles_display_set_entity_type($type, $bundle) {
     ->execute();
   // Allow other modules to perform actions.
   module_invoke_all('fb_instant_articles_display_set_type', $type, $bundle);
+  // Clear entity info cache, since this setting influences it. Also clear the
+  // menu cache.
+  entity_info_cache_clear();
 }
 
 /**
