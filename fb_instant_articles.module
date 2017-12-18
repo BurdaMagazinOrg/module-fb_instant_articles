@@ -206,11 +206,11 @@ function fb_instant_articles_fb_instant_articles_transformer_rules() {
     ),
     array(
       'class' => 'PassThroughRule',
-      'selector' => 'code',
+      'selector' => 'article',
     ),
     array(
       'class' => 'PassThroughRule',
-      'selector' => 'del',
+      'selector' => 'div',
     ),
     array(
       'class' => 'PassThroughRule',
@@ -218,15 +218,11 @@ function fb_instant_articles_fb_instant_articles_transformer_rules() {
     ),
     array(
       'class' => 'ParagraphRule',
-      'selector' => 'div',
-    ),
-    array(
-      'class' => 'ParagraphRule',
       'selector' => 'p',
     ),
     array(
       'class' => 'LineBreakRule',
-      'selector' => 'br',
+      'selector' => 'aside',
     ),
     array(
       'class' => 'AnchorRule',
@@ -245,6 +241,14 @@ function fb_instant_articles_fb_instant_articles_transformer_rules() {
       ),
     ),
     array(
+      'class' => 'ItalicRule',
+      'selector' => 'i',
+    ),
+    array(
+      'class' => 'EmphasizedRule',
+      'selector' => 'em',
+    ),
+    array(
       'class' => 'BoldRule',
       'selector' => 'b',
     ),
@@ -252,47 +256,29 @@ function fb_instant_articles_fb_instant_articles_transformer_rules() {
       'class' => 'BoldRule',
       'selector' => 'strong',
     ),
+
     array(
-      'class' => 'ItalicRule',
-      'selector' => 'i',
+      'class' => 'ParagraphRule',
+      'selector' => 'p',
     ),
     array(
-      'class' => 'ItalicRule',
-      'selector' => 'em',
-    ),
-    array(
-      'class' => 'BlockquoteRule',
-      'selector' => 'blockquote',
-    ),
-    array(
-      'class' => 'PassThroughRule',
-      'selector' => 'blockquote p',
-    ),
-    array(
-      'class' => 'ImageInsideParagraphRule',
-      'selector' => 'img',
-      'properties' => array(
-        'image.url' => array(
-          'type' => 'string',
-          'selector' => 'img',
-          'attribute' => 'src',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'ImageRule',
-      'selector' => 'img',
-      'properties' => array(
-        'image.url' => array(
-          'type' => 'string',
-          'selector' => 'img',
-          'attribute' => 'src',
-        ),
-      ),
+      'class' => 'ParagraphFooterRule',
+      'selector' => 'p',
     ),
     array(
       'class' => 'ListItemRule',
       'selector' => 'li',
+    ),
+    array(
+      'class' => 'SponsorRule',
+      'selector' => 'ul.op-sponsors',
+      'properties' => array(
+        'sponsor.page_url' => array(
+          'type' => 'string',
+          'selector' => 'a',
+          'attribute' => 'href',
+        ),
+      ),
     ),
     array(
       'class' => 'ListElementRule',
@@ -333,178 +319,564 @@ function fb_instant_articles_fb_instant_articles_transformer_rules() {
       ),
     ),
     array(
+      'class' => 'HeaderRule',
+      'selector' => 'header',
+    ),
+    array(
+      'class' => 'FooterSmallRule',
+      'selector' => 'small',
+    ),
+    array(
+      'class' => 'FooterRule',
+      'selector' => 'footer',
+    ),
+    array(
+      'class' => 'RelatedArticlesRule',
+      'selector' => 'ul.op-related-articles',
+      'properties' => array(
+        'related.title' => array(
+          'type' => 'string',
+          'selector' => 'ul.op-related-articles',
+          'attribute' => 'title',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'FooterRelatedArticlesRule',
+      'selector' => 'ul.op-related-articles',
+    ),
+    array(
+      'class' => 'RelatedItemRule',
+      'selector' => 'li',
+      'properties' => array(
+        'related.sponsored' => array(
+          'type' => 'exists',
+          'selector' => 'li',
+          'attribute' => 'data-sponsored',
+        ),
+        'related.url' => array(
+          'type' => 'string',
+          'selector' => 'a',
+          'attribute' => 'href',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'InstantArticleRule',
+      'selector' => 'head',
+      'properties' => array(
+        'article.canonical' => array(
+          'type' => 'string',
+          'selector' => 'link',
+          'attribute' => 'href',
+        ),
+        'article.charset' => array(
+          'type' => 'xpath',
+          'selector' => '//meta[@charset]',
+          'attribute' => 'charset',
+        ),
+        'article.markup.version' => array(
+          'type' => 'xpath',
+          'selector' => "//meta[@property='op:markup_version']",
+          'attribute' => 'content',
+        ),
+        'article.auto.ad' => array(
+          'type' => 'xpath',
+          'selector' => "//meta[@property='fb:use_automatic_ad_placement']",
+          'attribute' => 'content',
+        ),
+        'article.style' => array(
+          'type' => 'xpath',
+          'selector' => "//meta[@property='fb:article_style']",
+          'attribute' => 'content',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'HeaderTitleRule',
+      'selector' => 'h1',
+    ),
+    array(
+      'class' => 'HeaderSubTitleRule',
+      'selector' => 'h2',
+    ),
+    array(
+      'class' => 'HeaderKickerRule',
+      'selector' => 'h3.op-kicker',
+    ),
+    array(
+      'class' => 'TimeRule',
+      'selector' => 'time.op-modified',
+      'properties' => array(
+        'article.time' => array(
+          'type' => 'string',
+          'selector' => 'time',
+          'attribute' => 'datetime',
+        ),
+        'article.datetype' => array(
+          'type' => 'constant',
+          'value' => 'op-modified',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'TimeRule',
+      'selector' => 'time.op-published',
+      'properties' => array(
+        'article.time' => array(
+          'type' => 'string',
+          'selector' => 'time',
+          'attribute' => 'datetime',
+        ),
+        'article.datetype' => array(
+          'type' => 'constant',
+          'value' => 'op-published',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'AuthorRule',
+      'selector' => 'address',
+      'properties' => array(
+        'author.name' => array(
+          'type' => 'string',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'AuthorRule',
+      'selector' => '//header/address[a]',
+      'properties' => array(
+        'author.url' => array(
+          'type' => 'string',
+          'selector' => 'a',
+          'attribute' => 'href',
+        ),
+        'author.name' => array(
+          'type' => 'string',
+          'value' => 'a',
+        ),
+        'author.role_contribution' => array(
+          'type' => 'string',
+          'selector' => 'a',
+          'attribute' => 'title',
+        ),
+        'author.description' => array(
+          'type' => 'sibling',
+          'value' => 'a',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'H1Rule',
+      'selector' => 'h1',
+      'properties' => array(
+        'op-left' => array(
+          'type' => 'exists',
+          'selector' => 'h1.op-left',
+        ),
+        'op-center' => array(
+          'type' => 'exists',
+          'selector' => 'h1.op-center',
+        ),
+        'op-right' => array(
+          'type' => 'exists',
+          'selector' => 'h1.op-right',
+        ),
+        'op-vertical-below' => array(
+          'type' => 'exists',
+          'selector' => 'h1.op-vertical-below',
+        ),
+        'op-vertical-center' => array(
+          'type' => 'exists',
+          'selector' => 'h1.op-vertical-center',
+        ),
+        'op-vertical-above' => array(
+          'type' => 'exists',
+          'selector' => 'h1.op-vertical-above',
+        ),
+      ),
+    ),
+    array(
       'class' => 'H2Rule',
-      'selector' => 'h3,h4,h5,h6',
-    ),
-    array(
-      'class' => 'InteractiveRule',
-      'selector' => 'blockquote.instagram-media',
+      'selector' => 'h2',
       'properties' => array(
-        'interactive.iframe' => array(
-          'type' => 'multiple',
-          'children' => array(
-            array(
-              'type' => 'element',
-              'selector' => 'blockquote',
-            ),
-            array(
-              'type' => 'next-sibling-element-of',
-              'selector' => 'blockquote',
-            ),
-          ),
+        'op-left' => array(
+          'type' => 'exists',
+          'selector' => 'h2.op-left',
+        ),
+        'op-center' => array(
+          'type' => 'exists',
+          'selector' => 'h2.op-center',
+        ),
+        'op-right' => array(
+          'type' => 'exists',
+          'selector' => 'h2.op-right',
+        ),
+        'op-vertical-below' => array(
+          'type' => 'exists',
+          'selector' => 'h2.op-vertical-below',
+        ),
+        'op-vertical-center' => array(
+          'type' => 'exists',
+          'selector' => 'h2.op-vertical-center',
+        ),
+        'op-vertical-above' => array(
+          'type' => 'exists',
+          'selector' => 'h2.op-vertical-above',
         ),
       ),
     ),
     array(
-      'class' => 'InteractiveRule',
-      'selector' => 'iframe',
+      'class' => 'CaptionCreditRule',
+      'selector' => 'cite',
       'properties' => array(
-        'interactive.url' => array(
+        'op-left' => array(
+          'type' => 'exists',
+          'selector' => 'cite.op-left',
+        ),
+        'op-center' => array(
+          'type' => 'exists',
+          'selector' => 'cite.op-center',
+        ),
+        'op-right' => array(
+          'type' => 'exists',
+          'selector' => 'cite.op-right',
+        ),
+        'op-vertical-below' => array(
+          'type' => 'exists',
+          'selector' => 'cite.op-vertical-below',
+        ),
+        'op-vertical-center' => array(
+          'type' => 'exists',
+          'selector' => 'cite.op-vertical-center',
+        ),
+        'op-vertical-above' => array(
+          'type' => 'exists',
+          'selector' => 'cite.op-vertical-above',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'PullquoteCiteRule',
+      'selector' => 'cite',
+    ),
+    array(
+      'class' => 'CaptionRule',
+      'selector' => 'figcaption',
+      'properties' => array(
+        'op-medium' => array(
+          'type' => 'exists',
+          'selector' => 'figcaption.op-medium',
+        ),
+        'op-large' => array(
+          'type' => 'exists',
+          'selector' => 'figcaption.op-large',
+        ),
+        'op-extra-large' => array(
+          'type' => 'exists',
+          'selector' => 'figcaption.op-extra-large',
+        ),
+        'op-left' => array(
+          'type' => 'exists',
+          'selector' => 'figcaption.op-left',
+        ),
+        'op-center' => array(
+          'type' => 'exists',
+          'selector' => 'figcaption.op-center',
+        ),
+        'op-right' => array(
+          'type' => 'exists',
+          'selector' => 'figcaption.op-right',
+        ),
+        'op-vertical-below' => array(
+          'type' => 'exists',
+          'selector' => 'figcaption.op-vertical-below',
+        ),
+        'op-vertical-center' => array(
+          'type' => 'exists',
+          'selector' => 'figcaption.op-vertical-center',
+        ),
+        'op-vertical-above' => array(
+          'type' => 'exists',
+          'selector' => 'figcaption.op-vertical-above',
+        ),
+        'caption.default' => array(
           'type' => 'string',
-          'selector' => 'iframe',
-          'attribute' => 'src',
-        ),
-        'interactive.width' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'width',
-        ),
-        'interactive.height' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'height',
-        ),
-        'interactive.iframe' => array(
-          'type' => 'children',
-          'selector' => 'iframe',
+          'selector' => 'img',
+          'attribute' => 'alt',
         ),
       ),
     ),
+
     array(
-      'class' => 'InteractiveRule',
-      'selector' => 'div.embed',
+      'class' => 'AudioRule',
+      'selector' => 'audio',
       'properties' => array(
-        'interactive.iframe' => array(
-          'type' => 'children',
-          'selector' => 'div.embed',
-        ),
-        'interactive.height' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'height',
-        ),
-        'interactive.width' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'width',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'InteractiveRule',
-      'selector' => 'div.interactive',
-      'properties' => array(
-        'interactive.iframe' => array(
-          'type' => 'children',
-          'selector' => 'div.interactive',
-        ),
-        'interactive.height' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'height',
-        ),
-        'interactive.width' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'width',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'InteractiveRule',
-      'selector' => "//div[@class='embed' and iframe]",
-      'properties' => array(
-        'interactive.url' => array(
+        'audio.url' => array(
           'type' => 'string',
-          'selector' => 'iframe',
+          'selector' => 'source',
           'attribute' => 'src',
         ),
-        'interactive.iframe' => array(
-          'type' => 'children',
-          'selector' => 'iframe',
-          'attribute' => 'src',
-        ),
-        'interactive.width' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'width',
-        ),
-        'interactive.height' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'height',
-        ),
-      ),
-    ),
-    array(
-      'class' => 'InteractiveRule',
-      'selector' => "//div[@class='interactive' and iframe]",
-      'properties' => array(
-        'interactive.url' => array(
+        'audio.title' => array(
           'type' => 'string',
-          'selector' => 'iframe',
-          'attribute' => 'src',
+          'selector' => 'audio',
+          'attribute' => 'title',
         ),
-        'interactive.iframe' => array(
-          'type' => 'children',
-          'selector' => 'iframe',
+        'audio.autoplay' => array(
+          'type' => 'string',
+          'selector' => 'audio',
+          'attribute' => 'autoplay',
         ),
-        'interactive.height' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'height',
-        ),
-        'interactive.width' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'width',
+        'audio.muted' => array(
+          'type' => 'string',
+          'selector' => 'audio',
+          'attribute' => 'muted',
         ),
       ),
     ),
-    array(
-      'class' => 'InteractiveRule',
-      'selector' => 'table',
-      'properties' => array(
-        'interactive.iframe' => array(
-          'type' => 'element',
-          'selector' => 'table',
-        ),
-        'interactive.height' => array(
-          'type' => 'int',
-          'selector' => 'table',
-          'attribute' => 'height',
-        ),
-        'interactive.width' => array(
-          'type' => 'int',
-          'selector' => 'iframe',
-          'attribute' => 'width',
-        ),
-      ),
-    ),
+
+
     array(
       'class' => 'ImageRule',
-      'selector' => '//p[a[img]]|//a[img]',
+      'selector' => 'figure',
       'properties' => array(
         'image.url' => array(
           'type' => 'string',
           'selector' => 'img',
           'attribute' => 'src',
         ),
-        'image.caption' => array(
-          'type' => 'element',
-          'selector' => 'img[@alt]',
+        'image.like' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-feedback*='fb:likes']",
+          'attribute' => 'data-feedback',
+        ),
+        'aspect-fit' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-mode=aspect-fit]",
+        ),
+        'aspect-fit-only' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-mode=aspect-fit-only]",
+        ),
+        'fullscreen' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-mode=fullscreen]",
+        ),
+        'non-interactive' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-mode=non-interactive]",
+        ),
+        'image.comments' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-feedback*='fb:comments']",
+          'attribute' => 'data-feedback',
         ),
       ),
+    ),
+
+
+    array(
+      'class' => 'VideoRule',
+      'selector' => 'figure',
+      'containsChild' => 'video',
+      'properties' => array(
+        'video.url' => array(
+          'type' => 'string',
+          'selector' => 'source',
+          'attribute' => 'src',
+        ),
+        'video.type' => array(
+          'type' => 'string',
+          'selector' => 'source',
+          'attribute' => 'type',
+        ),
+        'aspect-fit' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-mode=aspect-fit]",
+        ),
+        'aspect-fit-only' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-mode=aspect-fit-only]",
+        ),
+        'fullscreen' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-mode=fullscreen]",
+        ),
+        'non-interactive' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-mode=non-interactive]",
+        ),
+        'video.controls' => array(
+          'type' => 'exists',
+          'selector' => 'video',
+          'attribute' => 'controls',
+        ),
+        'video.playback' => array(
+          'type' => 'exists',
+          'selector' => 'video',
+          'attribute' => 'data-fb-disable-autoplay',
+        ),
+        'video.like' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-feedback*='fb:likes']",
+          'attribute' => 'data-feedback"',
+        ),
+        'video.comments' => array(
+          'type' => 'exists',
+          'selector' => "figure[data-feedback*='fb:comments']",
+          'attribute' => 'data-feedback',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'MapRule',
+      'selector' => 'figure.op-map',
+    ),
+
+
+    array(
+      'class' => 'GeoTagRule',
+      'selector' => 'script',
+      'properties' => array(
+        'map.geotag' => array(
+          'type' => 'string',
+          'selector' => 'script',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'InteractiveRule',
+      'selector' => 'figure.op-interactive',
+      'properties' => array(
+        'no-margin' => array(
+          'type' => 'exists',
+          'selector' => 'iframe.no-margin',
+        ),
+        'column-width' => array(
+          'type' => 'exists',
+          'selector' => 'iframe.column-width',
+        ),
+        'interactive.url' => array(
+          'type' => 'string',
+          'selector' => 'iframe',
+          'attribute' => 'src',
+        ),
+        'interactive.height' => array(
+          'type' => 'int',
+          'selector' => 'iframe',
+          'attribute' => 'height',
+        ),
+        'interactive.width' => array(
+          'type' => 'string',
+          'selector' => 'iframe',
+          'attribute' => 'width',
+        ),
+        'interactive.iframe' => array(
+          'type' => 'children',
+          'selector' => 'iframe',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'HeaderImageRule',
+      'selector' => 'figure',
+      'containsChild' => 'img',
+      'properties' => array(
+        'image.url' => array(
+          'type' => 'string',
+          'selector' => 'img',
+          'attribute' => 'src',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'SlideshowImageRule',
+      'selector' => "figure",
+      'properties' => array(
+        'image.url' => array(
+          'type' => 'string',
+          'selector' => 'img',
+          'attribute' => 'src',
+        ),
+        'caption.title' => array(
+          'type' => 'string',
+          'selector' => 'figcaption',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'SlideshowRule',
+      'selector' => "figure.op-slideshow",
+    ),
+    array(
+      'class' => 'AdRule',
+      'selector' => "figure.op-ad",
+      'properties' => array(
+        'ad.url' => array(
+          'type' => 'string',
+          'selector' => 'iframe',
+          'attribute' => 'src',
+        ),
+        'ad.height' => array(
+          'type' => 'int',
+          'selector' => 'iframe',
+          'attribute' => 'height',
+        ),
+        'ad.width' => array(
+          'type' => 'int',
+          'selector' => 'iframe',
+          'attribute' => 'width',
+        ),
+        'ad.embed' => array(
+          'type' => 'children',
+          'selector' => 'iframe',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'HeaderAdRule',
+      'selector' => 'figure.op-ad',
+      'properties' => array(
+        'ad.url' => array(
+          'type' => 'string',
+          'selector' => 'iframe',
+          'attribute' => 'src',
+        ),
+        'ad.height' => array(
+          'type' => 'int',
+          'selector' => 'iframe',
+          'attribute' => 'height',
+        ),
+        'ad.width' => array(
+          'type' => 'int',
+          'selector' => 'iframe',
+          'attribute' => 'width',
+        ),
+        'ad.embed' => array(
+          'type' => 'children',
+          'selector' => 'iframe',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'AnalyticsRule',
+      'selector' => 'figure.op-tracker',
+      'properties' => array(
+        'analytics.url' => array(
+          'type' => 'string',
+          'selector' => 'iframe',
+          'attribute' => 'src',
+        ),
+        'analytics.embed' => array(
+          'type' => 'children',
+          'selector' => 'iframe',
+        ),
+      ),
+    ),
+    array(
+      'class' => 'PullquoteRule',
+      'selector' => 'aside',
     ),
   );
 }
