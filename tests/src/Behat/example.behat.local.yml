@@ -1,13 +1,11 @@
 # Local Behat configuration file.
 #
-# See the testing section of the [README.md](README.md) to learn how to use this
-# file.
+# See the testing section of the [README.md](README.md) to learn how to use this file.
 default:
   suites:
     default:
       contexts:
-        - FeatureContext
-        - InstantArticlesContext
+        - FbInstantArticlesFeatureContext
         - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\MinkContext
         - Drupal\DrupalExtension\Context\MessageContext
