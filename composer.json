@@ -19,10 +19,5 @@
     "phpmd/phpmd": "^2.6",
     "phpmetrics/phpmetrics": "^2.3",
     "cweagans/composer-patches": "^1.6"
-  },
-  "patches": {
-    "behat/mink-extension": {
-      "Open Chrome": "https://patch-diff.githubusercontent.com/raw/Behat/MinkExtension/pull/311.patch"
-    }
   }
 }
