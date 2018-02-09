@@ -68,7 +68,7 @@ unit_kernel_tests: &unit_kernel_tests
     - run:
         working_directory: /var/www/html
         command: |
-          ./test.sh $CIRCLE_PROJECT_REPONAME
+          ./test.sh fb_instant_articles
 
     - store_test_results:
         path: /var/www/html/artifacts/phpunit
@@ -87,7 +87,7 @@ behat_tests: &behat_tests
     - run:
         working_directory: /var/www/html
         command: |
-          ./test-js.sh $CIRCLE_PROJECT_REPONAME
+          ./test-js.sh fb_instant_articles
 
     - store_test_results:
         path: /var/www/html/artifacts/behat
@@ -106,7 +106,7 @@ code_sniffer: &code_sniffer
     - run:
         working_directory: /var/www/html
         command: |
-          ./code-sniffer.sh $CIRCLE_PROJECT_REPONAME
+          ./code-sniffer.sh fb_instant_articles
 
     - store_test_results:
         path: /var/www/html/artifacts/phpcs
@@ -125,7 +125,7 @@ code_coverage: &code_coverage
     - run:
         working_directory: /var/www/html
         command: |
-          ./code-coverage-stats.sh $CIRCLE_PROJECT_REPONAME
+          ./code-coverage-stats.sh fb_instant_articles
     - store_artifacts:
         path: /var/www/html/artifacts
 
