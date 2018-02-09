@@ -5,7 +5,6 @@ namespace Drupal\Tests\fb_instant_articles\Kernel\Plugin\Field\FieldFormatter;
 use Drupal\entity_test\Entity\EntityTest;
 use Drupal\fb_instant_articles\Plugin\Field\FieldFormatter\FormatterBase;
 use Drupal\fb_instant_articles\Regions;
-use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\InstantArticle;
 
 /**
