@@ -9,7 +9,7 @@ use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
  *
  * @codingStandardsIgnoreStart
  */
-class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext {
+class FbInstantArticlesFeatureContext extends RawDrupalContext implements SnippetAcceptingContext {
 
   /**
    * Install Facebook Instant Articles module.
@@ -19,8 +19,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   public static function prepare(BeforeSuiteScope $scope) {
     /** @var \Drupal\Core\Extension\ModuleHandler $moduleHandler */
     $moduleHandler = \Drupal::service('module_handler');
-    if (!$moduleHandler->moduleExists('fb_instant_articles')) {
-      \Drupal::service('module_installer')->install(['fb_instant_articles']);
+    if (!$moduleHandler->moduleExists('fb_instant_articles_views')) {
+      \Drupal::service('module_installer')->install(['fb_instant_articles_views']);
     }
 
     // Also uninstall the inline form errors module for easier testing.
