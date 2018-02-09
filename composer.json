@@ -17,6 +17,6 @@
     "drupal/coder": "^8.2",
     "bex/behat-screenshot": "^1.2",
     "phpmd/phpmd": "^2.6",
-    "phpmetrics/phpmetrics": "^2.3",
+    "phpmetrics/phpmetrics": "^2.3"
   }
 }
