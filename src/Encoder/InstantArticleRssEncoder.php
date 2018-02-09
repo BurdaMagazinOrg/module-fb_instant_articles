@@ -41,7 +41,7 @@ class InstantArticleRssEncoder extends XmlEncoder {
    *
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   Request stack.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Config factory interface.
    */
   public function __construct(RequestStack $request_stack, ConfigFactoryInterface $config_factory) {

@@ -82,7 +82,7 @@ class BaseSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => t('Ad Source URL'),
       '#default_value' => $config->get('ads.iframe_url'),
-      '#description' => t('<strong>Note:</strong> Instant Articles only supports Direct Sold ads. No programmatic ad networks, other than Facebook\'s Audience Network, are permitted.'),
+      '#description' => t("<strong>Note:</strong> Instant Articles only supports Direct Sold ads. No programmatic ad networks, other than Facebook's Audience Network, are permitted."),
       '#size' => 80,
       '#element_validate' => [
         [$this, 'validateAdSourceUrl'],

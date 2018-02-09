@@ -115,7 +115,7 @@ class VideoFormatterTest extends FormatterTestBase {
    *
    * @covers ::viewInstantArticle
    */
-  function testVideoFormatterCanonicalUrl() {
+  public function testVideoFormatterCanonicalUrl() {
     $entity = EntityTest::create([]);
     // Handy method to populate the field with a real value.
     // @see FileItem::generateSampleValue()

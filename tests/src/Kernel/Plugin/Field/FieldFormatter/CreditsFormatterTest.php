@@ -4,9 +4,7 @@ namespace Drupal\Tests\fb_instant_articles\Kernel\Plugin\Field\FieldFormatter;
 
 use Drupal\entity_test\Entity\EntityTest;
 use Drupal\fb_instant_articles\Regions;
-use Facebook\InstantArticles\Elements\Footer;
 use Facebook\InstantArticles\Elements\InstantArticle;
-use Facebook\InstantArticles\Elements\Small;
 
 /**
  * Tests the CreditsFormatter.

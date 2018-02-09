@@ -6,7 +6,6 @@ use Drupal\entity_test\Entity\EntityTest;
 use Drupal\fb_instant_articles\Regions;
 use Facebook\InstantArticles\Elements\Author;
 use Facebook\InstantArticles\Elements\InstantArticle;
-use Facebook\InstantArticles\Elements\ListElement;
 
 /**
  * Tests the instant article author field formatter.
