@@ -16,13 +16,12 @@
 defaults: &defaults
   docker:
     # specify the version you desire here (avoid latest except for testing)
-    - image: andrewberry/drupal_tests:0.0.11
+    - image: andrewberry/drupal_tests:0.2.0
 
     # Use our fork until https://github.com/wernight/docker-phantomjs/pull/3 is
     # merged.
     # - image: wernight/phantomjs:2.1.1
-    - image: andrewberry/docker-phantomjs:v2.1.1-patch1
-      command: [phantomjs, --webdriver=8910]
+    - image: selenium/standalone-chrome-debug:3.7.1-beryllium
 
     - image: mariadb:10.3
       environment:
@@ -151,4 +150,6 @@ workflows:
       - run-unit-kernel-tests
       - run-behat-tests
       - run-code-sniffer
-      - run-code-coverage
+      - run-code-coverage:
+          requires:
+            - run-unit-kernel-tests
