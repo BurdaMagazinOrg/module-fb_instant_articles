@@ -3,10 +3,8 @@
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemInterface;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
-use Facebook\InstantArticles\Elements\InstantArticle;
 use Facebook\InstantArticles\Elements\Interactive;
 
 /**

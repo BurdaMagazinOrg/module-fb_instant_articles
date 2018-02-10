@@ -35,6 +35,8 @@ class ContentEntityNormalizerTestBase extends UnitTestCase {
    *   Global config settings.
    * @param array $components
    *   Entity view display components.
+   * @param string $language_direction
+   *   Language direction.
    *
    * @return \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer
    *   Content entity normalizer object to test against.
@@ -75,7 +77,7 @@ class ContentEntityNormalizerTestBase extends UnitTestCase {
         $entity_type_manager,
         $info_parser,
         $module_handler,
-        $language_manager
+        $language_manager,
       ])
       ->setMethods(['getApplicableComponents', 'getApplicationVersion'])
       ->getMock();

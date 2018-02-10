@@ -3,13 +3,8 @@
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemInterface;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
-use Drupal\fb_instant_articles\Regions;
-use Facebook\InstantArticles\Elements\Analytics;
-use Facebook\InstantArticles\Elements\Header;
-use Facebook\InstantArticles\Elements\InstantArticle;
 
 /**
  * Plugin implementation of the 'fbia_analytics_link' formatter.
