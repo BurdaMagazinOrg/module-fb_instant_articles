@@ -47,7 +47,7 @@ class InstantArticleContentEntityNormalizerTest extends ContentEntityNormalizerT
     // Test the global settings effect on the output.
     $normalizer = $this->getContentEntityNormalizer([
       'canonical_url_override' => 'http://example.com',
-      'analytics_embed_code' => 'analytics embed code',
+      'analytics.embed_code' => 'analytics embed code',
       'ads.type' => 'source_url',
       'ads.iframe_url' => 'http://example.com',
       'ads.dimensions' => '300x250',

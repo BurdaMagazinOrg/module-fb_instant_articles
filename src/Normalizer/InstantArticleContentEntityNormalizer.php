@@ -57,14 +57,14 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
   protected $entityFieldManager;
 
   /**
-   * Entity type manager serivice.
+   * Entity type manager service.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
   /**
-   * Infor parser.
+   * Info parser.
    *
    * @var \Drupal\Core\Extension\InfoParserInterface
    */
