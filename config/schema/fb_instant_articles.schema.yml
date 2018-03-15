@@ -36,9 +36,9 @@ fb_instant_articles.settings:
         embed_code:
           type: string
           label: 'Analytics embed code'
-    enable_logging:
-      type: integer
-      label: 'Enable FB Instant Articles SDK logging'
+    transformer_logging_level:
+      type: string
+      label: 'Transformer logging level'
     canonical_url_override:
       type: uri
       label: 'Canonical URL override'
