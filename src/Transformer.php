@@ -2,7 +2,6 @@
 
 namespace Drupal\fb_instant_articles;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Facebook\InstantArticles\Transformer\Transformer as FbiaTransformer;
 
 /**
@@ -18,13 +17,6 @@ class Transformer extends FbiaTransformer {
   protected $transformerRulesManager;
 
   /**
-   * Settings for the module.
-   *
-   * @var \Drupal\Core\Config\ImmutableConfig
-   */
-  protected $config;
-
-  /**
    * Transformer constructor.
    *
    * Wraps the Transformer object from the SDK to introduce a default set of
@@ -36,16 +28,12 @@ class Transformer extends FbiaTransformer {
    *
    * @param \Drupal\fb_instant_articles\TransformerRulesManager $transformer_rules_manager
    *   Transformer rules manager service.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   Config factory service.
    *
    * @see hook_fb_instant_articles_transformer_rules_alter()
    */
-  public function __construct(TransformerRulesManager $transformer_rules_manager, ConfigFactoryInterface $config_factory) {
+  public function __construct(TransformerRulesManager $transformer_rules_manager) {
     $this->transformerRulesManager = $transformer_rules_manager;
     $this->addRules($this->transformerRulesManager->getRules());
-    $this->config = $config_factory->get('fb_instant_articles.settings');
-    $this->transformerLogging();
   }
 
   /**
@@ -73,31 +61,6 @@ class Transformer extends FbiaTransformer {
       }
       $this->addRule($factory_method->invoke(NULL, $rule));
     }
-  }
-
-  /**
-   * Setup transformer logging or not.
-   */
-  protected function transformerLogging() {
-    $appender = [
-      'class' => $this->config->get('enable_logging') ? '\Drupal\fb_instant_articles\DrupalLoggerAppender' : 'LoggerAppenderNull',
-      'layout' => [
-        'class' => 'LoggerLayoutSimple',
-      ],
-    ];
-    $configuration = [
-      'rootLogger' => [
-        'appenders' => [
-          'facebook-instantarticles-transformer',
-          'facebook-instantarticles-client',
-        ],
-      ],
-      'appenders' => [
-        'facebook-instantarticles-transformer' => $appender,
-        'facebook-instantarticles-client' => $appender,
-      ],
-    ];
-    \Logger::configure($configuration);
   }
 
 }
