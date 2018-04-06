@@ -3,12 +3,15 @@
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Drupal\fb_instant_articles\Transformer;
+use Drupal\fb_instant_articles\TransformerLoggingTrait;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -26,12 +29,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class TransformerFormatter extends FormatterBase implements InstantArticleFormatterInterface {
 
-  /**
-   * FBIA SDK transformer object.
-   *
-   * @var \Drupal\fb_instant_articles\Transformer
-   */
-  protected $transformer;
+  use TransformerLoggingTrait;
 
   /**
    * Create a new instance of TransformerFormatter.
@@ -54,10 +52,17 @@ class TransformerFormatter extends FormatterBase implements InstantArticleFormat
    *   The renderer service.
    * @param \Drupal\fb_instant_articles\Transformer $transformer
    *   FBIA SDK transformer object.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   Config factory service.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   Logger for transformer messages.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, RendererInterface $renderer, Transformer $transformer) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, RendererInterface $renderer, Transformer $transformer, ConfigFactoryInterface $config_factory, LoggerInterface $logger) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings, $renderer);
     $this->transformer = $transformer;
+    $this->configFactory = $config_factory;
+    $this->logger = $logger;
+    $this->setTransformerLogLevel();
   }
 
   /**
@@ -73,7 +78,9 @@ class TransformerFormatter extends FormatterBase implements InstantArticleFormat
       $configuration['view_mode'],
       $configuration['third_party_settings'],
       $container->get('renderer'),
-      $container->get('fb_instant_articles.transformer')
+      $container->get('fb_instant_articles.transformer'),
+      $container->get('config.factory'),
+      $container->get('logger.channel.fbia')
     );
   }
 
@@ -100,9 +107,10 @@ class TransformerFormatter extends FormatterBase implements InstantArticleFormat
 
       // Note that by passing $article as the first argument, we are implicitly
       // ignoring the $region param and assuming this content goes into the
-      // body are exclusively. The Facebook SDK curently only supports using the
-      // transformer for body elements.
+      // body are exclusively. The Facebook SDK currently only supports using
+      // the transformer for body elements.
       $this->transformer->transform($article, $document);
+      $this->storeTransformerLogs();
     }
   }
 

@@ -12,7 +12,7 @@ services:
 
   serializer.fb_instant_articles.fbia.field_item_list:
     class: Drupal\fb_instant_articles\Normalizer\FieldItemListNormalizer
-    arguments: ['@renderer', '@fb_instant_articles.transformer']
+    arguments: ['@renderer', '@fb_instant_articles.transformer', '@config.factory', '@logger.channel.fbia']
     tags:
       - { name: normalizer, priority: 10 }
 
@@ -30,7 +30,8 @@ services:
 
   fb_instant_articles.transformer:
     class: Drupal\fb_instant_articles\Transformer
-    arguments: ['@fb_instant_articles.transformer_rules_manager', '@config.factory']
+    arguments: ['@fb_instant_articles.transformer_rules_manager']
+    shared: false
 
   fb_instant_articles.transformer_rules_manager:
     class: Drupal\fb_instant_articles\TransformerRulesManager

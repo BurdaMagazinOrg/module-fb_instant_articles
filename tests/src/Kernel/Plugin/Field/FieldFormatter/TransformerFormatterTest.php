@@ -37,18 +37,6 @@ class TransformerFormatterTest extends FormatterTestBase {
 
     $this->installConfig(['text', 'filter', 'filter_test']);
 
-    // Turn off transformer logging.
-    \Logger::configure([
-      'rootLogger' => [
-        'appenders' => [
-          'facebook-instantarticles-transformer',
-        ],
-      ],
-      'appenders' => [
-        'facebook-instantarticles-transformer' => ['class' => 'LoggerAppenderNull'],
-      ],
-    ]);
-
     // Setup entity view display with default settings.
     $this->display->setComponent($this->fieldName, [
       'type' => 'fbia_transformer',

@@ -6,6 +6,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\fb_instant_articles\AdTypes;
+use Facebook\InstantArticles\Transformer\Logs\TransformerLog;
 
 /**
  * Facebook Instant Articles base settings form.
@@ -157,11 +158,17 @@ class BaseSettingsForm extends ConfigFormBase {
     ];
 
     // Add the Debug Configuration.
-    $form['enable_logging'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Enable FB Instant Articles SDK logging?'),
-      '#default_value' => $config->get('enable_logging'),
-      '#description' => $this->t('Sends Facebook Instant Articles SDK logging messages to Drupal watchdog.'),
+    $form['transformer_logging_level'] = [
+      '#type' => 'select',
+      '#options' => [
+        TransformerLog::OFF => $this->t('Off'),
+        TransformerLog::ERROR => $this->t('Error'),
+        TransformerLog::INFO => $this->t('Info'),
+        TransformerLog::DEBUG => $this->t('Debug'),
+      ],
+      '#title' => $this->t('Transformer logging level'),
+      '#default_value' => $config->get('transformer_logging_level') ? $config->get('transformer_logging_level') : TransformerLog::ERROR,
+      '#description' => $this->t('The FBIA Transformer outputs logs as it transforms HTML into the Facebook Instant Articles format. This setting allows you to capture those logs in Drupal logs for debugging purposes.'),
     ];
 
     // Add the Canonical URL override.
@@ -256,7 +263,7 @@ class BaseSettingsForm extends ConfigFormBase {
       ->set('ads.embed_code', $form_state->getValue('ads_embed_code'))
       ->set('ads.dimensions', $form_state->getValue('ads_dimensions'))
       ->set('analytics.embed_code', $form_state->getValue('analytics_embed_code'))
-      ->set('enable_logging', $form_state->getValue('enable_logging'))
+      ->set('transformer_logging_level', $form_state->getValue('transformer_logging_level'))
       ->set('canonical_url_override', $form_state->getValue('canonical_url_override'))
       ->save();
 

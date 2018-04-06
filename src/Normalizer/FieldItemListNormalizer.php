@@ -3,14 +3,17 @@
 namespace Drupal\fb_instant_articles\Normalizer;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Drupal\fb_instant_articles\Regions;
 use Drupal\fb_instant_articles\Transformer;
+use Drupal\fb_instant_articles\TransformerLoggingTrait;
 use Facebook\InstantArticles\Elements\Footer;
 use Facebook\InstantArticles\Elements\Header;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
@@ -18,6 +21,7 @@ use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
  * Normalize FieldItemList object into an Instant Article object.
  */
 class FieldItemListNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
+  use TransformerLoggingTrait;
 
   /**
    * Renderer service.
@@ -27,23 +31,23 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
   protected $renderer;
 
   /**
-   * FBIA SDK transformer object.
-   *
-   * @var \Drupal\fb_instant_articles\Transformer
-   */
-  protected $transformer;
-
-  /**
    * FieldItemListNormalizer constructor.
    *
    * @param \Drupal\Core\Render\RendererInterface $renderer
    *   The renderer service.
    * @param \Drupal\fb_instant_articles\Transformer $transformer
    *   FBIA SDK transformer object.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   Config factory service.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   Logger for transformer messages.
    */
-  public function __construct(RendererInterface $renderer, Transformer $transformer) {
+  public function __construct(RendererInterface $renderer, Transformer $transformer, ConfigFactoryInterface $config_factory, LoggerInterface $logger) {
     $this->renderer = $renderer;
     $this->transformer = $transformer;
+    $this->configFactory = $config_factory;
+    $this->logger = $logger;
+    $this->setTransformerLogLevel();
   }
 
   /**
@@ -115,6 +119,7 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
 
           // Region-aware transformation of rendered markup.
           $this->transformer->transform($transformer_context, $document);
+          $this->storeTransformerLogs();
         }
       }
     }
