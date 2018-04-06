@@ -1,5 +1,6 @@
 <?php
 
+use Behat\Gherkin\Node\TableNode;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
@@ -27,6 +28,36 @@ class FbInstantArticlesFeatureContext extends RawDrupalContext implements Snippe
     if ($moduleHandler->moduleExists('inline_form_errors')) {
       \Drupal::service('module_installer')->uninstall(['inline_form_errors']);
     }
+
+    // Clear the FBIA Config so we start from scratch each time.
+    // This is mostly handy when developing these tests locally.
+    \Drupal::configFactory()->getEditable('fb_instant_articles.settings')->delete();
+
+  }
+
+  /**
+   * @Given I disable HTML 5 required validation on the :field field
+   */
+  public function iDisableHtmlRequiredValidationOnTheField($field) {
+    $id = $this->getSession()->getPage()->findField($field)->getAttribute('id');
+    $this->getSession()->evaluateScript("jQuery('#$id').removeAttr('required');");
+  }
+
+  /**
+   * @Given I disable HTML 5 required validation on the fields:
+   */
+  public function iDisableHtmlRequiredValidationOnTheFields(TableNode $fields) {
+    foreach ($fields->getHash() as $key => $value) {
+      $field = trim($value['field']);
+      $this->iDisableHtmlRequiredValidationOnTheField($field);
+    }
+  }
+
+  /**
+   * @Given I open the Facebook Instant Articles Settings form
+   */
+  public function iOpenTheFacebookInstantArticlesSettingsForm() {
+    $this->visitPath('admin/config/services/fb_instant_articles');
   }
 
 }
