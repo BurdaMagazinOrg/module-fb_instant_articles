@@ -76,6 +76,10 @@ class TransformerRulesManager {
       ],
       [
         'class' => PassThroughRule::class,
+        'selector' => 'meta',
+      ],
+      [
+        'class' => PassThroughRule::class,
         'selector' => 'body',
       ],
       [
