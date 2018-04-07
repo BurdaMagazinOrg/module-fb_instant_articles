@@ -29,6 +29,9 @@ class Transformer extends FbiaTransformer {
    * @param \Drupal\fb_instant_articles\TransformerRulesManager $transformer_rules_manager
    *   Transformer rules manager service.
    *
+   * @throws \ReflectionException
+   *   In case the class specified by one of the loaded $rules cannot be found.
+   *
    * @see hook_fb_instant_articles_transformer_rules_alter()
    */
   public function __construct(TransformerRulesManager $transformer_rules_manager) {
@@ -42,6 +45,9 @@ class Transformer extends FbiaTransformer {
    * @param array $rules
    *   An array of transformer rule arrays. This is a PHP array representation
    *   of the JSON list of Rules information expected by parent::loadRules().
+   *
+   * @throws \ReflectionException
+   *   In case the class specified by one of the given $rules cannot be found.
    *
    * @see Transformer::__construct()
    * @see \Facebook\InstantArticles\Transformer\Transformer::loadRules()

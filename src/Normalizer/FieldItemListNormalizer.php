@@ -90,14 +90,6 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
         $render_array = $formatter->view($object);
         if ($markup = (string) $this->renderer->renderPlain($render_array)) {
 
-          // Pass the markup through the Transformer.
-          $document = new \DOMDocument();
-          // Before loading into DOMDocument, setup for success by taking care
-          // of encoding issues.  Since we're dealing with HTML snippets, it
-          // will always be missing a <meta charset="utf-8" /> or equivalent.
-          $markup = '<!doctype html><html><head><meta charset="utf-8" /></head><body>' . $markup . '</body></html>';
-          @$document->loadHTML(Html::decodeEntities($markup));
-
           // Determine correct context for transformation.
           $transformer_context = $article;
           if ($component['region'] === Regions::REGION_HEADER) {
@@ -118,7 +110,8 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
           }
 
           // Region-aware transformation of rendered markup.
-          $this->transformer->transform($transformer_context, $document);
+          // Pass the markup through the Transformer.
+          $this->transformer->transformString($transformer_context, $markup);
           $this->storeTransformerLogs();
         }
       }

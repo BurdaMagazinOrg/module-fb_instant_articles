@@ -97,19 +97,11 @@ class TransformerFormatter extends FormatterBase implements InstantArticleFormat
       ];
       $markup = (string) $this->renderer->renderPlain($markup);
 
-      // Pass the markup through the Transformer.
-      $document = new \DOMDocument();
-      // Before loading into DOMDocument, setup for success by taking care of
-      // encoding issues.  Since we're dealing with HTML snippets, it will
-      // always be missing a <meta charset="utf-8" /> or equivalent.
-      $markup = '<!doctype html><html><head><meta charset="utf-8" /></head><body>' . $markup . '</body></html>';
-      @$document->loadHTML(Html::decodeEntities($markup));
-
       // Note that by passing $article as the first argument, we are implicitly
       // ignoring the $region param and assuming this content goes into the
       // body are exclusively. The Facebook SDK currently only supports using
       // the transformer for body elements.
-      $this->transformer->transform($article, $document);
+      $this->transformer->transformString($article, $markup);
       $this->storeTransformerLogs();
     }
   }
