@@ -2,7 +2,6 @@
 
 namespace Drupal\fb_instant_articles\Normalizer;
 
-use Drupal\Component\Utility\Html;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterInterface;
