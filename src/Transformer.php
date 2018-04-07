@@ -2,6 +2,7 @@
 
 namespace Drupal\fb_instant_articles;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Facebook\InstantArticles\Transformer\Transformer as FbiaTransformer;
 
 /**
@@ -28,15 +29,23 @@ class Transformer extends FbiaTransformer {
    *
    * @param \Drupal\fb_instant_articles\TransformerRulesManager $transformer_rules_manager
    *   Transformer rules manager service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   Config factory service.
    *
    * @throws \ReflectionException
    *   In case the class specified by one of the loaded $rules cannot be found.
    *
    * @see hook_fb_instant_articles_transformer_rules_alter()
    */
-  public function __construct(TransformerRulesManager $transformer_rules_manager) {
+  public function __construct(TransformerRulesManager $transformer_rules_manager, ConfigFactoryInterface $config_factory) {
+    parent::__construct();
     $this->transformerRulesManager = $transformer_rules_manager;
     $this->addRules($this->transformerRulesManager->getRules());
+
+    // Override the default timezone according to the site wide timezone.
+    $config_data_default_timezone = $config_factory->get('system.date')->get('timezone.default');
+    $default_time_zone = !empty($config_data_default_timezone) ? $config_data_default_timezone : @date_default_timezone_get();
+    $this->setDefaultDateTimeZone(new \DateTimeZone($default_time_zone));
   }
 
   /**

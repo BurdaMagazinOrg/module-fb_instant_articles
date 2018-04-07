@@ -30,7 +30,7 @@ services:
 
   fb_instant_articles.transformer:
     class: Drupal\fb_instant_articles\Transformer
-    arguments: ['@fb_instant_articles.transformer_rules_manager']
+    arguments: ['@fb_instant_articles.transformer_rules_manager', '@config.factory']
     shared: false
 
   fb_instant_articles.transformer_rules_manager:
