@@ -4,7 +4,14 @@ namespace Drupal\Tests\fb_instant_articles\Unit;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\InfoParserInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Language\Language;
 use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Language\LanguageManager;
 use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer;
 use Drupal\node\NodeInterface;
 use Facebook\InstantArticles\Elements\Analytics;
@@ -170,6 +177,67 @@ class InstantArticleContentEntityNormalizerTest extends ContentEntityNormalizerT
         ],
       ],
     ];
+  }
+
+  /**
+   * Helper function to create a new ContentEntityNormalizer for testing.
+   *
+   * @param array $settings
+   *   Global config settings.
+   * @param array $components
+   *   Entity view display components.
+   * @param string $language_direction
+   *   Language direction.
+   *
+   * @return \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer
+   *   Content entity normalizer object to test against.
+   */
+  protected function getContentEntityNormalizer(array $settings = [], array $components = [], $language_direction = LanguageInterface::DIRECTION_LTR) {
+    $config_factory = $this->getConfigFactoryStub([
+      'fb_instant_articles.settings' => $settings,
+    ]);
+    $entity_field_manager = $this->getMockBuilder(EntityFieldManagerInterface::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $entity_storage = $this->getMock(EntityStorageInterface::class);
+    $entity_type_manager = $this->getMockBuilder(EntityTypeManagerInterface::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $entity_type_manager->method('getStorage')
+      ->willReturn($entity_storage);
+    $info_parser = $this->getMock(InfoParserInterface::class);
+    $module_handler = $this->getMock(ModuleHandlerInterface::class);
+    $this->currentLanguage = $this->getMockBuilder(Language::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['getDirection'])
+      ->getMock();
+    $this->currentLanguage->expects($this->any())
+      ->method('getDirection')
+      ->willReturn($language_direction);
+    $language_manager = $this->getMockBuilder(LanguageManager::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['getCurrentLanguage'])
+      ->getMock();
+    $language_manager->expects($this->once())
+      ->method('getCurrentLanguage')
+      ->willReturn($this->currentLanguage);
+    $content_entity_normalizer = $this->getMockBuilder(InstantArticleContentEntityNormalizer::class)
+      ->setConstructorArgs([
+        $config_factory,
+        $entity_field_manager,
+        $entity_type_manager,
+        $info_parser,
+        $module_handler,
+        $language_manager,
+      ])
+      ->setMethods(['getApplicableComponents', 'getApplicationVersion'])
+      ->getMock();
+    $content_entity_normalizer->method('getApplicableComponents')
+      ->willReturn($components);
+    $content_entity_normalizer->method('getApplicationVersion')
+      ->willReturn('8.x-2.x');
+
+    return $content_entity_normalizer;
   }
 
 }

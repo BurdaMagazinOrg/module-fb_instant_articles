@@ -23,6 +23,11 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
   use TransformerLoggingTrait;
 
   /**
+   * Name of the format that this normalizer deals with.
+   */
+  const FORMAT = 'fbia';
+
+  /**
    * Renderer service.
    *
    * @var \Drupal\Core\Render\RendererInterface
@@ -53,14 +58,9 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
    * {@inheritdoc}
    */
   public function supportsNormalization($data, $format = NULL) {
-    $supported_formats = [
-      InstantArticleContentEntityNormalizer::FORMAT,
-      InstantArticleRssContentEntityNormalizer::FORMAT,
-    ];
-
     // Only consider this normalizer if we are trying to normalize a field item
-    // list into the 'fbia' or 'fbia_rss' format.
-    return in_array($format, $supported_formats) && $data instanceof FieldItemListInterface;
+    // list into the 'fbia' format.
+    return $format === self::FORMAT && $data instanceof FieldItemListInterface;
   }
 
   /**

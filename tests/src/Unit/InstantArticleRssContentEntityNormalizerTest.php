@@ -7,6 +7,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\fb_instant_articles\Normalizer\InstantArticleRssContentEntityNormalizer;
 use Drupal\node\NodeInterface;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Tests the fbia content entity normalizer class.
@@ -16,16 +17,6 @@ use Facebook\InstantArticles\Elements\InstantArticle;
  * @group fb_instant_articles
  */
 class InstantArticleRssContentEntityNormalizerTest extends ContentEntityNormalizerTestBase {
-
-  /**
-   * Helper function to get the content entity normalizer class name.
-   *
-   * @return string
-   *   Content entity normalizer class name.
-   */
-  protected function getContentEntityNormalizerClassName() {
-    return InstantArticleRssContentEntityNormalizer::class;
-  }
 
   /**
    * Tests the supportsNormalization() method.
@@ -74,6 +65,37 @@ class InstantArticleRssContentEntityNormalizerTest extends ContentEntityNormaliz
     $this->assertEquals($now_date->format('c'), $normalized['modified']);
     $this->assertEquals('Joe Mayo', $normalized['author']);
     $this->assertTrue($normalized['content:encoded'] instanceof InstantArticle);
+  }
+
+  /**
+   * Helper function to create a new FBIA RSS normalizer for testing.
+   *
+   * @param array $settings
+   *   Global config settings.
+   * @param array $components
+   *   Entity view display components.
+   *
+   * @return \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer
+   *   Content entity normalizer object to test against.
+   */
+  protected function getContentEntityNormalizer(array $settings = [], array $components = []) {
+    $config_factory = $this->getConfigFactoryStub([
+      'fb_instant_articles.settings' => $settings,
+    ]);
+    $content_entity_normalizer = $this->getMockBuilder(InstantArticleRssContentEntityNormalizer::class)
+      ->setConstructorArgs([$config_factory])
+      ->setMethods(['getApplicableComponents', 'getApplicationVersion'])
+      ->getMock();
+    $content_entity_normalizer->method('getApplicableComponents')
+      ->willReturn($components);
+    $content_entity_normalizer->method('getApplicationVersion')
+      ->willReturn('8.x-2.x');
+    $serializer = $this->createMock(Serializer::class);
+    $serializer->method('normalize')
+      ->willReturn(InstantArticle::create());
+    $content_entity_normalizer->setSerializer($serializer);
+
+    return $content_entity_normalizer;
   }
 
 }
