@@ -2,20 +2,33 @@
 
 namespace Drupal\fb_instant_articles\Normalizer;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer as BaseContentEntityNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 /**
  * Extends the content entity normalizer that ships with the base module.
  *
- * Supports the wrapping RSS scafolding for outputing an RSS feed.
+ * Supports the wrapping RSS scaffolding for outputting an RSS feed.
  */
-class InstantArticleRssContentEntityNormalizer extends BaseContentEntityNormalizer {
+class InstantArticleRssContentEntityNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
+  use EntityHelperTrait;
 
   /**
    * Name of the format that this normalizer deals with.
    */
   const FORMAT = 'fbia_rss';
+
+  /**
+   * ContentEntityNormalizer constructor.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config
+   *   Config factory service.
+   */
+  public function __construct(ConfigFactoryInterface $config) {
+    $this->config = $config->get('fb_instant_articles.settings');
+  }
 
   /**
    * {@inheritdoc}
@@ -26,7 +39,7 @@ class InstantArticleRssContentEntityNormalizer extends BaseContentEntityNormaliz
       'title' => $data->label(),
       'link' => $this->entityCanonicalUrl($data),
       'guid' => $data->uuid(),
-      'content:encoded' => parent::normalize($data, $format, $context),
+      'content:encoded' => $this->serializer->serialize($data, 'fbia', $context),
     ];
     // Add author if applicable.
     if ($author = $this->entityAuthor($data)) {

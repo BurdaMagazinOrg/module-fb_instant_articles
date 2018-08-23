@@ -24,7 +24,7 @@ services:
 
   serializer.fb_instant_articles.fbia_rss.content_entity:
     class: Drupal\fb_instant_articles\Normalizer\InstantArticleRssContentEntityNormalizer
-    arguments: ['@config.factory', '@entity_field.manager', '@entity_type.manager', '@info_parser', '@module_handler', '@language_manager']
+    arguments: ['@config.factory']
     tags:
       - { name: normalizer, priority: 10 }
 
