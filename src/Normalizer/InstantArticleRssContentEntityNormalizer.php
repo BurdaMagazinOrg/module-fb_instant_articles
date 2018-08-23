@@ -39,7 +39,7 @@ class InstantArticleRssContentEntityNormalizer extends SerializerAwareNormalizer
       'title' => $data->label(),
       'link' => $this->entityCanonicalUrl($data),
       'guid' => $data->uuid(),
-      'content:encoded' => $this->serializer->serialize($data, 'fbia', $context),
+      'content:encoded' => $this->serializer->normalize($data, 'fbia', $context),
     ];
     // Add author if applicable.
     if ($author = $this->entityAuthor($data)) {
