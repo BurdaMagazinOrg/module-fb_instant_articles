@@ -19,6 +19,19 @@ trait EntityHelperTrait {
   protected $config;
 
   /**
+   * Convenience method for getting the right config object.
+   *
+   * @return \Drupal\Core\Config\ImmutableConfig
+   *   Facebook Instant Articles config object.
+   */
+  protected function config() {
+    if (!$this->config) {
+      $this->config = \Drupal::config('fb_instant_articles.settings');
+    }
+    return $this->config;
+  }
+
+  /**
    * Helper function to compute the canonical URL for a given entity.
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
@@ -30,7 +43,7 @@ trait EntityHelperTrait {
    * @throws \Drupal\Core\Entity\EntityMalformedException
    */
   public function entityCanonicalUrl(ContentEntityInterface $entity) {
-    if ($override = $this->config->get('canonical_url_override')) {
+    if ($override = $this->config()->get('canonical_url_override')) {
       return $override . $entity->toUrl('canonical')->toString();
     }
     else {
