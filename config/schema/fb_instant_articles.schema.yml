@@ -177,6 +177,9 @@ field.formatter.settings.fbia_video:
     feed_cover:
       type: boolean
       label: 'Feed cover'
+    use_description_as_link_text:
+      type: boolean
+      label: 'Replace the file name by its description when available'
 
 node.type.*.third_party.fb_instant_articles:
   type: mapping
