@@ -5,6 +5,7 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Facebook\InstantArticles\Elements\Header;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Plugin implementation of the 'fbia_subtitle' formatter.
@@ -23,7 +24,7 @@ class SubTitleFormatter extends FormatterBase {
   /**
    * {@inheritdoc}
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL) {
     // Subtitles only go in the header. Create one if it doesn't exist yet and
     // ignore the given $region.
     $header = $article->getHeader();

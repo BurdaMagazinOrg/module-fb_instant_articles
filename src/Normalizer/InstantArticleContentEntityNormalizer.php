@@ -115,25 +115,30 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
    */
   public function normalize($data, $format = NULL, array $context = []) {
     /** @var \Drupal\Core\Entity\ContentEntityInterface $data */
-    $article = InstantArticle::create()
-      ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
-      ->addMetaProperty('op:generator:application:version', $this->getApplicationVersion());
-    // RTL support.
-    if ($this->currentLanguage->getDirection() === LanguageInterface::DIRECTION_RTL) {
-      $article->enableRTL();
+    if (isset($context['instant_article'])) {
+      $article = $context['instant_article'];
     }
-    // Configured style.
-    if ($style = $this->config->get('style')) {
-      $article->withStyle($style);
+    else {
+      $article = InstantArticle::create()
+        ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
+        ->addMetaProperty('op:generator:application:version', $this->getApplicationVersion());
+      // RTL support.
+      if ($this->currentLanguage->getDirection() === LanguageInterface::DIRECTION_RTL) {
+        $article->enableRTL();
+      }
+      // Configured style.
+      if ($style = $this->config->get('style')) {
+        $article->withStyle($style);
+      }
+      $this->normalizeCanonicalUrl($article, $data);
+      $this->normalizeDefaultHeader($article, $data);
+      $this->analyticsFromSettings($article);
+      $this->adsFromSettings($article);
+      $context += [
+        'instant_article' => $article,
+      ];
     }
-    $this->normalizeCanonicalUrl($article, $data);
-    $this->normalizeDefaultHeader($article, $data);
-    $this->analyticsFromSettings($article);
-    $this->adsFromSettings($article);
 
-    $context += [
-      'instant_article' => $article,
-    ];
     // If we're given an entity_view_display object as context, use that as a
     // mapping to guide the normalization.
     if ($display = $this->entityViewDisplay($data, $context)) {

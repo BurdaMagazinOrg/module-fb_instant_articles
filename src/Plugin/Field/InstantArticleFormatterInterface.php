@@ -5,6 +5,8 @@ namespace Drupal\fb_instant_articles\Plugin\Field;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterInterface;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Interface to define an operation to manipulate an InstantArticle object.
@@ -22,6 +24,9 @@ interface InstantArticleFormatterInterface extends FormatterInterface {
    * @param string $region
    *   The Instant Article region name that the contents of this field should be
    *   rendered into.
+   * @param \Symfony\Component\Serializer\Normalizer\NormalizerInterface $normalizer
+   *   Normalizer in case the formatter needs to recursively normalize, eg. in
+   *   the case of a entity reference field.
    * @param string $langcode
    *   (optional) The language that should be used to render the field. Defaults
    *   to the current content language.
@@ -29,6 +34,6 @@ interface InstantArticleFormatterInterface extends FormatterInterface {
    * @return \Facebook\InstantArticles\Elements\InstantArticle
    *   Modified instant article.
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL);
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL);
 
 }

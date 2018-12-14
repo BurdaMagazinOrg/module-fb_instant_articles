@@ -12,6 +12,7 @@ use Drupal\fb_instant_articles\TransformerLoggingTrait;
 use Facebook\InstantArticles\Elements\InstantArticle;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Plugin implementation of the 'fbia_transformer' formatter.
@@ -94,7 +95,7 @@ class TransformerFormatter extends FormatterBase implements ContainerFactoryPlug
   /**
    * {@inheritdoc}
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL) {
     foreach ($items as $delta => $item) {
       $markup = [
         '#type' => 'processed_text',

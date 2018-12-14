@@ -7,6 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Facebook\InstantArticles\Elements\InstantArticle;
 use Facebook\InstantArticles\Elements\ListElement;
 use Facebook\InstantArticles\Elements\ListItem;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Plugin implementation of the 'fbia_list' formatter.
@@ -57,7 +58,7 @@ class ListFormatter extends FormatterBase {
   /**
    * {@inheritdoc}
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL) {
     if (!$items->isEmpty()) {
       if ($this->getSetting('is_ordered')) {
         $list = ListElement::createOrdered();

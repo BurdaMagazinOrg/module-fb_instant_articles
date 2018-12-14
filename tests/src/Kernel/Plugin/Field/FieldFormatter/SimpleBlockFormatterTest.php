@@ -17,7 +17,7 @@ use Facebook\InstantArticles\Elements\Pullquote;
  *
  * @group fb_instant_articles
  */
-class SimpleBlockFormatter extends FormatterTestBase {
+class SimpleBlockFormatterTest extends FormatterTestBase {
 
   /**
    * Test BlockquoteFormatter, ParagraphFormatter, and PullquoteFormatter.
