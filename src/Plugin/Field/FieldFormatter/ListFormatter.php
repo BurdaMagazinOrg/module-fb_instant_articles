@@ -4,7 +4,6 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Facebook\InstantArticles\Elements\InstantArticle;
 use Facebook\InstantArticles\Elements\ListElement;
 use Facebook\InstantArticles\Elements\ListItem;
@@ -24,7 +23,7 @@ use Facebook\InstantArticles\Elements\ListItem;
  *   }
  * )
  */
-class ListFormatter extends FormatterBase implements InstantArticleFormatterInterface {
+class ListFormatter extends FormatterBase {
 
   /**
    * {@inheritdoc}

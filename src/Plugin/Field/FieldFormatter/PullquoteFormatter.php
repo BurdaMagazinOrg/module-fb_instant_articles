@@ -3,7 +3,6 @@
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Facebook\InstantArticles\Elements\InstantArticle;
 use Facebook\InstantArticles\Elements\Pullquote;
 
@@ -19,7 +18,7 @@ use Facebook\InstantArticles\Elements\Pullquote;
  *   }
  * )
  */
-class PullquoteFormatter extends FormatterBase implements InstantArticleFormatterInterface {
+class PullquoteFormatter extends FormatterBase {
 
   /**
    * {@inheritdoc}

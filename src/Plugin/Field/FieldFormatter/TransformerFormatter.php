@@ -5,8 +5,8 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\RendererInterface;
-use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Drupal\fb_instant_articles\Transformer;
 use Drupal\fb_instant_articles\TransformerLoggingTrait;
 use Facebook\InstantArticles\Elements\InstantArticle;
@@ -26,9 +26,16 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class TransformerFormatter extends FormatterBase implements InstantArticleFormatterInterface {
+class TransformerFormatter extends FormatterBase implements ContainerFactoryPluginInterface {
 
   use TransformerLoggingTrait;
+
+  /**
+   * Renderer service.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
 
   /**
    * Create a new instance of TransformerFormatter.
@@ -57,7 +64,8 @@ class TransformerFormatter extends FormatterBase implements InstantArticleFormat
    *   Logger for transformer messages.
    */
   public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, RendererInterface $renderer, Transformer $transformer, ConfigFactoryInterface $config_factory, LoggerInterface $logger) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings, $renderer);
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
+    $this->renderer = $renderer;
     $this->transformer = $transformer;
     $this->configFactory = $config_factory;
     $this->logger = $logger;
