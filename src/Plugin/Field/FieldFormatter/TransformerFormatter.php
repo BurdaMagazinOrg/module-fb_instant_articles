@@ -5,6 +5,7 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\fb_instant_articles\Transformer;
 use Drupal\fb_instant_articles\TransformerLoggingTrait;
@@ -25,7 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class TransformerFormatter extends FormatterBase {
+class TransformerFormatter extends FormatterBase implements ContainerFactoryPluginInterface {
 
   use TransformerLoggingTrait;
 
