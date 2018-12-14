@@ -106,12 +106,6 @@ field.formatter.settings.fbia_image:
     caption:
       type: boolean
       label: 'Caption'
-    likes:
-      type: boolean
-      label: 'Likes'
-    comments:
-      type: boolean
-      label: 'Comments'
     presentation:
       type: string
       label: 'Presentation'
@@ -162,12 +156,6 @@ field.formatter.settings.fbia_video:
     presentation:
       type: string
       label: 'Presentation'
-    likes:
-      type: boolean
-      label: 'Likes'
-    comments:
-      type: boolean
-      label: 'Comments'
     controls:
       type: boolean
       label: 'Controls'

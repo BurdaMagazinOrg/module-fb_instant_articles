@@ -9,7 +9,7 @@
     "homepage": "https://www.drupal.org/node/2676800/committers"
   }],
   "require": {
-    "facebook/facebook-instant-articles-sdk-php": "^1.8.3"
+    "facebook/facebook-instant-articles-sdk-php": "^1.10.0"
   },
   "require-dev": {
     "drupal/drupal-extension": "master-dev",

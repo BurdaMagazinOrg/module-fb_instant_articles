@@ -65,8 +65,6 @@ class VideoFormatter extends GenericFileFormatter implements InstantArticleForma
   public static function defaultSettings() {
     return [
       'presentation' => '',
-      'likes' => FALSE,
-      'comments' => FALSE,
       'controls' => FALSE,
       'autoplay' => TRUE,
       'feed_cover' => FALSE,
@@ -88,16 +86,6 @@ class VideoFormatter extends GenericFileFormatter implements InstantArticleForma
         Video::NON_INTERACTIVE => $this->presentationLabel(Video::NON_INTERACTIVE),
       ],
       '#empty_option' => $this->t('None'),
-    ];
-    $element['likes'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Enable Facebook likes'),
-      '#default_value' => $this->getSetting('likes'),
-    ];
-    $element['comments'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Enable Facebook comments'),
-      '#default_value' => $this->getSetting('comments'),
     ];
     $element['controls'] = [
       '#type' => 'checkbox',
@@ -125,12 +113,6 @@ class VideoFormatter extends GenericFileFormatter implements InstantArticleForma
     $summary = [];
     if ($presentation = $this->getSetting('presentation')) {
       $summary[] = $this->t('Presentation: @presentation', ['@presentation' => $this->presentationLabel($presentation)]);
-    }
-    if ($this->getSetting('likes')) {
-      $summary[] = $this->t('Enable Facebook likes');
-    }
-    if ($this->getSetting('comments')) {
-      $summary[] = $this->t('Enable Facebook comments');
     }
     if ($this->getSetting('controls')) {
       $summary[] = $this->t('Show controls');
@@ -189,18 +171,6 @@ class VideoFormatter extends GenericFileFormatter implements InstantArticleForma
       $video->withURL($video_uri);
       if ($presentation = $this->getSetting('presentation')) {
         $video->withPresentation($presentation);
-      }
-      if ($this->getSetting('likes')) {
-        $video->enableLike();
-      }
-      else {
-        $video->disableLike();
-      }
-      if ($this->getSetting('comments')) {
-        $video->enableComments();
-      }
-      else {
-        $video->disableComments();
       }
       if ($this->getSetting('controls')) {
         $video->enableControls();

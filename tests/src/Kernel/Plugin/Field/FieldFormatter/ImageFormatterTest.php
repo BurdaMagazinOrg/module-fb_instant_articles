@@ -58,11 +58,9 @@ class ImageFormatterTest extends FormatterTestBase {
     // Assert that a cover image was added.
     $image = $article->getHeader()->getCover();
     $this->assertTrue($image instanceof Image);
-    // Default settings for the image formatter are no captions, likes or
-    // comments and an empty presentation value.
+    // Default settings for the image formatter are no captions and an empty
+    // presentation value.
     $this->assertNull($image->getCaption());
-    $this->assertFalse($image->isLikeEnabled());
-    $this->assertFalse($image->isCommentsEnabled());
     $this->assertNull($image->getPresentation());
 
     // Test config with everything turned on.
@@ -70,8 +68,6 @@ class ImageFormatterTest extends FormatterTestBase {
       'type' => 'fbia_image',
       'settings' => [
         'caption' => TRUE,
-        'likes' => TRUE,
-        'comments' => TRUE,
         'presentation' => Image::ASPECT_FIT,
       ],
     ]);
@@ -86,8 +82,6 @@ class ImageFormatterTest extends FormatterTestBase {
     $this->assertTrue($image instanceof Image);
     // Assert settings are reflected in the output.
     $this->assertTrue($image->getCaption() instanceof Caption);
-    $this->assertTrue($image->isLikeEnabled());
-    $this->assertTrue($image->isCommentsEnabled());
     $this->assertEquals(Image::ASPECT_FIT, $image->getPresentation());
 
     // Test adding the image to the body.

@@ -80,8 +80,6 @@ class ImageFormatter extends DrupalImageFormatter implements InstantArticleForma
     return [
       'image_style' => '',
       'caption' => FALSE,
-      'likes' => FALSE,
-      'comments' => FALSE,
       'presentation' => '',
     ];
   }
@@ -102,16 +100,6 @@ class ImageFormatter extends DrupalImageFormatter implements InstantArticleForma
       '#description' => $this->t('The caption uses the alt text of the image field.'),
       '#title' => $this->t('Enable caption'),
       '#default_value' => $this->getSetting('caption'),
-    ];
-    $element['likes'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Enable Facebook likes'),
-      '#default_value' => $this->getSetting('likes'),
-    ];
-    $element['comments'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Enable Facebook comments'),
-      '#default_value' => $this->getSetting('comments'),
     ];
     $element['presentation'] = [
       '#type' => 'select',
@@ -147,12 +135,6 @@ class ImageFormatter extends DrupalImageFormatter implements InstantArticleForma
     }
     if ($this->getSetting('caption')) {
       $summary[] = $this->t('Use alt text as caption');
-    }
-    if ($this->getSetting('likes')) {
-      $summary[] = $this->t('Enable Facebook likes');
-    }
-    if ($this->getSetting('comments')) {
-      $summary[] = $this->t('Enable Facebook comments');
     }
     if ($presentation = $this->getSetting('presentation')) {
       $summary[] = $this->t('Presentation: @presentation', ['@presentation' => $this->presentationLabel($presentation)]);
@@ -192,18 +174,6 @@ class ImageFormatter extends DrupalImageFormatter implements InstantArticleForma
           Caption::create()
             ->appendText($caption)
         );
-      }
-      if ($this->getSetting('likes')) {
-        $article_image->enableLike();
-      }
-      else {
-        $article_image->disableLike();
-      }
-      if ($this->getSetting('comments')) {
-        $article_image->enableComments();
-      }
-      else {
-        $article_image->disableComments();
       }
       if ($presentation = $this->getSetting('presentation')) {
         $article_image->withPresentation($presentation);

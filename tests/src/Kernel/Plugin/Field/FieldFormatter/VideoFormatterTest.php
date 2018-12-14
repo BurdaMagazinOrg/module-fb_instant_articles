@@ -68,8 +68,6 @@ class VideoFormatterTest extends FormatterTestBase {
     $this->assertTrue($video instanceof Video);
     // Assert default settings for the video field formatter.
     $this->assertNull($video->getPresentation());
-    $this->assertFalse($video->isLikeEnabled());
-    $this->assertFalse($video->isCommentsEnabled());
     $this->assertFalse($video->isControlsShown());
     $this->assertTrue($video->isAutoplay());
 
@@ -78,8 +76,6 @@ class VideoFormatterTest extends FormatterTestBase {
       'type' => 'fbia_video',
       'settings' => [
         'presentation' => Video::ASPECT_FIT,
-        'likes' => TRUE,
-        'comments' => TRUE,
         'controls' => TRUE,
         'autoplay' => FALSE,
         'feed_cover' => TRUE,
@@ -96,8 +92,6 @@ class VideoFormatterTest extends FormatterTestBase {
     $this->assertTrue($video instanceof Video);
     // Assert settings are reflected in the output.
     $this->assertEquals(Video::ASPECT_FIT, $video->getPresentation());
-    $this->assertTrue($video->isLikeEnabled());
-    $this->assertTrue($video->isCommentsEnabled());
     $this->assertTrue($video->isControlsShown());
     $this->assertFalse($video->isAutoplay());
 
