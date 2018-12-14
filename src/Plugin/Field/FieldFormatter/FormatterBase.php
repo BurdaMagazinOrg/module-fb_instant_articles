@@ -4,13 +4,12 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase as DrupalFormatterBase;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 
 /**
  * Base class for all of our FBIA field formatters.
  */
-abstract class FormatterBase extends DrupalFormatterBase implements ContainerFactoryPluginInterface, InstantArticleFormatterInterface {
+abstract class FormatterBase extends DrupalFormatterBase implements InstantArticleFormatterInterface {
 
   const SOURCE_TYPE_URL = 'url';
 
