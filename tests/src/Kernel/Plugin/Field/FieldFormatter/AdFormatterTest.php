@@ -41,7 +41,7 @@ class AdFormatterTest extends FormatterTestBase {
     /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
     $formatter = $this->display->getRenderer($this->fieldName);
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER, $this->normalizerMock);
 
     $ads = $article->getHeader()->getAds();
     $this->assertEquals(1, count($ads));
@@ -63,7 +63,7 @@ class AdFormatterTest extends FormatterTestBase {
     /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
     $formatter = $this->display->getRenderer($this->fieldName);
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER, $this->normalizerMock);
 
     $ads = $article->getHeader()->getAds();
     $this->assertEquals(1, count($ads));

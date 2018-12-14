@@ -42,7 +42,7 @@ class CreditsFormatterTest extends FormatterTestBase {
     $formatter = $this->display->getRenderer($this->fieldName);
 
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_FOOTER);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_FOOTER, $this->normalizerMock);
 
     $credits = $article->getFooter()->getCredits();
     $this->assertEquals(2, count($credits));

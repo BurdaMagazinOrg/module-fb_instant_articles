@@ -42,7 +42,7 @@ class KickerFormatterTest extends FormatterTestBase {
     $formatter = $this->display->getRenderer($this->fieldName);
 
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER, $this->normalizerMock);
     $this->assertEquals($value_alpha, $article->getHeader()->getKicker()->getPlainText());
   }
 

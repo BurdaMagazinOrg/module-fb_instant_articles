@@ -7,6 +7,7 @@ use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\KernelTests\KernelTestBase;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Base class for common functionality between field formatter tests.
@@ -57,6 +58,13 @@ class FormatterTestBase extends KernelTestBase {
   protected $display;
 
   /**
+   * Normalizer mock.
+   *
+   * @var \Symfony\Component\Serializer\Normalizer\NormalizerInterface
+   */
+  protected $normalizerMock;
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp() {
@@ -66,6 +74,8 @@ class FormatterTestBase extends KernelTestBase {
     $this->installEntitySchema('user');
     $this->installEntitySchema('entity_test');
     $this->installEntitySchema('user');
+
+    $this->normalizerMock = $this->createMock(NormalizerInterface::class);
 
     $this->entityType = 'entity_test';
     $this->bundle = $this->entityType;

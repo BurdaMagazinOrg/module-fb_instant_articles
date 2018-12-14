@@ -43,17 +43,17 @@ class CopyrightFormatterTest extends FormatterTestBase {
     $formatter = $this->display->getRenderer($this->fieldName);
 
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_FOOTER);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_FOOTER, $this->normalizerMock);
     $this->assertEquals($value_alpha, $article->getFooter()->getCopyright());
 
     $entity->{$this->fieldName}[] = ['value' => $value_beta];
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_FOOTER);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_FOOTER, $this->normalizerMock);
     $this->assertEquals($value_alpha . ' ' . $value_beta, $article->getFooter()->getCopyright());
 
     $article = InstantArticle::create();
     $article->withFooter(Footer::create()->withCopyright(Small::create()->appendText($value_alpha)));
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_FOOTER);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_FOOTER, $this->normalizerMock);
     $this->assertEquals($value_alpha . ' ' . $value_beta, $article->getFooter()->getCopyright());
   }
 
