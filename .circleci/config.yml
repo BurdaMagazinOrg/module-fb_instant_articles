@@ -12,6 +12,8 @@
 #
 # Check https://circleci.com/docs/2.0/language-php/ for more details
 #
+# Change to make CircleCI re-run.
+#
 
 defaults: &defaults
   docker:
