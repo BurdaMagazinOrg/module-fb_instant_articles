@@ -4,7 +4,6 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 
 /**
  * Plugin implementation of the 'fbia_analytics_link' formatter.
@@ -17,7 +16,7 @@ use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
  *   }
  * )
  */
-class AnalyticsLinkFormatter extends AnalyticsFormatter implements InstantArticleFormatterInterface {
+class AnalyticsLinkFormatter extends AnalyticsFormatter {
 
   /**
    * {@inheritdoc}

@@ -3,7 +3,6 @@
 namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Facebook\InstantArticles\Elements\Footer;
 use Facebook\InstantArticles\Elements\InstantArticle;
 
@@ -19,7 +18,7 @@ use Facebook\InstantArticles\Elements\InstantArticle;
  *   }
  * )
  */
-class CopyrightFormatter extends FormatterBase implements InstantArticleFormatterInterface {
+class CopyrightFormatter extends FormatterBase {
 
   /**
    * {@inheritdoc}

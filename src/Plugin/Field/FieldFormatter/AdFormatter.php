@@ -5,7 +5,6 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Drupal\fb_instant_articles\Regions;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Header;
@@ -23,7 +22,7 @@ use Facebook\InstantArticles\Elements\InstantArticle;
  *   }
  * )
  */
-class AdFormatter extends FormatterBase implements InstantArticleFormatterInterface {
+class AdFormatter extends FormatterBase {
 
   /**
    * {@inheritdoc}
