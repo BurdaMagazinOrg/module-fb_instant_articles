@@ -26,7 +26,7 @@ class BlockquoteFormatter extends FormatterBase {
    */
   public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL) {
     foreach ($items as $delta => $item) {
-      // Blockquotes are only allowed in the content region, add it there
+      // Blockquote's are only allowed in the content region, add it there
       // regardless of the given $region. Note that the FBIA SDK will sanitize
       // the value.
       $article->addChild(

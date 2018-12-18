@@ -177,6 +177,10 @@ class InstantArticleContentEntityNormalizer extends NormalizerBase {
     if (isset($context['entity_view_display'])) {
       return $context['entity_view_display'];
     }
+    elseif (isset($context['view_mode']) &&
+      ($display = $storage->load($entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . $context['view_mode']))) {
+      return $display;
+    }
     // Try loading the fb_instant_articles entity view display.
     elseif (($display = $storage->load($fbia_display_id)) && $display->status()) {
       return $display;

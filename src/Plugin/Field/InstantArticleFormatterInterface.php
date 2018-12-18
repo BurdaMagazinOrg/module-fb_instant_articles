@@ -6,7 +6,6 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterInterface;
 use Facebook\InstantArticles\Elements\InstantArticle;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Interface to define an operation to manipulate an InstantArticle object.
@@ -30,9 +29,6 @@ interface InstantArticleFormatterInterface extends FormatterInterface {
    * @param string $langcode
    *   (optional) The language that should be used to render the field. Defaults
    *   to the current content language.
-   *
-   * @return \Facebook\InstantArticles\Elements\InstantArticle
-   *   Modified instant article.
    */
   public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL);
 
