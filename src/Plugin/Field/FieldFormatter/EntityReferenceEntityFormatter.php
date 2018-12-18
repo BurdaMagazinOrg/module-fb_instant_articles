@@ -8,7 +8,6 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceFormatterBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Facebook\InstantArticles\Elements\InstantArticle;
 use Symfony\Component\DependencyInjection\ContainerInterface;
