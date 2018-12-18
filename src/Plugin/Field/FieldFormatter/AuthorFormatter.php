@@ -6,6 +6,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Facebook\InstantArticles\Elements\Author;
 use Facebook\InstantArticles\Elements\Header;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Plugin implementation of the 'fbia_author' formatter.
@@ -23,7 +24,7 @@ class AuthorFormatter extends FormatterBase {
   /**
    * {@inheritdoc}
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL) {
     foreach ($items as $delta => $item) {
       $author = Author::create()
         ->withName($item->value);

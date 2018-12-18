@@ -3,29 +3,32 @@
 namespace Drupal\fb_instant_articles\Normalizer;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface;
 use Drupal\fb_instant_articles\Regions;
 use Drupal\fb_instant_articles\Transformer;
 use Drupal\fb_instant_articles\TransformerLoggingTrait;
+use Drupal\serialization\Normalizer\NormalizerBase;
 use Facebook\InstantArticles\Elements\Footer;
 use Facebook\InstantArticles\Elements\Header;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 /**
  * Normalize FieldItemList object into an Instant Article object.
  */
-class FieldItemListNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
+class FieldItemListNormalizer extends NormalizerBase {
   use TransformerLoggingTrait;
 
   /**
-   * Name of the format that this normalizer deals with.
+   * {@inheritdoc}
    */
-  const FORMAT = 'fbia';
+  protected $supportedInterfaceOrClass = 'Drupal\Core\Field\FieldItemListInterface';
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $format = 'fbia';
 
   /**
    * Renderer service.
@@ -57,15 +60,6 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
   /**
    * {@inheritdoc}
    */
-  public function supportsNormalization($data, $format = NULL) {
-    // Only consider this normalizer if we are trying to normalize a field item
-    // list into the 'fbia' format.
-    return $format === self::FORMAT && $data instanceof FieldItemListInterface;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function normalize($object, $format = NULL, array $context = []) {
     /** @var \Drupal\Core\Field\FieldItemListInterface $object */
     if (!isset($context['instant_article'])) {
@@ -82,7 +76,7 @@ class FieldItemListNormalizer extends SerializerAwareNormalizer implements Norma
       $formatter = $display->getRenderer($object->getName());
       $component = $display->getComponent($object->getName());
       if ($formatter instanceof InstantArticleFormatterInterface) {
-        $formatter->viewInstantArticle($object, $article, $component['region']);
+        $formatter->viewInstantArticle($object, $article, $component['region'], $this->serializer);
       }
       elseif ($formatter instanceof FormatterInterface) {
         $formatter->prepareView([$object->getEntity()->id() => $object]);

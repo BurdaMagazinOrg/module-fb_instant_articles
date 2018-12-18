@@ -49,7 +49,7 @@ class InteractiveFormatterTest extends FormatterTestBase {
     /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
     $formatter = $this->display->getRenderer($this->fieldName);
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT, $this->normalizerMock);
 
     $children = $article->getChildren();
     $this->assertEquals(2, count($children));
@@ -73,7 +73,7 @@ class InteractiveFormatterTest extends FormatterTestBase {
     /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
     $formatter = $this->display->getRenderer($this->fieldName);
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER, $this->normalizerMock);
 
     $children = $article->getChildren();
     $this->assertEquals(2, count($children));

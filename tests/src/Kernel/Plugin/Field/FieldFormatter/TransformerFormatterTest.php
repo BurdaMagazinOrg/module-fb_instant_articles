@@ -65,7 +65,7 @@ class TransformerFormatterTest extends FormatterTestBase {
     $formatter = $this->display->getRenderer($this->fieldName);
 
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT, $this->normalizerMock);
     $children = $article->getChildren();
     $this->assertEquals($expected_child_count, count($children));
     foreach ($expected_child_instances as $i => $instance) {

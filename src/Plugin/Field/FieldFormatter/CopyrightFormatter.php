@@ -5,6 +5,7 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Facebook\InstantArticles\Elements\Footer;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Plugin implementation of the 'fbia_copyright' formatter.
@@ -23,7 +24,7 @@ class CopyrightFormatter extends FormatterBase {
   /**
    * {@inheritdoc}
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL) {
     foreach ($items as $delta => $item) {
       // Copyright can only go in the footer, put it there and ignore the given
       // $region.

@@ -119,7 +119,7 @@ class DrupalClient extends FbiaClient {
     }
 
     /** @var \Facebook\InstantArticles\Elements\InstantArticle $article */
-    $article = $this->serializer->normalize($entity, InstantArticleContentEntityNormalizer::FORMAT);
+    $article = $this->serializer->normalize($entity, 'fbia');
     // Default published status to TRUE for entities that don't implement
     // EntityPublishedInterface. For those that do implement
     // EntityPublishedInterface, go by the published status of the entity. Note

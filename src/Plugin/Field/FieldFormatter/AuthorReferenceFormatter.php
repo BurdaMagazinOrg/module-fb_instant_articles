@@ -9,6 +9,7 @@ use Drupal\user\Plugin\Field\FieldFormatter\AuthorFormatter as DrupalAuthorForma
 use Facebook\InstantArticles\Elements\Author;
 use Facebook\InstantArticles\Elements\Header;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Plugin implementation of the 'fbia_author_reference' formatter.
@@ -67,7 +68,7 @@ class AuthorReferenceFormatter extends DrupalAuthorFormatter implements InstantA
   /**
    * {@inheritdoc}
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL) {
     // Need to call parent::prepareView() to populate the entities since it's
     // not otherwise getting called.
     $this->prepareView([$items->getEntity()->id() => $items]);

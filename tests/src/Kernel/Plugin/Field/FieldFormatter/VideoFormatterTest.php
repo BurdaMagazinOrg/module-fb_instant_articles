@@ -61,7 +61,7 @@ class VideoFormatterTest extends FormatterTestBase {
     /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
     $formatter = $this->display->getRenderer($this->fieldName);
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER, $this->normalizerMock);
 
     // Assert that a cover video was added.
     $video = $article->getHeader()->getCover();
@@ -85,7 +85,7 @@ class VideoFormatterTest extends FormatterTestBase {
     /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
     $formatter = $this->display->getRenderer($this->fieldName);
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_HEADER, $this->normalizerMock);
 
     // Assert that a cover video was added.
     $video = $article->getHeader()->getCover();
@@ -97,7 +97,7 @@ class VideoFormatterTest extends FormatterTestBase {
 
     // Test adding the video to the body.
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT, $this->normalizerMock);
 
     $children = $article->getChildren();
     $this->assertEquals(2, count($children));
@@ -122,7 +122,7 @@ class VideoFormatterTest extends FormatterTestBase {
     /** @var \Drupal\fb_instant_articles\Plugin\Field\InstantArticleFormatterInterface $formatter */
     $formatter = $this->display->getRenderer($this->fieldName);
     $article = InstantArticle::create();
-    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT);
+    $formatter->viewInstantArticle($entity->{$this->fieldName}, $article, Regions::REGION_CONTENT, $this->normalizerMock);
     $children = $article->getChildren();
     $this->assertStringStartsWith('http://example.com/override', $children[0]->getUrl());
   }

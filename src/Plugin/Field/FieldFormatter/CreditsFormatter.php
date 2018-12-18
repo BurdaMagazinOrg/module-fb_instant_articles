@@ -6,6 +6,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Facebook\InstantArticles\Elements\Footer;
 use Facebook\InstantArticles\Elements\InstantArticle;
 use Facebook\InstantArticles\Elements\Paragraph;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Plugin implementation of the 'fbia_credits' formatter.
@@ -24,7 +25,7 @@ class CreditsFormatter extends FormatterBase {
   /**
    * {@inheritdoc}
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL) {
     $credits = [];
     foreach ($items as $delta => $item) {
       $credits[] = Paragraph::create()

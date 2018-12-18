@@ -17,14 +17,13 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\fb_instant_articles\AdTypes;
 use Drupal\fb_instant_articles\Form\EntityViewDisplayEditForm;
+use Drupal\serialization\Normalizer\NormalizerBase;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
 use Facebook\InstantArticles\Elements\Author;
 use Facebook\InstantArticles\Elements\Header;
 use Facebook\InstantArticles\Elements\InstantArticle;
 use Facebook\InstantArticles\Elements\Time;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 /**
  * Facebook Instant Articles content entity normalizer.
@@ -32,14 +31,19 @@ use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
  * Takes a content entity and normalizes it into a
  * \Facebook\InstantArticles\Elements\InstantArticle object.
  */
-class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
+class InstantArticleContentEntityNormalizer extends NormalizerBase {
   use StringTranslationTrait;
   use EntityHelperTrait;
 
   /**
-   * Name of the format that this normalizer deals with.
+   * {@inheritdoc}
    */
-  const FORMAT = 'fbia';
+  protected $supportedInterfaceOrClass = 'Drupal\Core\Entity\ContentEntityInterface';
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $format = 'fbia';
 
   /**
    * Entity field manager service.
@@ -104,36 +108,32 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
   /**
    * {@inheritdoc}
    */
-  public function supportsNormalization($data, $format = NULL) {
-    // Only consider this normalizer if we are trying to normalize a content
-    // entity into the 'fbia' format.
-    return $format === static::FORMAT && $data instanceof ContentEntityInterface;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function normalize($data, $format = NULL, array $context = []) {
     /** @var \Drupal\Core\Entity\ContentEntityInterface $data */
-    $article = InstantArticle::create()
-      ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
-      ->addMetaProperty('op:generator:application:version', $this->getApplicationVersion());
-    // RTL support.
-    if ($this->currentLanguage->getDirection() === LanguageInterface::DIRECTION_RTL) {
-      $article->enableRTL();
+    if (isset($context['instant_article'])) {
+      $article = $context['instant_article'];
     }
-    // Configured style.
-    if ($style = $this->config->get('style')) {
-      $article->withStyle($style);
+    else {
+      $article = InstantArticle::create()
+        ->addMetaProperty('op:generator:application', 'drupal/fb_instant_articles')
+        ->addMetaProperty('op:generator:application:version', $this->getApplicationVersion());
+      // RTL support.
+      if ($this->currentLanguage->getDirection() === LanguageInterface::DIRECTION_RTL) {
+        $article->enableRTL();
+      }
+      // Configured style.
+      if ($style = $this->config->get('style')) {
+        $article->withStyle($style);
+      }
+      $this->normalizeCanonicalUrl($article, $data);
+      $this->normalizeDefaultHeader($article, $data);
+      $this->analyticsFromSettings($article);
+      $this->adsFromSettings($article);
+      $context += [
+        'instant_article' => $article,
+      ];
     }
-    $this->normalizeCanonicalUrl($article, $data);
-    $this->normalizeDefaultHeader($article, $data);
-    $this->analyticsFromSettings($article);
-    $this->adsFromSettings($article);
 
-    $context += [
-      'instant_article' => $article,
-    ];
     // If we're given an entity_view_display object as context, use that as a
     // mapping to guide the normalization.
     if ($display = $this->entityViewDisplay($data, $context)) {
@@ -176,6 +176,10 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
     // If there is a display passed via $context, use that one.
     if (isset($context['entity_view_display'])) {
       return $context['entity_view_display'];
+    }
+    elseif (isset($context['view_mode']) &&
+      ($display = $storage->load($entity->getEntityTypeId() . '.' . $entity->bundle() . '.' . $context['view_mode']))) {
+      return $display;
     }
     // Try loading the fb_instant_articles entity view display.
     elseif (($display = $storage->load($fbia_display_id)) && $display->status()) {

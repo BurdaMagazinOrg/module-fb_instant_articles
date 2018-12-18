@@ -5,6 +5,7 @@ namespace Drupal\fb_instant_articles\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Facebook\InstantArticles\Elements\Blockquote;
 use Facebook\InstantArticles\Elements\InstantArticle;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Plugin implementation of the 'fbia_blockquote' formatter.
@@ -23,9 +24,9 @@ class BlockquoteFormatter extends FormatterBase {
   /**
    * {@inheritdoc}
    */
-  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, $langcode = NULL) {
+  public function viewInstantArticle(FieldItemListInterface $items, InstantArticle $article, $region, NormalizerInterface $normalizer, $langcode = NULL) {
     foreach ($items as $delta => $item) {
-      // Blockquotes are only allowed in the content region, add it there
+      // Blockquote's are only allowed in the content region, add it there
       // regardless of the given $region. Note that the FBIA SDK will sanitize
       // the value.
       $article->addChild(

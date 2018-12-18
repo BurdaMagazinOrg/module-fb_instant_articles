@@ -3,22 +3,25 @@
 namespace Drupal\fb_instant_articles\Normalizer;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\ContentEntityInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
+use Drupal\serialization\Normalizer\NormalizerBase;
 
 /**
  * Extends the content entity normalizer that ships with the base module.
  *
  * Supports the wrapping RSS scaffolding for outputting an RSS feed.
  */
-class InstantArticleRssContentEntityNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
+class InstantArticleRssContentEntityNormalizer extends NormalizerBase {
   use EntityHelperTrait;
 
   /**
-   * Name of the format that this normalizer deals with.
+   * {@inheritdoc}
    */
-  const FORMAT = 'fbia_rss';
+  protected $supportedInterfaceOrClass = 'Drupal\Core\Entity\ContentEntityInterface';
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $format = 'fbia_rss';
 
   /**
    * ContentEntityNormalizer constructor.
@@ -55,15 +58,6 @@ class InstantArticleRssContentEntityNormalizer extends SerializerAwareNormalizer
     }
 
     return $normalized;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function supportsNormalization($data, $format = NULL) {
-    // Only consider this normalizer if we are trying to normalize a content
-    // entity into the 'fbia_rss' format.
-    return $format === static::FORMAT && $data instanceof ContentEntityInterface;
   }
 
 }
