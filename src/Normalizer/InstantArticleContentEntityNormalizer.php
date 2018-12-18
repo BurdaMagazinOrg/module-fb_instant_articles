@@ -17,14 +17,13 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\fb_instant_articles\AdTypes;
 use Drupal\fb_instant_articles\Form\EntityViewDisplayEditForm;
+use Drupal\serialization\Normalizer\NormalizerBase;
 use Facebook\InstantArticles\Elements\Ad;
 use Facebook\InstantArticles\Elements\Analytics;
 use Facebook\InstantArticles\Elements\Author;
 use Facebook\InstantArticles\Elements\Header;
 use Facebook\InstantArticles\Elements\InstantArticle;
 use Facebook\InstantArticles\Elements\Time;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 /**
  * Facebook Instant Articles content entity normalizer.
@@ -32,14 +31,19 @@ use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
  * Takes a content entity and normalizes it into a
  * \Facebook\InstantArticles\Elements\InstantArticle object.
  */
-class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer implements NormalizerInterface {
+class InstantArticleContentEntityNormalizer extends NormalizerBase {
   use StringTranslationTrait;
   use EntityHelperTrait;
 
   /**
-   * Name of the format that this normalizer deals with.
+   * {@inheritdoc}
    */
-  const FORMAT = 'fbia';
+  protected $supportedInterfaceOrClass = 'Drupal\Core\Entity\ContentEntityInterface';
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $format = 'fbia';
 
   /**
    * Entity field manager service.
@@ -99,15 +103,6 @@ class InstantArticleContentEntityNormalizer extends SerializerAwareNormalizer im
     $this->infoParser = $info_parser;
     $this->moduleHandler = $module_handler;
     $this->currentLanguage = $language_manager->getCurrentLanguage();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function supportsNormalization($data, $format = NULL) {
-    // Only consider this normalizer if we are trying to normalize a content
-    // entity into the 'fbia' format.
-    return $format === static::FORMAT && $data instanceof ContentEntityInterface;
   }
 
   /**
