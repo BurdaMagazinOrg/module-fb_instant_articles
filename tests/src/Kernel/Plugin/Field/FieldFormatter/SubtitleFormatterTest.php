@@ -7,11 +7,11 @@ use Drupal\fb_instant_articles\Regions;
 use Facebook\InstantArticles\Elements\InstantArticle;
 
 /**
- * Tests the SubTitleFormatterTest.
+ * Tests the SubtitleFormatterTest.
  *
  * @group fb_instant_articles
  */
-class SubTitleFormatterTest extends FormatterTestBase {
+class SubtitleFormatterTest extends FormatterTestBase {
 
   /**
    * {@inheritdoc}
@@ -30,7 +30,7 @@ class SubTitleFormatterTest extends FormatterTestBase {
   /**
    * Test the instant article subtitle formatter.
    */
-  public function testSubTitleFormatter() {
+  public function testSubtitleFormatter() {
     $value_alpha = 'Inspiring subtitle to set the tone';
     $value_beta = 'Another subtitle, which should never be seen.';
 
