@@ -8,8 +8,7 @@
 namespace Drupal\fb_instant_articles\Plugin\views\row;
 
 use \Drupal\views\Plugin\views\row\EntityRow;
-use Drupal\Core\Entity\EntityManagerInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Renders an RSS item based on fields.
@@ -27,18 +26,13 @@ class FiaFields extends EntityRow {
 
   /**
    * {@inheritdoc}
-   *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
-   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
-   *   The language manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManagerInterface $entity_manager, LanguageManagerInterface $language_manager) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $configuration['entity_type'] = 'node';
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_manager, $language_manager);
-    $this->options['view_mode'] = 'fb_instant_articles_rss';
+    $plugin = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    $plugin->options['view_mode'] = 'fb_instant_articles_rss';
+    return $plugin;
   }
-
 
   /**
    * {@inheritdoc}
