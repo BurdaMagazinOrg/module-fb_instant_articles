@@ -11,6 +11,8 @@ use Facebook\InstantArticles\Transformer\Logs\TransformerLog;
  * Change the enable_logging setting to transformer_logging_level.
  */
 function fb_instant_articles_update_8201() {
+  // Enable serialization module on update (is a dependency now).
+  \Drupal::service('module_installer')->install(['serialization']);
 
   $config = \Drupal::configFactory()->getEditable('fb_instant_articles.settings');
   $enable_logging = $config->get('enable_logging');
