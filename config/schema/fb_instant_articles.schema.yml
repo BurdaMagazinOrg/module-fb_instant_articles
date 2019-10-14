@@ -96,6 +96,14 @@ field.formatter.settings.fbia_author_reference:
       type: boolean
       label: 'Link the author'
 
+  field.formatter.settings.fbia_entity_reference_entity_view:
+  type: mapping
+  label: 'Instant articles rendered entity element formatter settings'
+  mapping:
+    view_mode:
+      type: string
+      label: 'View mode'
+
 field.formatter.settings.fbia_image:
   type: mapping
   label: 'Instant articles image element formatter settings'
