@@ -3,9 +3,6 @@
 namespace Drupal\fb_instant_articles;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer;
 
 /**
  * Factory class to create a \Drupal\fb_instant_articles\DrupalClient.
@@ -17,22 +14,13 @@ class DrupalClientFactory {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Config factory service.
-   * @param \Symfony\Component\Serializer\Normalizer\NormalizerInterface $serializer
-   *   Serializer service. Note that we are type hinting to the
-   *   NormalizerInterface, b/c that is the functionality we actually want to
-   *   use from the Serializer.
-   * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
-   *   Logger channel.
-   * @param \Drupal\fb_instant_articles\Normalizer\InstantArticleContentEntityNormalizer $ia_normalizer
-   *   Instant article normalizer object.
    *
    * @return \Drupal\fb_instant_articles\DrupalClient
    *   Instance of DrupalClient.
    *
    * @throws \Drupal\fb_instant_articles\MissingApiCredentialsException
-   * @throws \Facebook\Exceptions\FacebookSDKException
    */
-  public static function create(ConfigFactoryInterface $config_factory, NormalizerInterface $serializer, LoggerChannelInterface $logger, InstantArticleContentEntityNormalizer $ia_normalizer) {
+  public static function create(ConfigFactoryInterface $config_factory) {
     $config = $config_factory->get('fb_instant_articles.settings');
 
     $app_id = $config->get('app_id');
@@ -50,10 +38,6 @@ class DrupalClientFactory {
       $config->get('page_id'),
       $config->get('development_mode') ? TRUE : FALSE
     );
-
-    $client->setSerializer($serializer);
-    $client->setLogger($logger);
-    $client->setIaNormalizer($ia_normalizer);
 
     return $client;
   }
