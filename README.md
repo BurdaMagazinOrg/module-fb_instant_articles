@@ -1,3 +1,8 @@
+**Please note that development of this module has moved back to drupal.org.**
+
+Please file issues in the drupal.org issue queue and submit merge requests
+there via drupal.org's Gitlab integration.
+
 # Drupal Facebook Instant Articles
 
 The Facebook Instant Articles modules allow administrators to add content from a
@@ -16,7 +21,7 @@ via a RSS feed or Facebook's API).
 
 ### 1. RSS Feed method
 
-On a basic Drupal site, with one or more article-like content types that you 
+On a basic Drupal site, with one or more article-like content types that you
 wish to post to Facebook as Instant Articles, the simplest way is to create a
 feed from your Drupal site and then have your Facebook page admin configure
 the Instant Articles options to point to your website to ingest the feed.
@@ -26,21 +31,21 @@ Articles, then configure a view mode to specify which fields you want to map to
 which region of the Instant Article format, then you're all ready to create the
 feed.
 
-To create the actual feed, simple enable the Facebook Instant Articles Views 
-module. This module ships with a default view which creates an RSS feed of your 
-content accessible at /instant-articles.rss. If you require more customized 
+To create the actual feed, simple enable the Facebook Instant Articles Views
+module. This module ships with a default view which creates an RSS feed of your
+content accessible at /instant-articles.rss. If you require more customized
 filtering, simply edit the view.
 
 ### 2. API method
-  
+
 If you're a publisher who wants more control over exact timing of publishing -
 editing, modifying public access, or removing content from your Facebook Instant
 Articles library - the API approach allows for greater control.
 
-Simply enable the Facebook Instant Articles API module. After enabling, 
-configure your API settings on the configuration page at 
-/admin/config/services/fb_instant_articles/api_settings. After that, the module 
-will begin creating/editing/deleting content in Instant Articles as you 
+Simply enable the Facebook Instant Articles API module. After enabling,
+configure your API settings on the configuration page at
+/admin/config/services/fb_instant_articles/api_settings. After that, the module
+will begin creating/editing/deleting content in Instant Articles as you
 create/edit/delete your Facebook Instant Articles enabled content types.
 
 ## Dependencies
@@ -58,13 +63,13 @@ see "Dependencies" above. Then:
 
 - Install Composer dependencies. See [Installing modules' composer dependencies](https://www.drupal.org/docs/8/extending-drupal-8/installing-modules-composer-dependencies).
 - Install the submodules you choose as you would normally install a contributed
-  Drupal module. See [Installing modules](https://www.drupal.org/docs/8/extending-drupal-8/installing-modules) 
+  Drupal module. See [Installing modules](https://www.drupal.org/docs/8/extending-drupal-8/installing-modules)
   for further information.
 
 ## Configuration
 
 All configuration for the module is made available by the base module, including
-configuration for delivery via the Facebook API. API configuration is only 
+configuration for delivery via the Facebook API. API configuration is only
 necessary when using the Facebook Instant Articles API module, or another custom
 module that uses the fb_instant_articles.drupal_client service. Thus it can be
 safely ignored if you are using the RSS feed method.
@@ -78,8 +83,8 @@ descriptions on the form to guide you.
 This module ships with a bunch of Behat tests, found in `tests/src/Behat`. Here
 are the steps to set up your local environment to run them:
 
-1. Ensure you've installed the composer dev dependencies of the module. 
-2. In the module, copy `tests/src/Behat/example.behat.local.yml` to 
+1. Ensure you've installed the composer dev dependencies of the module.
+2. In the module, copy `tests/src/Behat/example.behat.local.yml` to
 `tests/src/Behat/behat.local.yml` and edit as needed. At the least, IP addresses
 and URL's need to be changed.
 3. Download Selenium 3 and run it (changing the path as needed). The jar is available in Homebrew for OS X:
@@ -95,7 +100,7 @@ $ ../../../vendor/bin/behat -c tests/src/Behat/behat.local.yml tests/src/Behat/f
 ## Issues and Development
 
 - Issues should be made in the project's issue queue on Drupal.org.
-- All development is happening via PRs in [GitHub](https://github.com/BurdaMagazinOrg/module-fb_instant_articles).
+- All development is happening in the project's issue queue on Drupal.org.
 
 ## Maintainers
 
